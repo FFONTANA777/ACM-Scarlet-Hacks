@@ -3,8 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import anthropic
 import os
+from dotenv import load_dotenv
 from supabase import create_client, Client
 from datetime import date, timedelta
+from vision import analyze_food_image, FoodAnalysis
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -18,7 +22,7 @@ app.add_middleware(
 # --- Clients ---
 supabase: Client = create_client(
     os.environ["SUPABASE_URL"],
-    os.environ["SUPABASE_SERVICE_KEY"],
+    os.environ["SUPABASE_SECRET_KEY"],
 )
 claude = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
  
@@ -110,9 +114,7 @@ def score_steps(steps: int) -> float:
     Returns:
         float: steps score
     """
-    if steps >= STEPS_IDEAL:
-        return 1.0
-    return steps / STEPS_IDEAL
+    return min(1.0, steps / STEPS_IDEAL)
  
  
 def score_mood(mood: int) -> float:
@@ -212,11 +214,11 @@ def compute_streak(user_id: str) -> int:
 # --- AI message ---
  
 PET_PERSONALITY = """
-You are a small, expressive virtual pet. You speak in first person, 
-in a warm and playful tone — like a Tamagotchi that has feelings.
-Keep your message to 1-2 sentences. React to how the user is doing today.
-Never mention numbers or metrics directly. Just express how you feel based on their state.
-"""
+                You are a small, expressive virtual pet. You speak in first person, 
+                in a warm and playful tone — like a Tamagotchi that has feelings.
+                Keep your message to 1-2 sentences. React to how the user is doing today.
+                Never mention numbers or metrics directly. Just express how you feel based on their state.
+                """
  
 STATE_PROMPTS = {
     "thriving": "Your owner had a fantastic day — great sleep, nutrition, activity, and mood. You feel absolutely amazing.",
@@ -336,7 +338,30 @@ def get_pet_state(user_id: str):
         "streak_milestone": row["streak"] in STREAK_MILESTONES,
         "checked_in_today": checked_in_today,
     }
+
+ALLOWED_MEDIA_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"}
  
+@app.post("/analyze-food", response_model=FoodAnalysis)
+async def analyze_food(file: UploadFile = File(...)):
+    """
+    Upload a food photo -> Claude Vision estimates calories + macros.
+    Frontend uses the returned `calories` value to pre-fill the check-in form.
+    """
+    if file.content_type not in ALLOWED_MEDIA_TYPES:
+        raise HTTPException(
+            status_code=415,
+            detail=f"Unsupported file type '{file.content_type}'. Send JPEG, PNG, WebP, or GIF.",
+        )
+ 
+    image_bytes = await file.read()
+ 
+    if len(image_bytes) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Image too large. Max 10 MB.")
+ 
+    try:
+        return analyze_food_image(image_bytes, file.content_type)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}") 
  
 @app.get("/health")
 def health_check():
