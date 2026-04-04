@@ -97,7 +97,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="dash-screen">
+    <div className={`dash-screen ${tab === "shop" ? "shop-open" : ""}`}>
 
       {/* ── HOME TAB ── */}
       {tab === "home" && (
@@ -280,6 +280,7 @@ export default function Dashboard() {
             ))}
           </div>
           
+
           {/* Inventory bar */}
           <div className="inventory-bar">
             {MOCK.inventory && MOCK.inventory.length > 0 ? (
