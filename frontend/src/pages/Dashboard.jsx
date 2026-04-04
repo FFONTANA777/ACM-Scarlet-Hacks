@@ -347,12 +347,26 @@ export default function Dashboard() {
             {activeStatTab === "calories" && (
               <div className="stat-panel">
                 <div className="stat-panel-title">Calories breakdown</div>
+                <div className="macros-row">
+                  <div className="macro-card">
+                    <div className="macro-val">38g</div>
+                    <div className="macro-label">Protein</div>
+                  </div>
+                  <div className="macro-card">
+                    <div className="macro-val">210g</div>
+                    <div className="macro-label">Carbs</div>
+                  </div>
+                  <div className="macro-card">
+                    <div className="macro-val">52g</div>
+                    <div className="macro-label">Fats</div>
+                  </div>
+                </div>
                 <div className="stat-panel-row"><span>Breakfast</span><span>480 kcal</span></div>
                 <div className="stat-panel-row"><span>Lunch</span><span>720 kcal</span></div>
                 <div className="stat-panel-row"><span>Dinner</span><span>510 kcal</span></div>
                 <div className="stat-panel-row"><span>Snacks</span><span>130 kcal</span></div>
                 <div className="stat-panel-bar">
-                  <div className="stat-panel-bar-label"><span>Goal: 2,000</span><span>{MOCK.calories} / 2,000</span></div>
+                  <div className="stat-panel-bar-label"><span>Goal: 2,000</span><span>{MOCK.calories} / {ACCOUNT_INITIAL.calorieGoal}</span></div>
                   <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "92%" }} /></div>
                 </div>
               </div>
