@@ -4,10 +4,10 @@ import Model from "../components/PetModel.jsx";
 
 const PET_STATES = {
   thriving: { emoji: "🐣", label: "Thriving" },
-  happy:    { emoji: "🐥", label: "Happy"    },
-  neutral:  { emoji: "🐤", label: "Neutral"  },
-  tired:    { emoji: "😴", label: "Tired"    },
-  sad:      { emoji: "🥺", label: "Sad"      },
+  happy: { emoji: "🐥", label: "Happy" },
+  neutral: { emoji: "🐤", label: "Neutral" },
+  tired: { emoji: "😴", label: "Tired" },
+  sad: { emoji: "🥺", label: "Sad" },
 };
 
 // Placeholder data — replace with real API calls
@@ -26,7 +26,7 @@ const MOCK = {
 
   // Add your owned items right here:
   inventory: [
-    { id: 'Ice', icon: '🧊', amount: 6, price: 50},
+    { id: 'Ice', icon: '🧊', amount: 6, price: 50 },
     { id: 'Boost', icon: '⚡', amount: 7, price: 100 },
   ]
 };
@@ -35,21 +35,21 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   if (!isOpen) return null;
 
   const isBuy = mode === "buy";
-  
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
         <div style={{ fontSize: '40px', marginBottom: '10px' }}>{item?.icon}</div>
         <h3>{isBuy ? `Buy ${item?.id}?` : `Use ${item?.id}?`}</h3>
         <p>
-          {isBuy 
-            ? `Spend 🪙 ${item?.price} to get this item?` 
+          {isBuy
+            ? `Spend 🪙 ${item?.price} to get this item?`
             : `Are you sure you want to use 1 ${item?.id}?`}
         </p>
         <div className="modal-actions">
           <button className="btn-cancel" onClick={onCancel}>Cancel</button>
-          <button 
-            className="btn-confirm" 
+          <button
+            className="btn-confirm"
             style={{ background: isBuy ? '#FFD700' : '#000', color: isBuy ? '#000' : '#fff' }}
             onClick={onConfirm}
           >
@@ -139,94 +139,94 @@ export default function Dashboard() {
             <div className="bubble-text">{MOCK.petMessage}</div>
           </div>
 
-          
-            {/* Today's stats */}
+
+          {/* Today's stats */}
           <div className="stats-container">
             <div className="section-title">Today</div>
-          <div className="stats-row">
-            {[
-              { key: "sleep",    icon: "😴", val: MOCK.sleep,    label: "Sleep" },
-              { key: "steps",    icon: "👟", val: MOCK.steps,    label: "Steps" },
-              { key: "calories", icon: "🍽️", val: MOCK.calories, label: "Cal"   },
-            ].map(({ key, icon, val, label }) => (
-              <div
-                key={key}
-                className={`stat-card ${activeStatTab === key ? "stat-card--active" : ""}`}
-                onClick={() => setActiveStatTab(prev => prev === key ? null : key)}
-              >
-                <div className="stat-icon">{icon}</div>
-                <div className="stat-val">{val}</div>
-                <div className="stat-label">{label}</div>
+            <div className="stats-row">
+              {[
+                { key: "sleep", icon: "😴", val: MOCK.sleep, label: "Sleep" },
+                { key: "steps", icon: "👟", val: MOCK.steps, label: "Steps" },
+                { key: "calories", icon: "🍽️", val: MOCK.calories, label: "Cal" },
+              ].map(({ key, icon, val, label }) => (
+                <div
+                  key={key}
+                  className={`stat-card ${activeStatTab === key ? "stat-card--active" : ""}`}
+                  onClick={() => setActiveStatTab(prev => prev === key ? null : key)}
+                >
+                  <div className="stat-icon">{icon}</div>
+                  <div className="stat-val">{val}</div>
+                  <div className="stat-label">{label}</div>
+                </div>
+              ))}
+            </div>
+            {/* Expanded stat panel */}
+            {activeStatTab === "sleep" && (
+              <div className="stat-panel">
+                <div className="stat-panel-title">Sleep breakdown</div>
+                <div className="stat-panel-row"><span>Bedtime</span><span>11:14 PM</span></div>
+                <div className="stat-panel-row"><span>Wake time</span><span>6:26 AM</span></div>
+                <div className="stat-panel-row"><span>Deep sleep</span><span>1h 48m</span></div>
+                <div className="stat-panel-row"><span>REM</span><span>2h 12m</span></div>
+                <div className="stat-panel-bar">
+                  <div className="stat-panel-bar-label"><span>Goal: 8h</span><span>{MOCK.sleep} / 8h</span></div>
+                  <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "90%" }} /></div>
+                </div>
               </div>
-            ))}
+            )}
+            {activeStatTab === "steps" && (
+              <div className="stat-panel">
+                <div className="stat-panel-title">Steps breakdown</div>
+                <div className="stat-panel-row"><span>Distance</span><span>3.8 mi</span></div>
+                <div className="stat-panel-row"><span>Active minutes</span><span>42 min</span></div>
+                <div className="stat-panel-row"><span>Floors climbed</span><span>9</span></div>
+                <div className="stat-panel-row"><span>Calories burned</span><span>312 kcal</span></div>
+                <div className="stat-panel-bar">
+                  <div className="stat-panel-bar-label"><span>Goal: 10,000</span><span>{MOCK.steps} / 10,000</span></div>
+                  <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "82%" }} /></div>
+                </div>
+              </div>
+            )}
+            {activeStatTab === "calories" && (
+              <div className="stat-panel">
+                <div className="stat-panel-title">Calories breakdown</div>
+                <div className="stat-panel-row"><span>Breakfast</span><span>480 kcal</span></div>
+                <div className="stat-panel-row"><span>Lunch</span><span>720 kcal</span></div>
+                <div className="stat-panel-row"><span>Dinner</span><span>510 kcal</span></div>
+                <div className="stat-panel-row"><span>Snacks</span><span>130 kcal</span></div>
+                <div className="stat-panel-bar">
+                  <div className="stat-panel-bar-label"><span>Goal: 2,000</span><span>{MOCK.calories} / 2,000</span></div>
+                  <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "92%" }} /></div>
+                </div>
+              </div>
+            )}
           </div>
-           {/* Expanded stat panel */}
-          {activeStatTab === "sleep" && (
-            <div className="stat-panel">
-              <div className="stat-panel-title">Sleep breakdown</div>
-              <div className="stat-panel-row"><span>Bedtime</span><span>11:14 PM</span></div>
-              <div className="stat-panel-row"><span>Wake time</span><span>6:26 AM</span></div>
-              <div className="stat-panel-row"><span>Deep sleep</span><span>1h 48m</span></div>
-              <div className="stat-panel-row"><span>REM</span><span>2h 12m</span></div>
-              <div className="stat-panel-bar">
-                <div className="stat-panel-bar-label"><span>Goal: 8h</span><span>{MOCK.sleep} / 8h</span></div>
-                <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "90%" }} /></div>
-              </div>
-            </div>
-          )}
-          {activeStatTab === "steps" && (
-            <div className="stat-panel">
-              <div className="stat-panel-title">Steps breakdown</div>
-              <div className="stat-panel-row"><span>Distance</span><span>3.8 mi</span></div>
-              <div className="stat-panel-row"><span>Active minutes</span><span>42 min</span></div>
-              <div className="stat-panel-row"><span>Floors climbed</span><span>9</span></div>
-              <div className="stat-panel-row"><span>Calories burned</span><span>312 kcal</span></div>
-              <div className="stat-panel-bar">
-                <div className="stat-panel-bar-label"><span>Goal: 10,000</span><span>{MOCK.steps} / 10,000</span></div>
-                <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "82%" }} /></div>
-              </div>
-            </div>
-          )}
-          {activeStatTab === "calories" && (
-            <div className="stat-panel">
-              <div className="stat-panel-title">Calories breakdown</div>
-              <div className="stat-panel-row"><span>Breakfast</span><span>480 kcal</span></div>
-              <div className="stat-panel-row"><span>Lunch</span><span>720 kcal</span></div>
-              <div className="stat-panel-row"><span>Dinner</span><span>510 kcal</span></div>
-              <div className="stat-panel-row"><span>Snacks</span><span>130 kcal</span></div>
-              <div className="stat-panel-bar">
-                <div className="stat-panel-bar-label"><span>Goal: 2,000</span><span>{MOCK.calories} / 2,000</span></div>
-                <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "92%" }} /></div>
-              </div>
-            </div>
-          )}
-            </div>
-            {/* Connect devices */}
-            <div className="devices-container">
-              <div className="section-title">Connect devices</div>
-              <div className="settings-card">
-                <div className="settings-row">
-                  <div className="settings-left">
-                    <div className="settings-icon-wrap">🏃</div>
-                    <div>
-                      <div className="settings-row-label">Google Fit</div>
-                      <div className="settings-row-sub">Steps & exercise</div>
-                    </div>
+          {/* Connect devices */}
+          <div className="devices-container">
+            <div className="section-title">Connect devices</div>
+            <div className="settings-card">
+              <div className="settings-row">
+                <div className="settings-left">
+                  <div className="settings-icon-wrap">🏃</div>
+                  <div>
+                    <div className="settings-row-label">Google Fit</div>
+                    <div className="settings-row-sub">Steps & exercise</div>
                   </div>
-                  <button className="connect-btn">Connect</button>
                 </div>
-                <div className="settings-row">
-                  <div className="settings-left">
-                    <div className="settings-icon-wrap">😴</div>
-                    <div>
-                      <div className="settings-row-label">Sleep tracker</div>
-                      <div className="settings-row-sub">Sleep duration & quality</div>
-                    </div>
+                <button className="connect-btn">Connect</button>
+              </div>
+              <div className="settings-row">
+                <div className="settings-left">
+                  <div className="settings-icon-wrap">😴</div>
+                  <div>
+                    <div className="settings-row-label">Sleep tracker</div>
+                    <div className="settings-row-sub">Sleep duration & quality</div>
                   </div>
-                  <button className="connect-btn">Connect</button>
                 </div>
+                <button className="connect-btn">Connect</button>
+              </div>
             </div>
-            </div>
+          </div>
         </>
       )}
 
@@ -309,9 +309,9 @@ export default function Dashboard() {
                 <div className="shop-sub">
                   {item.id === 'Ice' ? "Freeze Eggy to skip a day." : "Double XP for 24 hours."}
                 </div>
-                
+
                 {/* The Purchase Button */}
-                <button 
+                <button
                   className="buy-btn"
                   onClick={() => {
                     setSelectedItem(item);
@@ -324,13 +324,13 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
-          
+
 
           {/* Inventory bar */}
           <div className="inventory-bar">
             {MOCK.inventory && MOCK.inventory.length > 0 ? (
               MOCK.inventory.map((item) => (
-                <button 
+                <button
                   className={`inventory-slot ${item.amount === 0 ? 'empty' : ''}`}
                   onClick={() => {
                     setSelectedItem(item);
@@ -404,9 +404,9 @@ export default function Dashboard() {
       {/* ── BOTTOM NAV ── */}
       <nav className="navbar">
         {[
-          { id: "home",     icon: "🏠", label: "Home"     },
-          { id: "scan",     icon: "📷", label: "Scan"     },
-          { id: "shop",     icon: "🛍️", label: "Shop"     },
+          { id: "home", icon: "🏠", label: "Home" },
+          { id: "scan", icon: "📷", label: "Scan" },
+          { id: "shop", icon: "🛍️", label: "Shop" },
           { id: "settings", icon: "⚙️", label: "Settings" },
         ].map(({ id, icon, label }) => (
           <button
@@ -420,12 +420,12 @@ export default function Dashboard() {
         ))}
       </nav>
 
-      <Confirm 
-        isOpen={isConfirmOpen} 
+      <Confirm
+        isOpen={isConfirmOpen}
         item={selectedItem}
         mode={confirmMode}
-        onCancel={() => setIsConfirmOpen(false)} 
-        onConfirm={handleUseItem} 
+        onCancel={() => setIsConfirmOpen(false)}
+        onConfirm={handleUseItem}
       />
     </div>
   );
