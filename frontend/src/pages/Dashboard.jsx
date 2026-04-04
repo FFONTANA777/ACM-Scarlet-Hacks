@@ -44,7 +44,7 @@ const ACTIVITY_LEVELS = [
 const ACCOUNT_INITIAL = {
   nickname: "Ratana", gender: "Male", email: "hack@example.com",
   birthYear: "2001", height: "175", weight: "70",
-  goal: "Maintain", activity: "moderate", calorieGoal: "2200", stepsGoal: "8000",
+  goal: "Maintain", activity: "moderate", calorieGoal: "2200", stepsGoal: "8000", sleepGoal: "8"
 };
 
 function AccountScreen({ onBack }) {
@@ -157,13 +157,19 @@ function AccountScreen({ onBack }) {
         <div className="account-row">
           <div className="account-row-label">Calorie goal <span style={{ textTransform: "none", fontSize: 10, color: "var(--text-muted)" }}>(override)</span></div>
           <input className="account-row-input" value={form.calorieGoal} type="number"
-            onChange={e => set("calorieGoal", e.target.value)} placeholder="e.g. 2200" />
+            onChange={e => set("calorieGoal", e.target.value)} placeholder="e.g. 2000" />
         </div>
 
         <div className="account-row">
           <div className="account-row-label">Daily steps goal</div>
           <input className="account-row-input" value={form.stepsGoal} type="number"
-            onChange={e => set("stepsGoal", e.target.value)} placeholder="e.g. 8000" />
+            onChange={e => set("stepsGoal", e.target.value)} placeholder="e.g. 10000" />
+        </div>
+
+        <div className="account-row">
+          <div className="account-row-label">Daily sleep goal</div>
+          <input className="account-row-input" value={form.sleepGoal} type="number"
+            onChange={e => set("sleepGoal", e.target.value)} placeholder="e.g. 8" />
         </div>
       </div>
 
