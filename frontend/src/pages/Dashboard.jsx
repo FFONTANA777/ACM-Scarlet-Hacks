@@ -25,9 +25,26 @@ const MOCK = {
 
   // Add your owned items right here:
   inventory: [
-    { id: 'ice', icon: '🧊', amount: 6 },
-    { id: 'boost', icon: '⚡', amount: 7 },
+    { id: 'Ice', icon: '🧊', amount: 6 },
+    { id: 'Boost', icon: '⚡', amount: 7 },
   ]
+};
+
+const Confirm = ({ isOpen, item, onCancel, onConfirm }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div style={{ fontSize: '40px', marginBottom: '10px' }}>{item?.icon}</div>
+        <h3>Use {item?.id}?</h3>
+        <p>Are you sure you want to use this item for {MOCK.petName}?</p>
+        <div className="modal-actions">
+          <button className="btn-cancel" onClick={onCancel}>Cancel</button>
+          <button className="btn-confirm" onClick={onConfirm}>Confirm</button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default function Dashboard() {
@@ -36,6 +53,9 @@ export default function Dashboard() {
   const [analyzing, setAnalyzing] = useState(false);
   const [calorieResult, setCalorieResult] = useState(null);
   const fileRef = useRef();
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const pet = PET_STATES[MOCK.petState];
 
@@ -53,6 +73,12 @@ export default function Dashboard() {
     await new Promise((r) => setTimeout(r, 1500)); // mock delay
     setCalorieResult({ meal: "Grilled chicken & rice", calories: 540, protein: "38g" });
     setAnalyzing(false);
+  };
+
+  const handleUseItem = () => {
+    console.log(`Used ${selectedItem.id}!`);
+    // Here you would eventually update the item count
+    setIsConfirmOpen(false);
   };
 
   return (
@@ -238,14 +264,15 @@ export default function Dashboard() {
                 <button 
                   key={item.id} 
                   className={`inventory-slot ${item.amount === 0 ? 'empty' : ''}`}
-                  onClick={() => console.log(`You clicked on ${item.id}!`)}
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setIsConfirmOpen(true);
+                  }}
                   disabled={item.amount === 0}
                   type="button"
                 >
                   <span>{item.icon}</span>
-                  {item.amount > 0 && (
-                    <div className="inventory-badge">{item.amount}</div>
-                  )}
+                  {item.amount > 0 && <div className="inventory-badge">{item.amount}</div>}
                 </button>
               ))
             ) : (
@@ -326,6 +353,12 @@ export default function Dashboard() {
         ))}
       </nav>
 
+      <Confirm 
+      isOpen={isConfirmOpen} 
+      item={selectedItem} 
+      onCancel={() => setIsConfirmOpen(false)} 
+      onConfirm={handleUseItem} 
+      />
     </div>
   );
 }
