@@ -3,6 +3,7 @@
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
+  background-image: url("./images/bg-image.png");
   font-family: 'OCR A Std', 'Share Tech Mono', monospace;
   padding-bottom: 100px;
 }
@@ -60,7 +61,7 @@ button, input, select, textarea {
   padding: 20px 20px 0;
 }
 
-.greeting { font-size: 13px; color: var(--text-muted); }
+.greeting { font-size: 13px; color: var(--text); }
 .username { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
 
 .streak-pill {
@@ -91,19 +92,31 @@ button, input, select, textarea {
   background-repeat: no-repeat;
   background-position: center;
   border-radius: 24px;
-  border: 1px solid #2D5C3A;
+  /* border: 1px solid #2D5C3A; */
   padding: 28px 20px 24px;
   text-align: center;
 }
 
 .pet-info-container {
-  background-color: #FFFFFF;
-  border-radius: 30px;
-  border: 1px solid #2D5C3A;
+  background-color: #f5f0e8;
+  border-radius: 0;
   padding: 25px;
   width: auto;
-  height: 55px;
-  margin: 20px 0 0;
+  height: 50px;
+  margin: 25px 0 0;
+
+  box-shadow:
+    /* Outer corners clipped */
+    -2px 0 0 0 #2D5C3A,
+     2px 0 0 0 #2D5C3A,
+     0 -2px 0 0 #2D5C3A,
+     0  2px 0 0 #2D5C3A,
+    /* Inner pixel corners */
+    -4px 0 0 0 #2D5C3A,
+     4px 0 0 0 #2D5C3A,
+     0 -4px 0 0 #2D5C3A,
+     0  4px 0 0 #2D5C3A;
+  image-rendering: pixelated;
 }
 
 .pet-emoji {
@@ -114,7 +127,7 @@ button, input, select, textarea {
 }
 
 .pet-name {
-  margin: -10px 0 0;
+  margin: -15px 0 0;
   font-size: 18px;
   font-weight: 600;
   color: var(--text);
@@ -122,10 +135,11 @@ button, input, select, textarea {
 }
 
 .pet-state {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--primary);
-  font-weight: 500;
+  font-weight: 700;
   margin-top: 3px;
+  text-shadow: 0.5px 0.5px 0 rgba(255, 255, 255, 0.5);
 }
 
 .pet-model-wrap {
@@ -135,41 +149,56 @@ button, input, select, textarea {
   overflow: hidden;
 }
 
-.exp-bar-wrap { margin: 14px auto 0; max-width: 180px; }
+
+.exp-bar-wrap { margin: 5px 20px 0; }
 
 .exp-bar-label {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 3px;
+  font-size: 10px;
+  color: #6b5a3a;
+  letter-spacing: 0.06em;
   margin-bottom: 5px;
 }
 
 .exp-bar-bg {
-  height: 6px;
-  background: var(--border);
-  border-radius: 99px;
+  height: 10px;
+  background: #3a2a1a;
+  border-radius: 2px;
+  border: 1px solid #5a4a32;
+  padding: 1px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 2px 2px 0 #5a4a32;
 }
 
 .exp-bar-fill {
-  height: 6px;
-  background: var(--primary);
-  border-radius: 99px;
+  height: 100%;
+  background: #07800d;
+  border-radius: 1px;
   transition: width 0.6s ease;
 }
 
 /* ── Pet message bubble ── */
 .message-bubble {
-  margin: 10px 20px 0;
-  background: var(--surface);
+  margin: -10px 12px;
+  background: #f5f0e8;
   border: 0.5px solid #E2DDD5;
-  border-radius: 18px 18px 18px 0px;
   padding: 14px 16px;
   display: flex;
   align-items: flex-start;
   gap: 10px;
   animation: rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  box-shadow:
+    /* Outer corners clipped */
+    -2px 0 0 0 #2D5C3A,
+     2px 0 0 0 #2D5C3A,
+     0 -2px 0 0 #2D5C3A,
+     0  2px 0 0 #2D5C3A,
+    /* Inner pixel corners */
+    -4px 0 0 0 #2D5C3A,
+     4px 0 0 0 #2D5C3A,
+     0 -4px 0 0 #2D5C3A,
+     0  4px 0 0 #2D5C3A;
 }
 
 .bubble-pet { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
@@ -184,13 +213,32 @@ button, input, select, textarea {
 .section-title {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   padding: 20px 20px 10px;
 }
 
 /* ── Stats ── */
+.stats-container {
+  background-color: #C8DFC9;
+  padding-bottom: 20px;
+  margin: 30px 12px 0;
+
+  box-shadow:
+    /* Outer corners clipped */
+    -2px 0 0 0 #2D5C3A,
+     2px 0 0 0 #2D5C3A,
+     0 -2px 0 0 #2D5C3A,
+     0  2px 0 0 #2D5C3A,
+    /* Inner pixel corners */
+    -4px 0 0 0 #2D5C3A,
+     4px 0 0 0 #2D5C3A,
+     0 -4px 0 0 #2D5C3A,
+     0  4px 0 0 #2D5C3A;
+  image-rendering: pixelated;
+}
+
 .stats-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -199,20 +247,90 @@ button, input, select, textarea {
 }
 
 .stat-card {
-  background: var(--surface);
+  background: #f5f0e8;
   border-radius: 16px;
-  border: 0.5px solid #E2DDD5;
+  border: 0.5px solid #90a896;
   padding: 14px 12px;
 }
 
 .stat-icon { font-size: 18px; margin-bottom: 6px; }
 .stat-val { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
-.stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.stat-label { font-size: 11px; color: var(--text); margin-top: 2px; }
+
+/* ── Expanded stat panel ── */
+.stat-panel {
+  margin: 8px 20px 0;
+  background: #f5f0e8;
+  border: 0.5px solid #90a896;
+  border-radius: 16px;
+  padding: 16px;
+  animation: rise 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+ 
+.stat-panel-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+ 
+.stat-panel-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 0.5px solid #aeccb8;
+  font-size: 13px;
+}
+.stat-panel-row:last-of-type { border-bottom: none; }
+.stat-panel-row span:first-child { color: var(--text); }
+.stat-panel-row span:last-child  { font-weight: 500; color: #2D5C3A; }
+ 
+.stat-panel-bar { margin-top: 12px; }
+.stat-panel-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #2D5C3A;
+  margin-bottom: 6px;
+}
+.stat-panel-bar-bg {
+  height: 6px;
+  background: #82aa8d;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.stat-panel-bar-fill {
+  height: 100%;
+  background: #2D5C3A;
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
 
 /* ── Settings / devices card ── */
+.devices-container {
+  background-color: #C8DFC9;
+  padding-bottom: 20px;
+  margin: 30px 12px 0;
+
+  box-shadow:
+    /* Outer corners clipped */
+    -2px 0 0 0 #2D5C3A,
+     2px 0 0 0 #2D5C3A,
+     0 -2px 0 0 #2D5C3A,
+     0  2px 0 0 #2D5C3A,
+    /* Inner pixel corners */
+    -4px 0 0 0 #2D5C3A,
+     4px 0 0 0 #2D5C3A,
+     0 -4px 0 0 #2D5C3A,
+     0  4px 0 0 #2D5C3A;
+  image-rendering: pixelated;
+}
+
 .settings-card {
   margin: 0 20px;
-  background: var(--surface);
+  background: #f5f0e8;
   border-radius: 20px;
   border: 0.5px solid #E2DDD5;
   overflow: hidden;
@@ -223,7 +341,7 @@ button, input, select, textarea {
   align-items: center;
   justify-content: space-between;
   padding: 15px 16px;
-  border-bottom: 0.5px solid #F0EDE8;
+  border-bottom: 0.5px solid #cec9c2;
 }
 
 .settings-row:last-child { border-bottom: none; }
@@ -347,7 +465,7 @@ button, input, select, textarea {
 
 /* ── Shop tab ── */
 .shop-featured {
-  margin: 40px 10x 0;
+  margin: 0 20px;
   text-align: center;
   padding: 48px 24px;
   background: var(--surface);
@@ -362,24 +480,31 @@ button, input, select, textarea {
 }
 .shop-items {
   text-align: center;
-  padding: 16px 12px;
+  padding: 10px 8px;
   background: var(--surface);
   border-radius: 16px;
   border: 0.5px solid #E2DDD5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .buy-btn {
-  margin-top: 12px;
+  margin-top: auto;
   width: 100%;
-  padding: 8px 16px;
+  padding: 6px 10px;
   background: #1a1a1a;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
   transition: transform 0.1s ease;
+}
+
+.dash-screen.shop-open {
+  padding-bottom: 220px;
 }
 
 .buy-btn:active {
@@ -393,14 +518,14 @@ button, input, select, textarea {
 
 .shop-title {text-align: center; font-size: 24px; font-weight: 600; color: var(--text); margin-bottom: 20px; margin-top: 40px;}
 
-.shop-icon { font-size: 56px; margin-bottom: 16px; }
-.shop-name { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-.shop-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.shop-icon { font-size: 32px; margin-bottom: 16px; }
+.shop-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.shop-sub { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
 
 /* ── Inventory ── */
 .inventory-bar {
   position: fixed;
-  bottom: 70px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -409,7 +534,7 @@ button, input, select, textarea {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 0.5px solid #E2DDD5;
-  padding: 10px 0 24px;
+  padding: 10px 0 16px;
   display: flex;
   gap: 8px;
   overflow-x: auto;
