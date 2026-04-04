@@ -162,10 +162,10 @@ def compute_consistency_bonus(today: dict, history: list[dict], baselines: np.nd
 
 # --- Public entry point ---
  
-def get_personal_baselines(user_id: str, today_metrics: dict, history: list[dict]) -> PersonalBaselines:
+def get_personal_baselines(user_id: str, today_metrics: dict, history: list[dict]) -> PersonalBaselines: # user_id as arg for future use?
     """
     Summary:
-    Full pipeline: history -> trained model -> blended baselines + consistency bonus.
+        Full pipeline: history -> trained model -> blended baselines + consistency bonus.
  
     Args:
         user_id (str):       for logging/future model persistence
