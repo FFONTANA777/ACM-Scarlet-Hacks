@@ -134,50 +134,54 @@ export default function Dashboard() {
             <div className="bubble-text">{MOCK.petMessage}</div>
           </div>
 
-          {/* Today's stats */}
-          <div className="section-title">Today</div>
-          <div className="stats-row">
-            <div className="stat-card">
-              <div className="stat-icon">😴</div>
-              <div className="stat-val">{MOCK.sleep}</div>
-              <div className="stat-label">Sleep</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">👟</div>
-              <div className="stat-val">{MOCK.steps}</div>
-              <div className="stat-label">Steps</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">🍽️</div>
-              <div className="stat-val">{MOCK.calories}</div>
-              <div className="stat-label">Cal</div>
-            </div>
-          </div>
-
-          {/* Connect devices */}
-          <div className="section-title">Connect devices</div>
-          <div className="settings-card">
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">🏃</div>
-                <div>
-                  <div className="settings-row-label">Google Fit</div>
-                  <div className="settings-row-sub">Steps & exercise</div>
-                </div>
+          
+            {/* Today's stats */}
+          <div className="stats-container">
+            <div className="section-title">Today</div>
+            <div className="stats-row">
+              <div className="stat-card">
+                <div className="stat-icon">😴</div>
+                <div className="stat-val">{MOCK.sleep}</div>
+                <div className="stat-label">Sleep</div>
               </div>
-              <button className="connect-btn">Connect</button>
-            </div>
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">😴</div>
-                <div>
-                  <div className="settings-row-label">Sleep tracker</div>
-                  <div className="settings-row-sub">Sleep duration & quality</div>
-                </div>
+              <div className="stat-card">
+                <div className="stat-icon">👟</div>
+                <div className="stat-val">{MOCK.steps}</div>
+                <div className="stat-label">Steps</div>
               </div>
-              <button className="connect-btn">Connect</button>
+              <div className="stat-card">
+                <div className="stat-icon">🍽️</div>
+                <div className="stat-val">{MOCK.calories}</div>
+                <div className="stat-label">Cal</div>
+              </div>
             </div>
-          </div>
+            </div>
+            {/* Connect devices */}
+            <div className="devices-container">
+              <div className="section-title">Connect devices</div>
+              <div className="settings-card">
+                <div className="settings-row">
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">🏃</div>
+                    <div>
+                      <div className="settings-row-label">Google Fit</div>
+                      <div className="settings-row-sub">Steps & exercise</div>
+                    </div>
+                  </div>
+                  <button className="connect-btn">Connect</button>
+                </div>
+                <div className="settings-row">
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">😴</div>
+                    <div>
+                      <div className="settings-row-label">Sleep tracker</div>
+                      <div className="settings-row-sub">Sleep duration & quality</div>
+                    </div>
+                  </div>
+                  <button className="connect-btn">Connect</button>
+                </div>
+            </div>
+            </div>
         </>
       )}
 

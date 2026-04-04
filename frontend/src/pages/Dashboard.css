@@ -3,6 +3,7 @@
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
+  background-image: url("./images/bg-image.png");
   font-family: 'OCR A Std', 'Share Tech Mono', monospace;
   padding-bottom: 100px;
 }
@@ -60,7 +61,7 @@ button, input, select, textarea {
   padding: 20px 20px 0;
 }
 
-.greeting { font-size: 13px; color: var(--text-muted); }
+.greeting { font-size: 13px; color: var(--text); }
 .username { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
 
 .streak-pill {
@@ -86,24 +87,36 @@ button, input, select, textarea {
 /* ── Pet card ── */
 .pet-card {
   margin: 16px 20px 0;
-  background-image: url("../../public/images/pet-bg.jpg");
+  /* background-image: url("../../public/images/pet-bg.jpg"); */
   background-size: 490px;
   background-repeat: no-repeat;
   background-position: center;
   border-radius: 24px;
-  border: 1px solid #2D5C3A;
+  /* border: 1px solid #2D5C3A; */
   padding: 28px 20px 24px;
   text-align: center;
 }
 
 .pet-info-container {
-  background-color: #FFFFFF;
-  border-radius: 30px;
-  border: 1px solid #2D5C3A;
+  background-color: #f5f0e8;
+  border-radius: 0;
   padding: 25px;
   width: auto;
-  height: 55px;
-  margin: 20px 0 0;
+  height: 50px;
+  margin: 25px 0 0;
+
+  box-shadow:
+    /* Outer corners clipped */
+    -2px 0 0 0 #2D5C3A,
+     2px 0 0 0 #2D5C3A,
+     0 -2px 0 0 #2D5C3A,
+     0  2px 0 0 #2D5C3A,
+    /* Inner pixel corners */
+    -4px 0 0 0 #2D5C3A,
+     4px 0 0 0 #2D5C3A,
+     0 -4px 0 0 #2D5C3A,
+     0  4px 0 0 #2D5C3A;
+  image-rendering: pixelated;
 }
 
 .pet-emoji {
@@ -114,7 +127,7 @@ button, input, select, textarea {
 }
 
 .pet-name {
-  margin: -10px 0 0;
+  margin: -15px 0 0;
   font-size: 18px;
   font-weight: 600;
   color: var(--text);
@@ -154,15 +167,26 @@ button, input, select, textarea {
 
 /* ── Pet message bubble ── */
 .message-bubble {
-  margin: 10px 20px 0;
-  background: var(--surface);
+  margin: -10px 12px;
+  background: #f5f0e8;
   border: 0.5px solid #E2DDD5;
-  border-radius: 18px 18px 18px 0px;
   padding: 14px 16px;
   display: flex;
   align-items: flex-start;
   gap: 10px;
   animation: rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  box-shadow:
+    /* Outer corners clipped */
+    -2px 0 0 0 #2D5C3A,
+     2px 0 0 0 #2D5C3A,
+     0 -2px 0 0 #2D5C3A,
+     0  2px 0 0 #2D5C3A,
+    /* Inner pixel corners */
+    -4px 0 0 0 #2D5C3A,
+     4px 0 0 0 #2D5C3A,
+     0 -4px 0 0 #2D5C3A,
+     0  4px 0 0 #2D5C3A;
 }
 
 .bubble-pet { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
@@ -177,13 +201,32 @@ button, input, select, textarea {
 .section-title {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   padding: 20px 20px 10px;
 }
 
 /* ── Stats ── */
+.stats-container {
+  background-color: #C8DFC9;
+  padding-bottom: 20px;
+  margin: 30px 12px 0;
+
+  box-shadow:
+    /* Outer corners clipped */
+    -2px 0 0 0 #2D5C3A,
+     2px 0 0 0 #2D5C3A,
+     0 -2px 0 0 #2D5C3A,
+     0  2px 0 0 #2D5C3A,
+    /* Inner pixel corners */
+    -4px 0 0 0 #2D5C3A,
+     4px 0 0 0 #2D5C3A,
+     0 -4px 0 0 #2D5C3A,
+     0  4px 0 0 #2D5C3A;
+  image-rendering: pixelated;
+}
+
 .stats-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -192,20 +235,39 @@ button, input, select, textarea {
 }
 
 .stat-card {
-  background: var(--surface);
+  background: #f5f0e8;
   border-radius: 16px;
-  border: 0.5px solid #E2DDD5;
+  border: 0.5px solid #cec9c2;
   padding: 14px 12px;
 }
 
 .stat-icon { font-size: 18px; margin-bottom: 6px; }
 .stat-val { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
-.stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.stat-label { font-size: 11px; color: var(--text); margin-top: 2px; }
 
 /* ── Settings / devices card ── */
+.devices-container {
+  background-color: #C8DFC9;
+  padding-bottom: 20px;
+  margin: 30px 12px 0;
+
+  box-shadow:
+    /* Outer corners clipped */
+    -2px 0 0 0 #2D5C3A,
+     2px 0 0 0 #2D5C3A,
+     0 -2px 0 0 #2D5C3A,
+     0  2px 0 0 #2D5C3A,
+    /* Inner pixel corners */
+    -4px 0 0 0 #2D5C3A,
+     4px 0 0 0 #2D5C3A,
+     0 -4px 0 0 #2D5C3A,
+     0  4px 0 0 #2D5C3A;
+  image-rendering: pixelated;
+}
+
 .settings-card {
   margin: 0 20px;
-  background: var(--surface);
+  background: #f5f0e8;
   border-radius: 20px;
   border: 0.5px solid #E2DDD5;
   overflow: hidden;
@@ -216,7 +278,7 @@ button, input, select, textarea {
   align-items: center;
   justify-content: space-between;
   padding: 15px 16px;
-  border-bottom: 0.5px solid #F0EDE8;
+  border-bottom: 0.5px solid #cec9c2;
 }
 
 .settings-row:last-child { border-bottom: none; }
