@@ -46,11 +46,11 @@ button, input, select, textarea {
 .pet-card {
   margin: 16px 20px 0;
   background-image: url("../../public/images/pet-bg.jpg");
-  background-size: 460px;
+  background-size: 490px;
   background-repeat: no-repeat;
   background-position: center;
   border-radius: 24px;
-  border: 0.5px solid var(--border);
+  border: 1px solid #2D5C3A;
   padding: 28px 20px 24px;
   text-align: center;
 }
@@ -59,11 +59,10 @@ button, input, select, textarea {
   background-color: #FFFFFF;
   border-radius: 30px;
   border: 1px solid #2D5C3A;
-  padding: 20px;
+  padding: 25px;
   width: auto;
   height: 55px;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin: 20px 0 0;
 }
 
 .pet-emoji {
@@ -74,6 +73,7 @@ button, input, select, textarea {
 }
 
 .pet-name {
+  margin: -10px 0 0;
   font-size: 18px;
   font-weight: 600;
   color: var(--text);
@@ -112,11 +112,21 @@ button, input, select, textarea {
 }
 
 /* ── Pet message bubble ── */
-.message-bubble {
+.pet-message {
   margin: 12px 20px 0;
+  border-radius: 18px 18px 18px 0px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.message-bubble {
+  margin: -80px -2px 0;
   background: var(--surface);
   border: 0.5px solid #E2DDD5;
-  border-radius: 18px;
+  border-radius: 18px 18px 18px 0px;
   padding: 14px 16px;
   display: flex;
   align-items: flex-start;
@@ -127,7 +137,7 @@ button, input, select, textarea {
 .bubble-pet { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
 
 .bubble-text {
-  font-size: 14px;
+  font-size: 10px;
   color: var(--text);
   line-height: 1.5;
 }
