@@ -22,6 +22,12 @@ const MOCK = {
   steps: "8,204",
   calories: "1,840",
   petMessage: "You slept great! Let's get some steps in today 🌿",
+
+  // Add your owned items right here:
+  inventory: [
+    { id: 'ice', icon: '🧊', amount: 6 },
+    { id: 'boost', icon: '⚡', amount: 7 },
+  ]
 };
 
 export default function Dashboard() {
@@ -224,6 +230,29 @@ export default function Dashboard() {
               <div className="shop-name">Boost</div>
               <div className="shop-sub">Double XP for 24 hours.</div>
             </div>
+          </div>
+          {/* Inventory bar */}
+          <div className="inventory-bar">
+            {MOCK.inventory && MOCK.inventory.length > 0 ? (
+              MOCK.inventory.map((item) => (
+                <button 
+                  key={item.id} 
+                  className={`inventory-slot ${item.amount === 0 ? 'empty' : ''}`}
+                  onClick={() => console.log(`You clicked on ${item.id}!`)}
+                  disabled={item.amount === 0}
+                  type="button"
+                >
+                  <span>{item.icon}</span>
+                  {item.amount > 0 && (
+                    <div className="inventory-badge">{item.amount}</div>
+                  )}
+                </button>
+              ))
+            ) : (
+              /* Fallback if inventory is missing or empty */
+              <p style={{ fontSize: '10px', color: '#999' }}>No items found</p>
+            )}
+
           </div>
         </>
       )}
