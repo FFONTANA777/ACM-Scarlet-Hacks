@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import "./Dashboard.css";
+import Model from "../components/PetModel.jsx";
 
 const PET_STATES = {
   thriving: { emoji: "🐣", label: "Thriving" },
@@ -96,7 +97,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="dash-screen">
+    <div className={`dash-screen ${tab === "shop" ? "shop-open" : ""}`}>
 
       {/* ── HOME TAB ── */}
       {tab === "home" && (
@@ -112,7 +113,10 @@ export default function Dashboard() {
 
           {/* Pet card */}
           <div className="pet-card">
-              <div className="pet-emoji">{pet.emoji}</div>
+            <div className="pet-model-wrap">
+              <Model emotion={MOCK.petState} />
+            </div>
+
             <div className="pet-info-container">
               <div className="pet-name">{MOCK.petName}</div>
               <div className="pet-state">{pet.label}</div>
@@ -280,6 +284,7 @@ export default function Dashboard() {
             ))}
           </div>
           
+
           {/* Inventory bar */}
           <div className="inventory-bar">
             {MOCK.inventory && MOCK.inventory.length > 0 ? (
