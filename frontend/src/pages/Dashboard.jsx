@@ -112,14 +112,7 @@ export default function Dashboard() {
 
           {/* Pet card */}
           <div className="pet-card">
-            <div className="pet-message">
               <div className="pet-emoji">{pet.emoji}</div>
-              {/* Pet message bubble */}
-              <div className="message-bubble">
-                <div className="bubble-text">{MOCK.petMessage}</div>
-              </div>
-            </div>
-
             <div className="pet-info-container">
               <div className="pet-name">{MOCK.petName}</div>
               <div className="pet-state">{pet.label}</div>
@@ -135,12 +128,11 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* 
+          {/* Pet message bubble */}
           <div className="message-bubble">
             <span className="bubble-pet">{pet.emoji}</span>
             <div className="bubble-text">{MOCK.petMessage}</div>
           </div>
-          */}
 
           {/* Today's stats */}
           <div className="section-title">Today</div>
