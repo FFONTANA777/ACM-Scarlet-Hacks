@@ -97,13 +97,17 @@ button, input, select, textarea {
 }
 
 .pet-info-container {
-  background-color: #FFFFFF;
-  border-radius: 30px;
-  border: 1px solid #2D5C3A;
-  padding: 25px;
-  width: auto;
-  height: 55px;
-  margin: 20px 0 0;
+  margin: 0 20px;
+  background: #f5f0e8;
+  border: 2px solid #8B7355;
+  border-radius: 8px;
+  padding: 8px 14px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 2px 2px 0 #5a4a32;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  image-rendering: pixelated;
 }
 
 .pet-emoji {
@@ -114,41 +118,47 @@ button, input, select, textarea {
 }
 
 .pet-name {
-  margin: -10px 0 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: -0.3px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #3a2a1a;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0.5px 0.5px 0 rgba(255,255,255,0.5);
 }
 
 .pet-state {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--primary);
-  font-weight: 500;
+  font-weight: 700;
   margin-top: 3px;
+  text-shadow: 0.5px 0.5px 0 rgba(255, 255, 255, 0.5);
 }
 
-.exp-bar-wrap { margin: 14px auto 0; max-width: 180px; }
+
+.exp-bar-wrap { margin: 14px 20px 0; }
 
 .exp-bar-label {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 3px;
+  font-size: 10px;
+  color: #6b5a3a;
+  letter-spacing: 0.06em;
   margin-bottom: 5px;
 }
 
 .exp-bar-bg {
-  height: 6px;
-  background: var(--border);
-  border-radius: 99px;
+  height: 10px;
+  background: #3a2a1a;
+  border-radius: 2px;
+  border: 1px solid #5a4a32;
+  padding: 1px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 2px 2px 0 #5a4a32;
 }
 
 .exp-bar-fill {
-  height: 6px;
-  background: var(--primary);
-  border-radius: 99px;
+  height: 100%;
+  background: #07800d;
+  border-radius: 1px;
   transition: width 0.6s ease;
 }
 
