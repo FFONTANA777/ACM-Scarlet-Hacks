@@ -3,18 +3,18 @@ import "./Dashboard.css";
 import Model from "../components/PetModel.jsx";
 
 const PET_STATES = {
-  thriving: { emoji: "🐣", label: "Thriving" },
-  happy: { emoji: "🐥", label: "Happy" },
-  neutral: { emoji: "🐤", label: "Neutral" },
-  tired: { emoji: "😴", label: "Tired" },
-  sad: { emoji: "🥺", label: "Sad" },
+  normal: {label: "Neutral"},
+  sad: {label: "Sad"},
+  tired: {label: "Tired"},
+  sleep: {label: "Sleep"},
+  sick: {label: "Neutral"},
 };
 
 // Placeholder data — replace with real API calls
 const MOCK = {
   username: "Ratana",
   petName: "Eggy",
-  petState: "thriving",
+  petState: "sleep",
   level: 1,
   expScore: 72,
   streak: 5,
@@ -258,10 +258,6 @@ export default function Dashboard() {
 
           {/* Pet card */}
           <div className="pet-card">
-            <div className="pet-model-wrap">
-              <Model emotion={MOCK.petState} />
-            </div>
-
             <div className="pet-info-container">
               <div className="pet-name">{MOCK.petName}</div>
               <div className="pet-state">{pet.label}</div>
@@ -275,11 +271,27 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+            <div className="pet-model-wrap">
+              <Model emotion={MOCK.petState} />
+            </div>
+
+            {/* <div className="pet-info-container">
+              <div className="pet-name">{MOCK.petName}</div>
+              <div className="pet-state">{pet.label}</div>
+              <div className="exp-bar-wrap">
+                <div className="exp-bar-label">
+                  <span>Level {MOCK.level}</span>
+                  <span>{MOCK.expScore}/100 XP</span>
+                </div>
+                <div className="exp-bar-bg">
+                  <div className="exp-bar-fill" style={{ width: `${MOCK.expScore}%` }} />
+                </div>
+              </div>
+            </div> */}
           </div>
 
           {/* Pet message bubble */}
           <div className="message-bubble">
-            <span className="bubble-pet">{pet.emoji}</span>
             <div className="bubble-text">{MOCK.petMessage}</div>
           </div>
 
@@ -291,7 +303,7 @@ export default function Dashboard() {
               {[
                 { key: "sleep", icon: "😴", val: MOCK.sleep, label: "Sleep" },
                 { key: "steps", icon: "👟", val: MOCK.steps, label: "Steps" },
-                { key: "calories", icon: "🍽️", val: MOCK.calories, label: "Cal" },
+                { key: "calories", icon: "🍽️", val: MOCK.calories, label: "Calories" },
               ].map(({ key, icon, val, label }) => (
                 <div
                   key={key}
@@ -301,6 +313,7 @@ export default function Dashboard() {
                   <div className="stat-icon">{icon}</div>
                   <div className="stat-val">{val}</div>
                   <div className="stat-label">{label}</div>
+                  <img src="/images/arrow-right.png" alt="arrow" className="stat-more" />
                 </div>
               ))}
             </div>
