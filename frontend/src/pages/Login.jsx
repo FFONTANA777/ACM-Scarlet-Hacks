@@ -1,7 +1,10 @@
 import { useState } from "react";
 import "./Login.css";
+import { useNavigate } from "react-router-dom"
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [tab, setTab] = useState("login");
   const [form, setForm] = useState({ username: "", email: "", password: "" });
 
@@ -104,7 +107,11 @@ export default function Login() {
 
         <div className="divider"><span>or</span></div>
 
-        <button className="guest-btn">Continue as guest</button>
+        <button className="guest-btn"
+          onClick={() => navigate("/dashboard")}
+        >
+          Continue as guest
+        </button>
 
       </div>
     </div>
