@@ -25,22 +25,35 @@ const MOCK = {
 
   // Add your owned items right here:
   inventory: [
-    { id: 'Ice', icon: '🧊', amount: 6 },
-    { id: 'Boost', icon: '⚡', amount: 7 },
+    { id: 'Ice', icon: '🧊', amount: 6, price: 50},
+    { id: 'Boost', icon: '⚡', amount: 7, price: 100 },
   ]
 };
 
-const Confirm = ({ isOpen, item, onCancel, onConfirm }) => {
+const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   if (!isOpen) return null;
+
+  const isBuy = mode === "buy";
+  
   return (
     <div className="modal-overlay">
       <div className="modal-content">
         <div style={{ fontSize: '40px', marginBottom: '10px' }}>{item?.icon}</div>
-        <h3>Use {item?.id}?</h3>
-        <p>Are you sure you want to use this item for {MOCK.petName}?</p>
+        <h3>{isBuy ? `Buy ${item?.id}?` : `Use ${item?.id}?`}</h3>
+        <p>
+          {isBuy 
+            ? `Spend 🪙 ${item?.price} to get this item?` 
+            : `Are you sure you want to use 1 ${item?.id}?`}
+        </p>
         <div className="modal-actions">
           <button className="btn-cancel" onClick={onCancel}>Cancel</button>
-          <button className="btn-confirm" onClick={onConfirm}>Confirm</button>
+          <button 
+            className="btn-confirm" 
+            style={{ background: isBuy ? '#FFD700' : '#000', color: isBuy ? '#000' : '#fff' }}
+            onClick={onConfirm}
+          >
+            {isBuy ? 'Purchase' : 'Confirm'}
+          </button>
         </div>
       </div>
     </div>
@@ -56,6 +69,7 @@ export default function Dashboard() {
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [confirmMode, setConfirmMode] = useState("use");
 
   const pet = PET_STATES[MOCK.petState];
 
@@ -244,32 +258,43 @@ export default function Dashboard() {
             <div className="shop-name">Shop coming soon</div>
             <div className="shop-sub">Spend your coins on cosmetics, boosts, and accessories for {MOCK.petName}.</div>
           </div>
+
           <div className="shop-title">Items</div>
           <div className="shop-grid">
-            <div className="shop-items">
-              <div className="shop-icon">🧊</div>
-              <div className="shop-name">Ice</div>
-              <div className="shop-sub">Freeze your Eggy to skip a day.</div>
-            </div>
-            <div className="shop-items">
-              <div className="shop-icon">⚡</div>
-              <div className="shop-name">Boost</div>
-              <div className="shop-sub">Double XP for 24 hours.</div>
-            </div>
+            {MOCK.inventory.map((item) => (
+              <div key={item.id} className="shop-items">
+                <div className="shop-icon">{item.icon}</div>
+                <div className="shop-name">{item.id.charAt(0).toUpperCase() + item.id.slice(1)}</div>
+                <div className="shop-sub">
+                  {item.id === 'Ice' ? "Freeze Eggy to skip a day." : "Double XP for 24 hours."}
+                </div>
+                
+                {/* The Purchase Button */}
+                <button 
+                  className="buy-btn"
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setConfirmMode("buy"); // Set mode to buy
+                    setIsConfirmOpen(true);
+                  }}
+                >
+                  🪙 {item.price}
+                </button>
+              </div>
+            ))}
           </div>
+          
           {/* Inventory bar */}
           <div className="inventory-bar">
             {MOCK.inventory && MOCK.inventory.length > 0 ? (
               MOCK.inventory.map((item) => (
                 <button 
-                  key={item.id} 
                   className={`inventory-slot ${item.amount === 0 ? 'empty' : ''}`}
                   onClick={() => {
                     setSelectedItem(item);
+                    setConfirmMode("use"); // Set mode to use
                     setIsConfirmOpen(true);
                   }}
-                  disabled={item.amount === 0}
-                  type="button"
                 >
                   <span>{item.icon}</span>
                   {item.amount > 0 && <div className="inventory-badge">{item.amount}</div>}
@@ -354,10 +379,11 @@ export default function Dashboard() {
       </nav>
 
       <Confirm 
-      isOpen={isConfirmOpen} 
-      item={selectedItem} 
-      onCancel={() => setIsConfirmOpen(false)} 
-      onConfirm={handleUseItem} 
+        isOpen={isConfirmOpen} 
+        item={selectedItem}
+        mode={confirmMode}
+        onCancel={() => setIsConfirmOpen(false)} 
+        onConfirm={handleUseItem} 
       />
     </div>
   );
