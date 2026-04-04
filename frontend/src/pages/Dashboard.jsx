@@ -132,12 +132,11 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* 
+          {/* Pet message bubble */}
           <div className="message-bubble">
             <span className="bubble-pet">{pet.emoji}</span>
             <div className="bubble-text">{MOCK.petMessage}</div>
           </div>
-          */}
 
           {/* Today's stats */}
           <div className="section-title">Today</div>
