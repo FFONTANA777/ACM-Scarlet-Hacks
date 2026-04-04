@@ -3,18 +3,18 @@ import "./Dashboard.css";
 import Model from "../components/PetModel.jsx";
 
 const PET_STATES = {
-  thriving: { emoji: "🐣", label: "Thriving" },
-  happy:    { emoji: "🐥", label: "Happy"    },
-  neutral:  { emoji: "🐤", label: "Neutral"  },
-  tired:    { emoji: "😴", label: "Tired"    },
-  sad:      { emoji: "🥺", label: "Sad"      },
+  normal: {label: "Neutral"},
+  sad: {label: "Sad"},
+  tired: {label: "Tired"},
+  sleep: {label: "Sleep"},
+  sick: {label: "Neutral"},
 };
 
 // Placeholder data — replace with real API calls
 const MOCK = {
   username: "Ratana",
   petName: "Eggy",
-  petState: "thriving",
+  petState: "sleep",
   level: 1,
   expScore: 72,
   streak: 5,
@@ -134,7 +134,6 @@ export default function Dashboard() {
 
           {/* Pet message bubble */}
           <div className="message-bubble">
-            <span className="bubble-pet">{pet.emoji}</span>
             <div className="bubble-text">{MOCK.petMessage}</div>
           </div>
 

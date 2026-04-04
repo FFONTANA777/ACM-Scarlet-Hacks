@@ -86,7 +86,7 @@ button, input, select, textarea {
 /* ── Pet card ── */
 .pet-card {
   margin: 16px 20px 0;
-  background-image: url("../../public/images/pet-bg.jpg");
+  background-image: url("/images/pet-bg.jpg");
   background-size: 490px;
   background-repeat: no-repeat;
   background-position: center;
