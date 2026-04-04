@@ -193,12 +193,25 @@ export default function Dashboard() {
         <>
           <div className="topbar">
             <div className="username">Shop</div>
-            <div className="streak-pill">🪙 {MOCK.coins}</div>
+            <div className="coins-pill">🪙 {MOCK.coins}</div>
           </div>
-          <div className="shop-placeholder">
+          <div className="shop-featured">
             <div className="shop-icon">🛍️</div>
-            <div className="shop-title">Shop coming soon</div>
+            <div className="shop-name">Shop coming soon</div>
             <div className="shop-sub">Spend your coins on cosmetics, boosts, and accessories for {MOCK.petName}.</div>
+          </div>
+          <div className="shop-title">Items</div>
+          <div className="shop-grid">
+            <div className="shop-items">
+              <div className="shop-icon">🧊</div>
+              <div className="shop-name">Ice</div>
+              <div className="shop-sub">Freeze your Eggy to skip a day.</div>
+            </div>
+            <div className="shop-items">
+              <div className="shop-icon">⚡</div>
+              <div className="shop-name">Boost</div>
+              <div className="shop-sub">Double XP for 24 hours.</div>
+            </div>
           </div>
         </>
       )}
