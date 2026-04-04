@@ -12,3 +12,17 @@ Make sure its on 3.14.3 before continuing
 Please set up a python venv via `python -m venv venv` so we have the same working environment
 To activate the environment run `.\venv\Scripts\activate` in the backend directory
 Run `pip install -r .\requirements.txt` to install packages
+
+## General Strucuture
+ACM-SCARLET-HACKS/
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   └── vite.config.js
+├── backend/
+│   ├── main.py     # FASTAPI PYTHON
+│   ├── requirements.txt
+│   ├── .gitignore  # PYTHON gitignore
+│   └── .python-version
+├── .gitignore
+└── README.md
