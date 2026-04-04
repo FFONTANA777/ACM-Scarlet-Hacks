@@ -28,6 +28,16 @@
   color: #A0601A;
 }
 
+.gold-pill {
+  background: #FFF4E8;
+  border: 0.5px solid #eee4229f;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ccbb21;
+}
+
 /* ── Pet card ── */
 .pet-card {
   margin: 16px 20px 0;

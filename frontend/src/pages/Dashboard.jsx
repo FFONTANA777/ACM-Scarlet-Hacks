@@ -16,6 +16,7 @@ const MOCK = {
   petState: "thriving",
   expScore: 72,
   streak: 5,
+  coins: 120,
   sleep: "7.5h",
   steps: "8,204",
   calories: "1,840",
@@ -59,6 +60,7 @@ export default function Dashboard() {
               <div className="username">{MOCK.username}</div>
             </div>
             <div className="streak-pill">🔥 {MOCK.streak} day streak</div>
+            <div className="gold-pill">👛 {MOCK.coins}</div>
           </div>
 
           {/* Pet card */}
