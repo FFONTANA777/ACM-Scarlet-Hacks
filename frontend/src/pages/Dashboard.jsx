@@ -61,7 +61,7 @@ export default function Dashboard() {
               <div className="username">{MOCK.username}</div>
             </div>
             <div className="streak-pill">🔥 {MOCK.streak} day streak</div>
-            <div className="gold-pill">👛 {MOCK.coins}</div>
+            <div className="coins-pill">👛 {MOCK.coins}</div>
           </div>
 
           {/* Pet card */}
@@ -204,8 +204,9 @@ export default function Dashboard() {
         <>
           <div className="topbar">
             <div className="username">Shop</div>
-            <div className="coins-pill">🪙 {MOCK.coins}</div>
+            <div className="coins-pill">👛 {MOCK.coins}</div>
           </div>
+          <div className="shop-title">Featured</div>
           <div className="shop-featured">
             <div className="shop-icon">🛍️</div>
             <div className="shop-name">Shop coming soon</div>
