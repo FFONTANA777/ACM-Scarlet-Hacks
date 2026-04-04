@@ -318,3 +318,7 @@ def health_check():
 @app.get("/")
 def root():
     return {"message": "Hello from FastAPI"}
+
+@app.get("/dashboard")
+def dashboard():
+    return {"message": "Hello from FastAPI"}
