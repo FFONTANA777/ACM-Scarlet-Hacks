@@ -14,8 +14,10 @@ const MOCK = {
   username: "Ratana",
   petName: "Eggy",
   petState: "thriving",
-  healthScore: 72,
+  level: 1,
+  expScore: 72,
   streak: 5,
+  coins: 120,
   sleep: "7.5h",
   steps: "8,204",
   calories: "1,840",
@@ -59,29 +61,40 @@ export default function Dashboard() {
               <div className="username">{MOCK.username}</div>
             </div>
             <div className="streak-pill">🔥 {MOCK.streak} day streak</div>
+            <div className="coins-pill">👛 {MOCK.coins}</div>
           </div>
 
           {/* Pet card */}
           <div className="pet-card">
-            <div className="pet-emoji">{pet.emoji}</div>
-            <div className="pet-name">{MOCK.petName}</div>
-            <div className="pet-state">{pet.label}</div>
-            <div className="health-bar-wrap">
-              <div className="health-bar-label">
-                <span>Health</span>
-                <span>{MOCK.healthScore}%</span>
+            <div className="pet-message">
+              <div className="pet-emoji">{pet.emoji}</div>
+              {/* Pet message bubble */}
+              <div className="message-bubble">
+                <div className="bubble-text">{MOCK.petMessage}</div>
               </div>
-              <div className="health-bar-bg">
-                <div className="health-bar-fill" style={{ width: `${MOCK.healthScore}%` }} />
+            </div>
+
+            <div className="pet-info-container">
+              <div className="pet-name">{MOCK.petName}</div>
+              <div className="pet-state">{pet.label}</div>
+              <div className="exp-bar-wrap">
+                <div className="exp-bar-label">
+                  <span>Level {MOCK.level}</span>
+                  <span>{MOCK.expScore}/100 XP</span>
+                </div>
+                <div className="exp-bar-bg">
+                  <div className="exp-bar-fill" style={{ width: `${MOCK.expScore}%` }} />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Pet message bubble */}
+          {/* 
           <div className="message-bubble">
             <span className="bubble-pet">{pet.emoji}</span>
             <div className="bubble-text">{MOCK.petMessage}</div>
           </div>
+          */}
 
           {/* Today's stats */}
           <div className="section-title">Today</div>
@@ -186,16 +199,31 @@ export default function Dashboard() {
         </>
       )}
 
-      {/* ── PLAY TAB ── */}
-      {tab === "play" && (
+      {/* ── SHOP TAB ── */}
+      {tab === "shop" && (
         <>
           <div className="topbar">
-            <div className="username">Play</div>
+            <div className="username">Shop</div>
+            <div className="coins-pill">👛 {MOCK.coins}</div>
           </div>
-          <div className="ar-placeholder">
-            <div className="ar-icon">🌍</div>
-            <div className="ar-title">AR mode coming soon</div>
-            <div className="ar-sub">Take {MOCK.petName} out into the real world — Pokémon Go style. Stay tuned.</div>
+          <div className="shop-title">Featured</div>
+          <div className="shop-featured">
+            <div className="shop-icon">🛍️</div>
+            <div className="shop-name">Shop coming soon</div>
+            <div className="shop-sub">Spend your coins on cosmetics, boosts, and accessories for {MOCK.petName}.</div>
+          </div>
+          <div className="shop-title">Items</div>
+          <div className="shop-grid">
+            <div className="shop-items">
+              <div className="shop-icon">🧊</div>
+              <div className="shop-name">Ice</div>
+              <div className="shop-sub">Freeze your Eggy to skip a day.</div>
+            </div>
+            <div className="shop-items">
+              <div className="shop-icon">⚡</div>
+              <div className="shop-name">Boost</div>
+              <div className="shop-sub">Double XP for 24 hours.</div>
+            </div>
           </div>
         </>
       )}
@@ -255,7 +283,7 @@ export default function Dashboard() {
         {[
           { id: "home",     icon: "🏠", label: "Home"     },
           { id: "scan",     icon: "📷", label: "Scan"     },
-          { id: "play",     icon: "🎮", label: "Play"     },
+          { id: "shop",     icon: "🛍️", label: "Shop"     },
           { id: "settings", icon: "⚙️", label: "Settings" },
         ].map(({ id, icon, label }) => (
           <button

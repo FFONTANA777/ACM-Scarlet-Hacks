@@ -3,8 +3,12 @@
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'OCR A Std', 'Share Tech Mono', monospace;
   padding-bottom: 100px;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
 }
 
 /* ── Top bar ── */
@@ -28,14 +32,38 @@
   color: #A0601A;
 }
 
+.coins-pill {
+  background: #FFF4E8;
+  border: 0.5px solid #eee4229f;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ccbb21;
+}
+
 /* ── Pet card ── */
 .pet-card {
   margin: 16px 20px 0;
-  background: var(--pet-bg);
+  background-image: url("../../public/images/pet-bg.jpg");
+  background-size: 460px;
+  background-repeat: no-repeat;
+  background-position: center;
   border-radius: 24px;
   border: 0.5px solid var(--border);
   padding: 28px 20px 24px;
   text-align: center;
+}
+
+.pet-info-container {
+  background-color: #FFFFFF;
+  border-radius: 30px;
+  border: 1px solid #2D5C3A;
+  padding: 20px;
+  width: auto;
+  height: 55px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .pet-emoji {
@@ -59,23 +87,24 @@
   margin-top: 3px;
 }
 
-.health-bar-wrap { margin: 14px auto 0; max-width: 180px; }
+.exp-bar-wrap { margin: 14px auto 0; max-width: 180px; }
 
-.health-bar-label {
+.exp-bar-label {
   display: flex;
   justify-content: space-between;
   font-size: 11px;
   color: var(--text-muted);
+  margin-top: 3px;
   margin-bottom: 5px;
 }
 
-.health-bar-bg {
+.exp-bar-bg {
   height: 6px;
   background: var(--border);
   border-radius: 99px;
 }
 
-.health-bar-fill {
+.exp-bar-fill {
   height: 6px;
   background: var(--primary);
   border-radius: 99px;
@@ -176,7 +205,6 @@
   border-radius: 8px;
   padding: 6px 12px;
   cursor: pointer;
-  font-family: inherit;
 }
 
 .chevron { font-size: 18px; color: var(--text-muted); }
@@ -225,7 +253,6 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  font-family: inherit;
   transition: background 0.15s;
 }
 
@@ -265,25 +292,38 @@
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  font-family: inherit;
   transition: background 0.15s;
 }
 
 .log-btn:hover { background: var(--primary-dark); }
 
-/* ── Play / AR tab ── */
-.ar-placeholder {
-  margin: 40px 20px 0;
+/* ── Shop tab ── */
+.shop-featured {
+  margin: 40px 10x 0;
   text-align: center;
   padding: 48px 24px;
   background: var(--surface);
   border-radius: 24px;
   border: 0.5px solid #E2DDD5;
 }
+.shop-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 20px;
+}
+.shop-items {
+  text-align: center;
+  padding: 16px 12px;
+  background: var(--surface);
+  border-radius: 16px;
+  border: 0.5px solid #E2DDD5;
+}
+.shop-title {text-align: center; font-size: 24px; font-weight: 600; color: var(--text); margin-bottom: 20px; margin-top: 40px;}
 
-.ar-icon { font-size: 56px; margin-bottom: 16px; }
-.ar-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-.ar-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.shop-icon { font-size: 56px; margin-bottom: 16px; }
+.shop-name { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.shop-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
 /* ── Bottom nav ── */
 .navbar {
