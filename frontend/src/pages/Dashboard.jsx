@@ -3,18 +3,18 @@ import "./Dashboard.css";
 import Model from "../components/PetModel.jsx";
 
 const PET_STATES = {
-  thriving: { emoji: "🐣", label: "Thriving" },
-  happy:    { emoji: "🐥", label: "Happy"    },
-  neutral:  { emoji: "🐤", label: "Neutral"  },
-  tired:    { emoji: "😴", label: "Tired"    },
-  sad:      { emoji: "🥺", label: "Sad"      },
+  normal: {label: "Neutral"},
+  sad: {label: "Sad"},
+  tired: {label: "Tired"},
+  sleep: {label: "Sleep"},
+  sick: {label: "Neutral"},
 };
 
 // Placeholder data — replace with real API calls
 const MOCK = {
   username: "Ratana",
   petName: "Eggy",
-  petState: "thriving",
+  petState: "sleep",
   level: 1,
   expScore: 72,
   streak: 5,
@@ -26,30 +26,173 @@ const MOCK = {
 
   // Add your owned items right here:
   inventory: [
-    { id: 'Ice', icon: '🧊', amount: 6, price: 50},
+    { id: 'Ice', icon: '🧊', amount: 6, price: 50 },
     { id: 'Boost', icon: '⚡', amount: 7, price: 100 },
   ]
 };
+
+const GOALS = ["Cut", "Bulk", "Maintain"];
+const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];
+const ACTIVITY_LEVELS = [
+  { id: "sedentary",  label: "Sedentary",        sub: "Little or no exercise" },
+  { id: "light",      label: "Lightly active",    sub: "1–3 days/week" },
+  { id: "moderate",   label: "Moderately active", sub: "3–5 days/week" },
+  { id: "very",       label: "Very active",        sub: "6–7 days/week" },
+  { id: "extra",      label: "Extra active",       sub: "Physical job or 2x/day" },
+];
+
+const ACCOUNT_INITIAL = {
+  nickname: "Ratana", gender: "Male", email: "hack@example.com",
+  birthYear: "2001", height: "175", weight: "70",
+  goal: "Maintain", activity: "moderate", calorieGoal: "2200", stepsGoal: "8000",
+};
+
+function AccountScreen({ onBack }) {
+  const [form, setForm] = useState(ACCOUNT_INITIAL);
+  function set(key, val) { setForm(prev => ({ ...prev, [key]: val })); }
+  function handleSave() { console.log("Save:", form); onBack(); }
+
+  return (
+    <div style={{ paddingBottom: 120 }}>
+      <div className="topbar" style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: "var(--text)", padding: 0 }}>‹</button>
+          <div className="username">Account</div>
+        </div>
+      </div>
+
+      <div className="section-title">Identity</div>
+      <div className="account-card">
+      <div className="account-row">
+        <div className="account-row-label">Nickname</div>
+        <input className="account-row-input" value={form.nickname}
+          onChange={e => set("nickname", e.target.value)} placeholder="Your name" />
+      </div>
+      <div className="account-row">
+        <div className="account-row-label">Email</div>
+        <input className="account-row-input" value={form.email} type="email"
+          onChange={e => set("email", e.target.value)} placeholder="email@example.com" />
+      </div>
+      <div className="account-row">
+      <div className="account-row-label">Gender</div>
+      <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
+        {GENDERS.map(g => (
+          <button key={g} onClick={() => set("gender", g)} style={{
+            flex: 1,
+            padding: "10px 8px",
+            borderRadius: 10,
+            border: form.gender === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
+            background: form.gender === g ? "var(--text)" : "var(--surface)",
+            color: form.gender === g ? "#fff" : "var(--text)",
+            cursor: "pointer",
+            fontSize: 12,
+            fontWeight: 600,
+            textAlign: "center",
+          }}>
+            {g}
+            {form.gender === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
+          </button>
+        ))}
+      </div>
+    </div>
+    </div>
+
+      <div className="section-title">Body</div>
+      <div className="settings-card">
+        <div className="account-row">
+          <div className="account-row-label">Height <span style={{ textTransform: "none" }}>(cm)</span></div>
+          <input className="account-row-input" value={form.height} type="number"
+            onChange={e => set("height", e.target.value)} placeholder="e.g. 175" />
+        </div>
+
+        <div className="account-row">
+          <div className="account-row-label">Weight <span style={{ textTransform: "none" }}>(kg)</span></div>
+          <input className="account-row-input" value={form.weight} type="number"
+            onChange={e => set("weight", e.target.value)} placeholder="e.g. 70" />
+        </div>
+      </div>
+
+      <div className="section-title">Goals</div>
+      <div className="settings-card">
+        <div className="account-row">
+        <div className="account-row-label">Goal</div>
+        <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
+          {GOALS.map(g => (
+            <button key={g} onClick={() => set("goal", g)} style={{
+              flex: 1,
+              padding: "10px 8px",
+              borderRadius: 10,
+              border: form.goal === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
+              background: form.goal === g ? "var(--text)" : "var(--surface)",
+              color: form.goal === g ? "#fff" : "var(--text)",
+              cursor: "pointer",
+              fontSize: 12,
+              fontWeight: 600,
+              textAlign: "center",
+            }}>
+              {g}
+              {form.goal === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
+            </button>
+          ))}
+        </div>
+      </div>
+        <div className="settings-row" style={{ flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
+          <div className="settings-row-label">Activity level</div>
+          {ACTIVITY_LEVELS.map(a => (
+            <button key={a.id} onClick={() => set("activity", a.id)} style={{
+              width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
+              padding: "10px 12px", borderRadius: 10, marginBottom: 6, cursor: "pointer", textAlign: "left",
+              border: form.activity === a.id ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
+              background: form.activity === a.id ? "var(--text)" : "var(--surface)",
+              color: form.activity === a.id ? "#fff" : "var(--text)",
+            }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>{a.label}</div>
+                <div style={{ fontSize: 11, opacity: 0.65, marginTop: 1 }}>{a.sub}</div>
+              </div>
+              {form.activity === a.id && <span>✓</span>}
+            </button>
+          ))}
+        </div>
+        <div className="account-row">
+          <div className="account-row-label">Calorie goal <span style={{ textTransform: "none", fontSize: 10, color: "var(--text-muted)" }}>(override)</span></div>
+          <input className="account-row-input" value={form.calorieGoal} type="number"
+            onChange={e => set("calorieGoal", e.target.value)} placeholder="e.g. 2200" />
+        </div>
+
+        <div className="account-row">
+          <div className="account-row-label">Daily steps goal</div>
+          <input className="account-row-input" value={form.stepsGoal} type="number"
+            onChange={e => set("stepsGoal", e.target.value)} placeholder="e.g. 8000" />
+        </div>
+      </div>
+
+      <div style={{ padding: "20px 20px 0" }}>
+        <button className="log-btn" onClick={handleSave}>Save changes</button>
+      </div>
+    </div>
+  );
+}
 
 const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   if (!isOpen) return null;
 
   const isBuy = mode === "buy";
-  
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
         <div style={{ fontSize: '40px', marginBottom: '10px' }}>{item?.icon}</div>
         <h3>{isBuy ? `Buy ${item?.id}?` : `Use ${item?.id}?`}</h3>
         <p>
-          {isBuy 
-            ? `Spend 🪙 ${item?.price} to get this item?` 
+          {isBuy
+            ? `Spend 🪙 ${item?.price} to get this item?`
             : `Are you sure you want to use 1 ${item?.id}?`}
         </p>
         <div className="modal-actions">
           <button className="btn-cancel" onClick={onCancel}>Cancel</button>
-          <button 
-            className="btn-confirm" 
+          <button
+            className="btn-confirm"
             style={{ background: isBuy ? '#FFD700' : '#000', color: isBuy ? '#000' : '#fff' }}
             onClick={onConfirm}
           >
@@ -63,6 +206,8 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
 
 export default function Dashboard() {
   const [tab, setTab] = useState("home");
+  const [subScreen, setSubScreen] = useState(null);
+  const [activeStatTab, setActiveStatTab] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [calorieResult, setCalorieResult] = useState(null);
@@ -97,7 +242,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="dash-screen">
+    <div className={`dash-screen ${tab === "shop" ? "shop-open" : ""}`}>
 
       {/* ── HOME TAB ── */}
       {tab === "home" && (
@@ -113,10 +258,6 @@ export default function Dashboard() {
 
           {/* Pet card */}
           <div className="pet-card">
-            <div className="pet-model-wrap">
-              <Model emotion={MOCK.petState} />
-            </div>
-
             <div className="pet-info-container">
               <div className="pet-name">{MOCK.petName}</div>
               <div className="pet-state">{pet.label}</div>
@@ -130,56 +271,117 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+            <div className="pet-model-wrap">
+              <Model emotion={MOCK.petState} />
+            </div>
+
+            {/* <div className="pet-info-container">
+              <div className="pet-name">{MOCK.petName}</div>
+              <div className="pet-state">{pet.label}</div>
+              <div className="exp-bar-wrap">
+                <div className="exp-bar-label">
+                  <span>Level {MOCK.level}</span>
+                  <span>{MOCK.expScore}/100 XP</span>
+                </div>
+                <div className="exp-bar-bg">
+                  <div className="exp-bar-fill" style={{ width: `${MOCK.expScore}%` }} />
+                </div>
+              </div>
+            </div> */}
           </div>
 
           {/* Pet message bubble */}
           <div className="message-bubble">
-            <span className="bubble-pet">{pet.emoji}</span>
             <div className="bubble-text">{MOCK.petMessage}</div>
           </div>
 
-          {/* Today's stats */}
-          <div className="section-title">Today</div>
-          <div className="stats-row">
-            <div className="stat-card">
-              <div className="stat-icon">😴</div>
-              <div className="stat-val">{MOCK.sleep}</div>
-              <div className="stat-label">Sleep</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">👟</div>
-              <div className="stat-val">{MOCK.steps}</div>
-              <div className="stat-label">Steps</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">🍽️</div>
-              <div className="stat-val">{MOCK.calories}</div>
-              <div className="stat-label">Cal</div>
-            </div>
-          </div>
 
-          {/* Connect devices */}
-          <div className="section-title">Connect devices</div>
-          <div className="settings-card">
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">🏃</div>
-                <div>
-                  <div className="settings-row-label">Google Fit</div>
-                  <div className="settings-row-sub">Steps & exercise</div>
+          {/* Today's stats */}
+          <div className="stats-container">
+            <div className="section-title">Today</div>
+            <div className="stats-row">
+              {[
+                { key: "sleep", icon: "😴", val: MOCK.sleep, label: "Sleep" },
+                { key: "steps", icon: "👟", val: MOCK.steps, label: "Steps" },
+                { key: "calories", icon: "🍽️", val: MOCK.calories, label: "Calories" },
+              ].map(({ key, icon, val, label }) => (
+                <div
+                  key={key}
+                  className={`stat-card ${activeStatTab === key ? "stat-card--active" : ""}`}
+                  onClick={() => setActiveStatTab(prev => prev === key ? null : key)}
+                >
+                  <div className="stat-icon">{icon}</div>
+                  <div className="stat-val">{val}</div>
+                  <div className="stat-label">{label}</div>
+                  <img src="/images/arrow-right.png" alt="arrow" className="stat-more" />
                 </div>
-              </div>
-              <button className="connect-btn">Connect</button>
+              ))}
             </div>
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">😴</div>
-                <div>
-                  <div className="settings-row-label">Sleep tracker</div>
-                  <div className="settings-row-sub">Sleep duration & quality</div>
+            {/* Expanded stat panel */}
+            {activeStatTab === "sleep" && (
+              <div className="stat-panel">
+                <div className="stat-panel-title">Sleep breakdown</div>
+                <div className="stat-panel-row"><span>Bedtime</span><span>11:14 PM</span></div>
+                <div className="stat-panel-row"><span>Wake time</span><span>6:26 AM</span></div>
+                <div className="stat-panel-row"><span>Deep sleep</span><span>1h 48m</span></div>
+                <div className="stat-panel-row"><span>REM</span><span>2h 12m</span></div>
+                <div className="stat-panel-bar">
+                  <div className="stat-panel-bar-label"><span>Goal: 8h</span><span>{MOCK.sleep} / 8h</span></div>
+                  <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "90%" }} /></div>
                 </div>
               </div>
-              <button className="connect-btn">Connect</button>
+            )}
+            {activeStatTab === "steps" && (
+              <div className="stat-panel">
+                <div className="stat-panel-title">Steps breakdown</div>
+                <div className="stat-panel-row"><span>Distance</span><span>3.8 mi</span></div>
+                <div className="stat-panel-row"><span>Active minutes</span><span>42 min</span></div>
+                <div className="stat-panel-row"><span>Floors climbed</span><span>9</span></div>
+                <div className="stat-panel-row"><span>Calories burned</span><span>312 kcal</span></div>
+                <div className="stat-panel-bar">
+                  <div className="stat-panel-bar-label"><span>Goal: 10,000</span><span>{MOCK.steps} / 10,000</span></div>
+                  <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "82%" }} /></div>
+                </div>
+              </div>
+            )}
+            {activeStatTab === "calories" && (
+              <div className="stat-panel">
+                <div className="stat-panel-title">Calories breakdown</div>
+                <div className="stat-panel-row"><span>Breakfast</span><span>480 kcal</span></div>
+                <div className="stat-panel-row"><span>Lunch</span><span>720 kcal</span></div>
+                <div className="stat-panel-row"><span>Dinner</span><span>510 kcal</span></div>
+                <div className="stat-panel-row"><span>Snacks</span><span>130 kcal</span></div>
+                <div className="stat-panel-bar">
+                  <div className="stat-panel-bar-label"><span>Goal: 2,000</span><span>{MOCK.calories} / 2,000</span></div>
+                  <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "92%" }} /></div>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* Connect devices */}
+          <div className="devices-container">
+            <div className="section-title">Connect devices</div>
+            <div className="settings-card">
+              <div className="settings-row">
+                <div className="settings-left">
+                  <div className="settings-icon-wrap">🏃</div>
+                  <div>
+                    <div className="settings-row-label">Google Fit</div>
+                    <div className="settings-row-sub">Steps & exercise</div>
+                  </div>
+                </div>
+                <button className="connect-btn">Connect</button>
+              </div>
+              <div className="settings-row">
+                <div className="settings-left">
+                  <div className="settings-icon-wrap">😴</div>
+                  <div>
+                    <div className="settings-row-label">Sleep tracker</div>
+                    <div className="settings-row-sub">Sleep duration & quality</div>
+                  </div>
+                </div>
+                <button className="connect-btn">Connect</button>
+              </div>
             </div>
           </div>
         </>
@@ -264,9 +466,9 @@ export default function Dashboard() {
                 <div className="shop-sub">
                   {item.id === 'Ice' ? "Freeze Eggy to skip a day." : "Double XP for 24 hours."}
                 </div>
-                
+
                 {/* The Purchase Button */}
-                <button 
+                <button
                   className="buy-btn"
                   onClick={() => {
                     setSelectedItem(item);
@@ -279,12 +481,13 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
-          
+
+
           {/* Inventory bar */}
           <div className="inventory-bar">
             {MOCK.inventory && MOCK.inventory.length > 0 ? (
               MOCK.inventory.map((item) => (
-                <button 
+                <button
                   className={`inventory-slot ${item.amount === 0 ? 'empty' : ''}`}
                   onClick={() => {
                     setSelectedItem(item);
@@ -308,59 +511,62 @@ export default function Dashboard() {
       {/* ── SETTINGS TAB ── */}
       {tab === "settings" && (
         <>
-          <div className="topbar">
-            <div className="username">Settings</div>
-          </div>
-          <div className="settings-card">
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">👤</div>
-                <div>
-                  <div className="settings-row-label">Account</div>
-                  <div className="settings-row-sub">{MOCK.username}</div>
+          {subScreen === "account" ? (
+            <AccountScreen onBack={() => setSubScreen(null)} />
+          ) : (
+            <>
+              <div className="topbar">
+                <div className="username">Settings</div>
+              </div>
+              <div className="settings-card">
+                <div className="settings-row" onClick={() => setSubScreen("account")} style={{ cursor: "pointer" }}>
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">👤</div>
+                    <div>
+                      <div className="settings-row-label">Account</div>
+                    </div>
+                  </div>
+                  <span className="chevron">›</span>
+                </div>
+                <div className="settings-row" style={{ cursor: "pointer" }}>
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">🐣</div>
+                    <div>
+                      <div className="settings-row-label">Pet name</div>
+                    </div>
+                  </div>
+                  <span className="chevron">›</span>
+                </div>
+                <div className="settings-row" style={{ cursor: "pointer" }}>
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">🔔</div>
+                    <div>
+                      <div className="settings-row-label">Notifications</div>
+                    </div>
+                  </div>
+                  <span className="chevron">›</span>
+                </div>
+                <div className="settings-row" style={{ cursor: "pointer" }}>
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">🚪</div>
+                    <div>
+                      <div className="settings-row-label">Sign out</div>
+                    </div>
+                  </div>
+                  <span className="chevron">›</span>
                 </div>
               </div>
-              <span className="chevron">›</span>
-            </div>
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">🐣</div>
-                <div>
-                  <div className="settings-row-label">Pet name</div>
-                  <div className="settings-row-sub">{MOCK.petName}</div>
-                </div>
-              </div>
-              <span className="chevron">›</span>
-            </div>
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">🔔</div>
-                <div>
-                  <div className="settings-row-label">Notifications</div>
-                  <div className="settings-row-sub">Morning check-in reminder</div>
-                </div>
-              </div>
-              <span className="chevron">›</span>
-            </div>
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">🚪</div>
-                <div>
-                  <div className="settings-row-label">Sign out</div>
-                </div>
-              </div>
-              <span className="chevron">›</span>
-            </div>
-          </div>
+            </>
+          )}
         </>
       )}
 
       {/* ── BOTTOM NAV ── */}
       <nav className="navbar">
         {[
-          { id: "home",     icon: "🏠", label: "Home"     },
-          { id: "scan",     icon: "📷", label: "Scan"     },
-          { id: "shop",     icon: "🛍️", label: "Shop"     },
+          { id: "home", icon: "🏠", label: "Home" },
+          { id: "scan", icon: "📷", label: "Scan" },
+          { id: "shop", icon: "🛍️", label: "Shop" },
           { id: "settings", icon: "⚙️", label: "Settings" },
         ].map(({ id, icon, label }) => (
           <button
@@ -374,12 +580,12 @@ export default function Dashboard() {
         ))}
       </nav>
 
-      <Confirm 
-        isOpen={isConfirmOpen} 
+      <Confirm
+        isOpen={isConfirmOpen}
         item={selectedItem}
         mode={confirmMode}
-        onCancel={() => setIsConfirmOpen(false)} 
-        onConfirm={handleUseItem} 
+        onCancel={() => setIsConfirmOpen(false)}
+        onConfirm={handleUseItem}
       />
     </div>
   );
