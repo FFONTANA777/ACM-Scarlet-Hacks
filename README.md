@@ -1,28 +1,58 @@
-# Tamagotchi Pet Health App
+# 🐾 Tamagotchi Pet Health App
 
-## Set Up Frontend
-React + Vite
-Run `npm install` at root
-To run the react app (frontend) run `npm run dev` at root
+A web app that gamifies personal health tracking through a Tamagotchi-style virtual pet — your pet thrives when you do.
 
-## Set Up Backend
-FastAPI (python)
-Check python version, run `python --version`
-Make sure its on 3.14.3 before continuing
-Please set up a python venv via `python -m venv venv` so we have the same working environment
-To activate the environment run `.\venv\Scripts\activate` in the backend directory
-Run `pip install -r .\requirements.txt` to install packages
+## Tech Stack
+- **Frontend:** React + Vite
+- **Backend:** FastAPI (Python)
 
-## General Strucuture
+## General Structure
+```
 ACM-SCARLET-HACKS/
 ├── frontend/
 │   ├── src/
 │   ├── package.json
 │   └── vite.config.js
 ├── backend/
-│   ├── main.py     # FASTAPI PYTHON
+│   ├── main.py              # FastAPI entry point
 │   ├── requirements.txt
-│   ├── .gitignore  # PYTHON gitignore
-│   └── .python-version
+│   ├── .python-version
+│   └── .gitignore
+├── .vscode/
+│   └── settings.json        # Shared VSCode interpreter path (Windows)
 ├── .gitignore
 └── README.md
+```
+
+## Set Up Frontend
+1. `cd frontend`
+2. `npm install`
+3. `npm run dev` → runs at `http://localhost:5173`
+
+## Set Up Backend
+1. Make sure you're using the correct Python version:
+```bash
+   python --version  # should match .python-version
+```
+2. `cd backend`
+3. Create and activate the virtual environment:
+```bash
+   python -m venv venv
+   .\venv\Scripts\activate      # Windows
+   source venv/bin/activate     # Mac/Linux
+```
+4. Install dependencies:
+```bash
+   pip install -r requirements.txt
+```
+5. Run the server:
+```bash
+   uvicorn main:app --reload    # runs at http://localhost:8000
+```
+
+## Running the App
+Open two terminals:
+| Terminal | Command | URL |
+|----------|---------|-----|
+| Frontend | `npm run dev` (in `/frontend`) | http://localhost:5173 |
+| Backend  | `uvicorn main:app --reload` (in `/backend`) | http://localhost:8000 |
