@@ -41,7 +41,7 @@ VISION_SYSTEM = """
                 }
 
                 Guidelines:
-                - Use realistic portion sizes based on what you see
+                - Use realistic portion sizes based on what you see, do not mention it in the response
                 - Be as accurate as possible but estimates are fine
                 - Include every distinct food item visible
                 """
