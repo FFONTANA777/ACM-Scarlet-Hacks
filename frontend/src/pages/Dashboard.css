@@ -150,7 +150,7 @@ button, input, select, textarea {
 }
 
 
-.exp-bar-wrap { margin: 14px 20px 0; }
+.exp-bar-wrap { margin: 5px 20px 0; }
 
 .exp-bar-label {
   display: flex;
@@ -249,13 +249,64 @@ button, input, select, textarea {
 .stat-card {
   background: #f5f0e8;
   border-radius: 16px;
-  border: 0.5px solid #cec9c2;
+  border: 0.5px solid #90a896;
   padding: 14px 12px;
 }
 
 .stat-icon { font-size: 18px; margin-bottom: 6px; }
 .stat-val { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
 .stat-label { font-size: 11px; color: var(--text); margin-top: 2px; }
+
+/* ── Expanded stat panel ── */
+.stat-panel {
+  margin: 8px 20px 0;
+  background: #f5f0e8;
+  border: 0.5px solid #90a896;
+  border-radius: 16px;
+  padding: 16px;
+  animation: rise 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+ 
+.stat-panel-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+ 
+.stat-panel-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 0.5px solid #aeccb8;
+  font-size: 13px;
+}
+.stat-panel-row:last-of-type { border-bottom: none; }
+.stat-panel-row span:first-child { color: var(--text); }
+.stat-panel-row span:last-child  { font-weight: 500; color: #2D5C3A; }
+ 
+.stat-panel-bar { margin-top: 12px; }
+.stat-panel-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #2D5C3A;
+  margin-bottom: 6px;
+}
+.stat-panel-bar-bg {
+  height: 6px;
+  background: #82aa8d;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.stat-panel-bar-fill {
+  height: 100%;
+  background: #2D5C3A;
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
 
 /* ── Settings / devices card ── */
 .devices-container {
