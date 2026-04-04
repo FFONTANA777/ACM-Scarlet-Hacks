@@ -3,11 +3,11 @@ import "./Dashboard.css";
 import Model from "../components/PetModel.jsx";
 
 const PET_STATES = {
-  normal: {label: "Neutral"},
-  sad: {label: "Sad"},
-  tired: {label: "Tired"},
-  sleep: {label: "Sleep"},
-  sick: {label: "Neutral"},
+  normal: { label: "Neutral" },
+  sad: { label: "Sad" },
+  tired: { label: "Tired" },
+  sleep: { label: "Sleep" },
+  sick: { label: "Neutral" },
 };
 
 // Placeholder data — replace with real API calls
@@ -34,11 +34,11 @@ const MOCK = {
 const GOALS = ["Cut", "Bulk", "Maintain"];
 const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];
 const ACTIVITY_LEVELS = [
-  { id: "sedentary",  label: "Sedentary",        sub: "Little or no exercise" },
-  { id: "light",      label: "Lightly active",    sub: "1–3 days/week" },
-  { id: "moderate",   label: "Moderately active", sub: "3–5 days/week" },
-  { id: "very",       label: "Very active",        sub: "6–7 days/week" },
-  { id: "extra",      label: "Extra active",       sub: "Physical job or 2x/day" },
+  { id: "sedentary", label: "Sedentary", sub: "Little or no exercise" },
+  { id: "light", label: "Lightly active", sub: "1–3 days/week" },
+  { id: "moderate", label: "Moderately active", sub: "3–5 days/week" },
+  { id: "very", label: "Very active", sub: "6–7 days/week" },
+  { id: "extra", label: "Extra active", sub: "Physical job or 2x/day" },
 ];
 
 const ACCOUNT_INITIAL = {
@@ -63,39 +63,39 @@ function AccountScreen({ onBack }) {
 
       <div className="section-title">Identity</div>
       <div className="account-card">
-      <div className="account-row">
-        <div className="account-row-label">Nickname</div>
-        <input className="account-row-input" value={form.nickname}
-          onChange={e => set("nickname", e.target.value)} placeholder="Your name" />
+        <div className="account-row">
+          <div className="account-row-label">Nickname</div>
+          <input className="account-row-input" value={form.nickname}
+            onChange={e => set("nickname", e.target.value)} placeholder="Your name" />
+        </div>
+        <div className="account-row">
+          <div className="account-row-label">Email</div>
+          <input className="account-row-input" value={form.email} type="email"
+            onChange={e => set("email", e.target.value)} placeholder="email@example.com" />
+        </div>
+        <div className="account-row">
+          <div className="account-row-label">Gender</div>
+          <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
+            {GENDERS.map(g => (
+              <button key={g} onClick={() => set("gender", g)} style={{
+                flex: 1,
+                padding: "10px 8px",
+                borderRadius: 10,
+                border: form.gender === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
+                background: form.gender === g ? "var(--text)" : "var(--surface)",
+                color: form.gender === g ? "#fff" : "var(--text)",
+                cursor: "pointer",
+                fontSize: 12,
+                fontWeight: 600,
+                textAlign: "center",
+              }}>
+                {g}
+                {form.gender === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-      <div className="account-row">
-        <div className="account-row-label">Email</div>
-        <input className="account-row-input" value={form.email} type="email"
-          onChange={e => set("email", e.target.value)} placeholder="email@example.com" />
-      </div>
-      <div className="account-row">
-      <div className="account-row-label">Gender</div>
-      <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
-        {GENDERS.map(g => (
-          <button key={g} onClick={() => set("gender", g)} style={{
-            flex: 1,
-            padding: "10px 8px",
-            borderRadius: 10,
-            border: form.gender === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
-            background: form.gender === g ? "var(--text)" : "var(--surface)",
-            color: form.gender === g ? "#fff" : "var(--text)",
-            cursor: "pointer",
-            fontSize: 12,
-            fontWeight: 600,
-            textAlign: "center",
-          }}>
-            {g}
-            {form.gender === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
-          </button>
-        ))}
-      </div>
-    </div>
-    </div>
 
       <div className="section-title">Body</div>
       <div className="settings-card">
@@ -115,27 +115,27 @@ function AccountScreen({ onBack }) {
       <div className="section-title">Goals</div>
       <div className="settings-card">
         <div className="account-row">
-        <div className="account-row-label">Goal</div>
-        <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
-          {GOALS.map(g => (
-            <button key={g} onClick={() => set("goal", g)} style={{
-              flex: 1,
-              padding: "10px 8px",
-              borderRadius: 10,
-              border: form.goal === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
-              background: form.goal === g ? "var(--text)" : "var(--surface)",
-              color: form.goal === g ? "#fff" : "var(--text)",
-              cursor: "pointer",
-              fontSize: 12,
-              fontWeight: 600,
-              textAlign: "center",
-            }}>
-              {g}
-              {form.goal === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
-            </button>
-          ))}
+          <div className="account-row-label">Goal</div>
+          <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
+            {GOALS.map(g => (
+              <button key={g} onClick={() => set("goal", g)} style={{
+                flex: 1,
+                padding: "10px 8px",
+                borderRadius: 10,
+                border: form.goal === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
+                background: form.goal === g ? "var(--text)" : "var(--surface)",
+                color: form.goal === g ? "#fff" : "var(--text)",
+                cursor: "pointer",
+                fontSize: 12,
+                fontWeight: 600,
+                textAlign: "center",
+              }}>
+                {g}
+                {form.goal === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
         <div className="settings-row" style={{ flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
           <div className="settings-row-label">Activity level</div>
           {ACTIVITY_LEVELS.map(a => (
@@ -237,7 +237,7 @@ export default function Dashboard() {
     setAnalyzing(true);
     // TODO: POST photo to /analyze-meal on FastAPI
     await new Promise((r) => setTimeout(r, 1500)); // mock delay
-    setCalorieResult({ meal: "Grilled chicken & rice", calories: 540, protein: "38g" });
+    setCalorieResult({ meal: "Grilled chicken & rice", calories: 540, protein: "38g", carbs: "210g", fats: "52g" });
     setAnalyzing(false);
   };
 
@@ -345,7 +345,7 @@ export default function Dashboard() {
                 <div className="stat-panel-row"><span>Floors climbed</span><span>9</span></div>
                 <div className="stat-panel-row"><span>Calories burned</span><span>312 kcal</span></div>
                 <div className="stat-panel-bar">
-                  <div className="stat-panel-bar-label"><span>Goal: 10,000</span><span>{MOCK.steps} / 10,000</span></div>
+                  <div className="stat-panel-bar-label"><span>Goal: {ACCOUNT_INITIAL.stepsGoal}</span><span>{MOCK.steps} / {ACCOUNT_INITIAL.stepsGoal}</span></div>
                   <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "82%" }} /></div>
                 </div>
               </div>
@@ -372,7 +372,7 @@ export default function Dashboard() {
                 <div className="stat-panel-row"><span>Dinner</span><span>510 kcal</span></div>
                 <div className="stat-panel-row"><span>Snacks</span><span>130 kcal</span></div>
                 <div className="stat-panel-bar">
-                  <div className="stat-panel-bar-label"><span>Goal: 2,000</span><span>{MOCK.calories} / {ACCOUNT_INITIAL.calorieGoal}</span></div>
+                  <div className="stat-panel-bar-label"><span>Goal: {ACCOUNT_INITIAL.calorieGoal}</span><span>{MOCK.calories} / {ACCOUNT_INITIAL.calorieGoal}</span></div>
                   <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "92%" }} /></div>
                 </div>
               </div>
@@ -449,13 +449,33 @@ export default function Dashboard() {
           {calorieResult && (
             <div className="result-card">
               <div className="result-meal">{calorieResult.meal}</div>
-              <div className="result-row">
+              {/* <div className="result-row">
                 <span className="result-label">Calories</span>
                 <span className="result-val">{calorieResult.calories} kcal</span>
               </div>
               <div className="result-row">
                 <span className="result-label">Protein</span>
                 <span className="result-val">{calorieResult.protein}</span>
+              </div> */}
+              <div className="cals-row">
+                <div className="cals-card">
+                  <div className="cal-val">{calorieResult.calories} kcal</div>
+                  <div className="cal-label">Calories</div>
+                </div>
+              </div>
+              <div className="macros-row">
+                <div className="macro-card">
+                  <div className="macro-val">{calorieResult.protein}</div>
+                  <div className="macro-label">Protein</div>
+                </div>
+                <div className="macro-card">
+                  <div className="macro-val">{calorieResult.carbs}</div>
+                  <div className="macro-label">Carbs</div>
+                </div>
+                <div className="macro-card">
+                  <div className="macro-val">{calorieResult.fats}</div>
+                  <div className="macro-label">Fats</div>
+                </div>
               </div>
               <button className="log-btn">Log this meal</button>
             </div>
