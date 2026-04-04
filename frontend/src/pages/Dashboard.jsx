@@ -31,6 +31,155 @@ const MOCK = {
   ]
 };
 
+const GOALS = ["Cut", "Bulk", "Maintain"];
+const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];
+const ACTIVITY_LEVELS = [
+  { id: "sedentary",  label: "Sedentary",        sub: "Little or no exercise" },
+  { id: "light",      label: "Lightly active",    sub: "1–3 days/week" },
+  { id: "moderate",   label: "Moderately active", sub: "3–5 days/week" },
+  { id: "very",       label: "Very active",        sub: "6–7 days/week" },
+  { id: "extra",      label: "Extra active",       sub: "Physical job or 2x/day" },
+];
+
+const ACCOUNT_INITIAL = {
+  nickname: "Ratana", gender: "Male", email: "hack@example.com",
+  birthYear: "2001", height: "175", weight: "70",
+  goal: "Maintain", activity: "moderate", calorieGoal: "2200", stepsGoal: "8000", sleepGoal: "8"
+};
+
+function AccountScreen({ onBack }) {
+  const [form, setForm] = useState(ACCOUNT_INITIAL);
+  function set(key, val) { setForm(prev => ({ ...prev, [key]: val })); }
+  function handleSave() { console.log("Save:", form); onBack(); }
+
+  return (
+    <div style={{ paddingBottom: 120 }}>
+      <div className="topbar" style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: "var(--text)", padding: 0 }}>‹</button>
+          <div className="username">Account</div>
+        </div>
+      </div>
+
+      <div className="section-title">Identity</div>
+      <div className="account-card">
+      <div className="account-row">
+        <div className="account-row-label">Nickname</div>
+        <input className="account-row-input" value={form.nickname}
+          onChange={e => set("nickname", e.target.value)} placeholder="Your name" />
+      </div>
+      <div className="account-row">
+        <div className="account-row-label">Email</div>
+        <input className="account-row-input" value={form.email} type="email"
+          onChange={e => set("email", e.target.value)} placeholder="email@example.com" />
+      </div>
+      <div className="account-row">
+      <div className="account-row-label">Gender</div>
+      <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
+        {GENDERS.map(g => (
+          <button key={g} onClick={() => set("gender", g)} style={{
+            flex: 1,
+            padding: "10px 8px",
+            borderRadius: 10,
+            border: form.gender === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
+            background: form.gender === g ? "var(--text)" : "var(--surface)",
+            color: form.gender === g ? "#fff" : "var(--text)",
+            cursor: "pointer",
+            fontSize: 12,
+            fontWeight: 600,
+            textAlign: "center",
+          }}>
+            {g}
+            {form.gender === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
+          </button>
+        ))}
+      </div>
+    </div>
+    </div>
+
+      <div className="section-title">Body</div>
+      <div className="settings-card">
+        <div className="account-row">
+          <div className="account-row-label">Height <span style={{ textTransform: "none" }}>(cm)</span></div>
+          <input className="account-row-input" value={form.height} type="number"
+            onChange={e => set("height", e.target.value)} placeholder="e.g. 175" />
+        </div>
+
+        <div className="account-row">
+          <div className="account-row-label">Weight <span style={{ textTransform: "none" }}>(kg)</span></div>
+          <input className="account-row-input" value={form.weight} type="number"
+            onChange={e => set("weight", e.target.value)} placeholder="e.g. 70" />
+        </div>
+      </div>
+
+      <div className="section-title">Goals</div>
+      <div className="settings-card">
+        <div className="account-row">
+        <div className="account-row-label">Goal</div>
+        <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
+          {GOALS.map(g => (
+            <button key={g} onClick={() => set("goal", g)} style={{
+              flex: 1,
+              padding: "10px 8px",
+              borderRadius: 10,
+              border: form.goal === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
+              background: form.goal === g ? "var(--text)" : "var(--surface)",
+              color: form.goal === g ? "#fff" : "var(--text)",
+              cursor: "pointer",
+              fontSize: 12,
+              fontWeight: 600,
+              textAlign: "center",
+            }}>
+              {g}
+              {form.goal === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
+            </button>
+          ))}
+        </div>
+      </div>
+        <div className="settings-row" style={{ flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
+          <div className="settings-row-label">Activity level</div>
+          {ACTIVITY_LEVELS.map(a => (
+            <button key={a.id} onClick={() => set("activity", a.id)} style={{
+              width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
+              padding: "10px 12px", borderRadius: 10, marginBottom: 6, cursor: "pointer", textAlign: "left",
+              border: form.activity === a.id ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
+              background: form.activity === a.id ? "var(--text)" : "var(--surface)",
+              color: form.activity === a.id ? "#fff" : "var(--text)",
+            }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600 }}>{a.label}</div>
+                <div style={{ fontSize: 11, opacity: 0.65, marginTop: 1 }}>{a.sub}</div>
+              </div>
+              {form.activity === a.id && <span>✓</span>}
+            </button>
+          ))}
+        </div>
+        <div className="account-row">
+          <div className="account-row-label">Calorie goal <span style={{ textTransform: "none", fontSize: 10, color: "var(--text-muted)" }}>(override)</span></div>
+          <input className="account-row-input" value={form.calorieGoal} type="number"
+            onChange={e => set("calorieGoal", e.target.value)} placeholder="e.g. 2000" />
+        </div>
+
+        <div className="account-row">
+          <div className="account-row-label">Daily steps goal</div>
+          <input className="account-row-input" value={form.stepsGoal} type="number"
+            onChange={e => set("stepsGoal", e.target.value)} placeholder="e.g. 10000" />
+        </div>
+
+        <div className="account-row">
+          <div className="account-row-label">Daily sleep goal</div>
+          <input className="account-row-input" value={form.sleepGoal} type="number"
+            onChange={e => set("sleepGoal", e.target.value)} placeholder="e.g. 8" />
+        </div>
+      </div>
+
+      <div style={{ padding: "20px 20px 0" }}>
+        <button className="log-btn" onClick={handleSave}>Save changes</button>
+      </div>
+    </div>
+  );
+}
+
 const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   if (!isOpen) return null;
 
@@ -63,6 +212,7 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
 
 export default function Dashboard() {
   const [tab, setTab] = useState("home");
+  const [subScreen, setSubScreen] = useState(null);
   const [activeStatTab, setActiveStatTab] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -367,50 +517,53 @@ export default function Dashboard() {
       {/* ── SETTINGS TAB ── */}
       {tab === "settings" && (
         <>
-          <div className="topbar">
-            <div className="username">Settings</div>
-          </div>
-          <div className="settings-card">
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">👤</div>
-                <div>
-                  <div className="settings-row-label">Account</div>
-                  <div className="settings-row-sub">{MOCK.username}</div>
+          {subScreen === "account" ? (
+            <AccountScreen onBack={() => setSubScreen(null)} />
+          ) : (
+            <>
+              <div className="topbar">
+                <div className="username">Settings</div>
+              </div>
+              <div className="settings-card">
+                <div className="settings-row" onClick={() => setSubScreen("account")} style={{ cursor: "pointer" }}>
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">👤</div>
+                    <div>
+                      <div className="settings-row-label">Account</div>
+                    </div>
+                  </div>
+                  <span className="chevron">›</span>
+                </div>
+                <div className="settings-row" style={{ cursor: "pointer" }}>
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">🐣</div>
+                    <div>
+                      <div className="settings-row-label">Pet name</div>
+                    </div>
+                  </div>
+                  <span className="chevron">›</span>
+                </div>
+                <div className="settings-row" style={{ cursor: "pointer" }}>
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">🔔</div>
+                    <div>
+                      <div className="settings-row-label">Notifications</div>
+                    </div>
+                  </div>
+                  <span className="chevron">›</span>
+                </div>
+                <div className="settings-row" style={{ cursor: "pointer" }}>
+                  <div className="settings-left">
+                    <div className="settings-icon-wrap">🚪</div>
+                    <div>
+                      <div className="settings-row-label">Sign out</div>
+                    </div>
+                  </div>
+                  <span className="chevron">›</span>
                 </div>
               </div>
-              <span className="chevron">›</span>
-            </div>
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">🐣</div>
-                <div>
-                  <div className="settings-row-label">Pet name</div>
-                  <div className="settings-row-sub">{MOCK.petName}</div>
-                </div>
-              </div>
-              <span className="chevron">›</span>
-            </div>
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">🔔</div>
-                <div>
-                  <div className="settings-row-label">Notifications</div>
-                  <div className="settings-row-sub">Morning check-in reminder</div>
-                </div>
-              </div>
-              <span className="chevron">›</span>
-            </div>
-            <div className="settings-row">
-              <div className="settings-left">
-                <div className="settings-icon-wrap">🚪</div>
-                <div>
-                  <div className="settings-row-label">Sign out</div>
-                </div>
-              </div>
-              <span className="chevron">›</span>
-            </div>
-          </div>
+            </>
+          )}
         </>
       )}
 

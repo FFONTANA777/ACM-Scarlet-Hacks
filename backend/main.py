@@ -4,9 +4,10 @@ from pydantic import BaseModel, Field
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
-from supabase import create_client, Client
 from datetime import date, timedelta
+from typing import Optional
 from vision import analyze_food_image, FoodAnalysis
+from ml import get_personal_baselines
 
 load_dotenv()
 
@@ -58,67 +59,58 @@ PET_STATES = [
     (0.0, "sad"),
 ]
 
-# Ideal targets (used for scoring)
-SLEEP_IDEAL = 8.0       # hours
-CALORIES_IDEAL = 2000   # kcal
-STEPS_IDEAL = 8000      # steps
-
-# Score weights (must sum to 1.0)
-WEIGHTS = {
-    "sleep": 0.30,
-    "calories": 0.25,
-    "steps": 0.25,
-    "mood": 0.20,
-}
-
 STREAK_MILESTONES = {7, 14, 30, 60, 100} # Change depending on game balances
 
 # --- Scoring helpers ---
  
-def score_sleep(hours: float) -> float:
+def score_sleep(hours: float, ideal: float) -> float:
     """
     Summary:
         Bell-curve around ideal. Penalizes both under and over.
 
     Args:
         hours (float): user's hour of sleep
+        ideal (float): personal ideals
 
     Returns:
         float: sleep score
     """
-    diff = abs(hours - SLEEP_IDEAL)
-    return max(0.0, 1.0 - (diff / SLEEP_IDEAL))
+    diff = abs(hours - ideal)
+    return max(0.0, 1.0 - (diff / ideal))
  
  
-def score_calories(cals: int) -> float:
+def score_calories(cals: int, ideal: float) -> float:
     """
     Summary:
         Symmetric tolerance band ±500 kcal around ideal.
 
     Args:
         cals (int): user's calorie intake
+        ideal (float): personal ideals
 
     Returns:
         float: calorie score
     """
-    diff = abs(cals - CALORIES_IDEAL)
-    if diff <= 500:
+    diff = abs(cals - ideal)
+    tolerance = ideal * 0.25  # ±25% of personal ideal = perfect score
+    if diff <= tolerance:
         return 1.0
-    return max(0.0, 1.0 - ((diff - 500) / CALORIES_IDEAL))
+    return max(0.0, 1.0 - ((diff - tolerance) / ideal))
  
  
-def score_steps(steps: int) -> float:
+def score_steps(steps: int,  ideal: float) -> float:
     """
     Summary:
         Reward up to ideal, soft cap after.
 
     Args:
         steps (int): user's steps
+        ideal (float): personal ideals
 
     Returns:
         float: steps score
     """
-    return min(1.0, steps / STEPS_IDEAL)
+    return min(1.0, steps / ideal)
  
  
 def score_mood(mood: int) -> float:
@@ -135,7 +127,7 @@ def score_mood(mood: int) -> float:
     return (mood - 1) / 4.0
  
  
-def compute_health_score(sleep: float, calories: int, steps: int, mood: int) -> float:
+def compute_health_score(sleep: float, calories: int, steps: int, mood: int, sleep_ideal: float, calories_ideal: float, steps_ideal: float, consistency_bonus: float,) -> float:
     """
     Summary:
         Using the base score helpers to determine health score.
@@ -150,13 +142,14 @@ def compute_health_score(sleep: float, calories: int, steps: int, mood: int) -> 
         float: health score
 
     """
+    weights = {"sleep": 0.30, "calories": 0.25, "steps": 0.25, "mood": 0.20}
     raw = (
-        WEIGHTS["sleep"]    * score_sleep(sleep)    +
-        WEIGHTS["calories"] * score_calories(calories) +
-        WEIGHTS["steps"]    * score_steps(steps)    +
-        WEIGHTS["mood"]     * score_mood(mood)
+        weights["sleep"]    * score_sleep(sleep, sleep_ideal)       +
+        weights["calories"] * score_calories(calories, calories_ideal) +
+        weights["steps"]    * score_steps(steps, steps_ideal)       +
+        weights["mood"]     * score_mood(mood)
     )
-    return round(min(1.0, max(0.0, raw)), 4)
+    return round(min(1.0, max(0.0, raw + consistency_bonus)), 4)
  
  
 def score_to_pet_state(score: float) -> str:
@@ -187,15 +180,13 @@ def compute_streak(user_id: str) -> int:
     Args:
         user_id (str): user ID
     
-    Returns 
+    Returns:
         int: streak score
 
     """
-    today = date.today()
-    streak = 0
-    check_date = today - timedelta(days=1)  # start from yesterday
+    if MOCK:
+        return 3
  
-    # Fetch all check-in dates for this user, sorted desc
     result = (
         supabase.table("checkins")
         .select("created_at")
@@ -204,25 +195,111 @@ def compute_streak(user_id: str) -> int:
         .execute()
     )
  
-    checkin_dates = set()
-    for row in result.data:
-        d = date.fromisoformat(row["created_at"][:10])
-        checkin_dates.add(d)
+    checkin_dates = {
+        date.fromisoformat(row["created_at"][:10])
+        for row in result.data
+    }
  
+    streak = 0
+    check_date = date.today() - timedelta(days=1)
     while check_date in checkin_dates:
         streak += 1
         check_date -= timedelta(days=1)
  
-    return streak + 1  # +1 for today
+    return streak + 1
+
+# --- Fetch history for ML ---
+ 
+def fetch_checkin_history(user_id: str) -> list[dict]:
+    """
+    Summary:
+        Fetch all past check-ins for a user, oldest first, for ML training.
+
+    Args:
+        user_id (str): user ID
+    
+    Returns:
+        list[dict]: check in history
+    """
+    if MOCK:
+        # Return some fake history so ML has something to work with in testing
+        return [
+            {"sleep_hours": 7.0, "calories": 1900, "steps": 7500},
+            {"sleep_hours": 6.5, "calories": 2100, "steps": 6000},
+            {"sleep_hours": 7.5, "calories": 1800, "steps": 8200},
+            {"sleep_hours": 7.0, "calories": 2000, "steps": 7000},
+            {"sleep_hours": 6.0, "calories": 2200, "steps": 5500}
+        ]
+ 
+    result = (
+        supabase.table("checkins")
+        .select("sleep_hours, calories, steps")
+        .eq("user_id", user_id)
+        .order("created_at", desc=False)
+        .execute()
+    )
+    return result.data
+
+# --- One check-in per day guard ---
+ 
+def already_checked_in_today(user_id: str) -> bool:
+    if MOCK:
+        return False
+ 
+    result = (
+        supabase.table("checkins")
+        .select("id")
+        .eq("user_id", user_id)
+        .gte("created_at", str(date.today()))
+        .limit(1)
+        .execute()
+    )
+    return len(result.data) > 0
 
 # --- AI message ---
- 
+
+def classify_sleep_timing(sleep_time: Optional[str], wake_time: Optional[str]) -> str:
+    """
+    Returns a short natural-language note about sleep timing for the pet message.
+    sleep_time / wake_time are "HH:MM" strings (24h).
+    """
+    note = ""
+    if sleep_time:
+        try:
+            h, m = map(int, sleep_time.split(":"))
+            hour = h + m / 60
+            if hour < 21:
+                note += "Your owner went to bed really early tonight. "
+            elif hour < 23:
+                note += "Your owner got to bed at a healthy time. "
+            elif hour < 1 or hour >= 23:
+                note += "Your owner stayed up quite late last night. "
+            else:
+                note += "Your owner went to bed very late — well past midnight. "
+        except ValueError:
+            pass
+    if wake_time:
+        try:
+            h, m = map(int, wake_time.split(":"))
+            hour = h + m / 60
+            if hour < 6:
+                note += "They woke up very early. "
+            elif hour < 8:
+                note += "They woke up at a great time. "
+            elif hour < 10:
+                note += "They had a bit of a slow morning start. "
+            else:
+                note += "They slept in pretty late. "
+        except ValueError:
+            pass
+    return note.strip()
+
 PET_PERSONALITY = """
-                You are a small, expressive virtual pet. You speak in first person, 
-                in a warm and playful tone — like a Tamagotchi that has feelings.
-                Keep your message to 1-2 sentences. React to how the user is doing today.
-                Never mention numbers or metrics directly. Just express how you feel based on their state.
-                """
+You are a small, expressive virtual pet. You speak in first person,
+in a warm and playful tone — like a Tamagotchi that has feelings.
+Keep your message to 1-2 sentences. React to how the user is doing today.
+Never mention numbers or metrics directly. Just express how you feel based on their state.
+"""
  
 STATE_PROMPTS = {
     "thriving": "Your owner had a fantastic day — great sleep, nutrition, activity, and mood. You feel absolutely amazing.",
@@ -232,12 +309,20 @@ STATE_PROMPTS = {
     "sad":      "Your owner really didn't take care of themselves today. You feel sad and a little worried.",
 }
  
-def generate_pet_message(pet_state: str, streak: int) -> str:
+def generate_pet_message(
+    pet_state: str,
+    streak: int,
+    sleep_time: Optional[str] = None,
+    wake_time: Optional[str] = None,
+) -> str:
     streak_note = ""
     if streak >= 7:
         streak_note = f" We've been together for {streak} days in a row — that means a lot to me."
  
-    prompt = f"{STATE_PROMPTS[pet_state]}{streak_note} Write a first-person message from the pet."
+    sleep_note = classify_sleep_timing(sleep_time, wake_time)
+    sleep_context = f" {sleep_note}" if sleep_note else ""
+ 
+    prompt = f"{STATE_PROMPTS[pet_state]}{streak_note}{sleep_context} Write a first-person message from the pet."
  
     model = genai.GenerativeModel(
         model_name="gemini-2.5-flash",
@@ -253,57 +338,78 @@ def generate_pet_message(pet_state: str, streak: int) -> str:
  
 @app.post("/checkin", response_model=CheckInResponse)
 def checkin(req: CheckInRequest):
-    # 1. Compute health score
+    # Guard: one check-in per day
+    if already_checked_in_today(req.user_id):
+        raise HTTPException(status_code=409, detail="Already checked in today.")
+ 
+    # Fetch history for ML (before inserting today)
+    history = fetch_checkin_history(req.user_id)
+ 
+    # Get personalized baselines from PyTorch model
+    today_metrics = {"sleep_hours": req.sleep_hours, "calories": req.calories, "steps": req.steps}
+    baselines = get_personal_baselines(req.user_id, today_metrics, history)
+ 
+    # Score using personal ideals
     health_score = compute_health_score(
-        req.sleep_hours, req.calories, req.steps, req.mood
+        req.sleep_hours, req.calories, req.steps, req.mood,
+        baselines.sleep_ideal,
+        baselines.calories_ideal,
+        baselines.steps_ideal,
+        baselines.consistency_bonus,
     )
  
-    # 2. Map to pet state
-    pet_state = score_to_pet_state(health_score)
- 
-    # 3. Compute streak (before insert so we read prior days)
-    streak = compute_streak(req.user_id)
+    pet_state        = score_to_pet_state(health_score)
+    streak           = compute_streak(req.user_id)
     streak_milestone = streak in STREAK_MILESTONES
  
-    # 4. Persist check-in
-    supabase.table("checkins").insert({
-        "user_id": req.user_id,
-        "username": req.username, 
-        "sleep_hours": req.sleep_hours,
-        "calories": req.calories,
-        "steps": req.steps,
-        "mood": req.mood,
-        "health_score": health_score,
-        "pet_state": pet_state,
-        "streak": streak,
-    }).execute()
-    
-    # 5. Upsert username into profiles so GET /pet can return it
-    supabase.table("profiles").upsert({
-        "user_id":  req.user_id,
-        "username": req.username,
-    }).execute()
-
-    # 6. Generate AI pet message
-    message = generate_pet_message(pet_state, streak)
+    if not MOCK:
+        supabase.table("checkins").insert({
+            "user_id":      req.user_id,
+            "username":     req.username,
+            "sleep_hours":  req.sleep_hours,
+            "calories":     req.calories,
+            "steps":        req.steps,
+            "mood":         req.mood,
+            "health_score": health_score,
+            "pet_state":    pet_state,
+            "streak":       streak,
+            "sleep_time":   req.sleep_time,
+            "wake_time":    req.wake_time,
+        }).execute()
+ 
+        supabase.table("profiles").upsert({
+            "user_id":  req.user_id,
+            "username": req.username,
+        }).execute()
+ 
+    message = generate_pet_message(pet_state, streak, req.sleep_time, req.wake_time)
  
     return CheckInResponse(
+        username=req.username,
         health_score=health_score,
         pet_state=pet_state,
         streak=streak,
         streak_milestone=streak_milestone,
         message=message,
+        personal_sleep_ideal=baselines.sleep_ideal,
+        personal_calories_ideal=baselines.calories_ideal,
+        personal_steps_ideal=baselines.steps_ideal,
+        ml_confidence=baselines.confidence,
+        consistency_bonus=baselines.consistency_bonus,
     )
- 
  
 @app.get("/pet/{user_id}")
 def get_pet_state(user_id: str):
-    """
-    Summary:
-        Returns the user's most recent pet state — for loading the dashboard without requiring a new check-in.
-    Args:
-        user_id (str): user ID
-    """
+    if MOCK:
+        return {
+            "username":         "TestUser",
+            "health_score":     0.75,
+            "pet_state":        "happy",
+            "streak":           3,
+            "streak_milestone": False,
+            "checked_in_today": False,
+        }
+ 
     result = (
         supabase.table("checkins")
         .select("health_score, pet_state, streak, created_at")
@@ -312,9 +418,8 @@ def get_pet_state(user_id: str):
         .limit(1)
         .execute()
     )
-    
-    # Fetch username from profiles
-    profile = (
+ 
+    profile  = (
         supabase.table("profiles")
         .select("username")
         .eq("user_id", user_id)
@@ -322,37 +427,34 @@ def get_pet_state(user_id: str):
         .execute()
     )
     username = profile.data[0]["username"] if profile.data else "You"
-
+ 
     if not result.data:
         return {
-            "username": username,
-            "health_score": 0.5,
-            "pet_state": "neutral",
-            "streak": 0,
+            "username":         username,
+            "health_score":     0.5,
+            "pet_state":        "neutral",
+            "streak":           0,
             "streak_milestone": False,
             "checked_in_today": False,
         }
  
-    row = result.data[0]
+    row              = result.data[0]
     checked_in_today = row["created_at"][:10] == str(date.today())
  
     return {
-        "username": username,
-        "health_score": row["health_score"],
-        "pet_state": row["pet_state"],
-        "streak": row["streak"],
+        "username":         username,
+        "health_score":     row["health_score"],
+        "pet_state":        row["pet_state"],
+        "streak":           row["streak"],
         "streak_milestone": row["streak"] in STREAK_MILESTONES,
         "checked_in_today": checked_in_today,
     }
-
+ 
 ALLOWED_MEDIA_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"}
  
 @app.post("/analyze-food", response_model=FoodAnalysis)
 async def analyze_food(file: UploadFile = File(...)):
-    """
-    Upload a food photo -> Claude Vision estimates calories + macros.
-    Frontend uses the returned `calories` value to pre-fill the check-in form.
-    """
+    """Upload a food photo -> Gemini Vision estimates calories + macros."""
     if file.content_type not in ALLOWED_MEDIA_TYPES:
         raise HTTPException(
             status_code=415,
@@ -367,11 +469,11 @@ async def analyze_food(file: UploadFile = File(...)):
     try:
         return analyze_food_image(image_bytes, file.content_type)
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}") 
+        raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}")
  
 @app.get("/health")
 def health_check():
-    return {"status": "ok"}
+    return {"status": "ok", "mock": MOCK}
 
 @app.get("/")
 def root():
