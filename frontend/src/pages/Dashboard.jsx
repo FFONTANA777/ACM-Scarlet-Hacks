@@ -14,6 +14,7 @@ const MOCK = {
   username: "Ratana",
   petName: "Eggy",
   petState: "thriving",
+  level: 1,
   expScore: 72,
   streak: 5,
   coins: 120,
@@ -78,8 +79,8 @@ export default function Dashboard() {
               <div className="pet-state">{pet.label}</div>
               <div className="exp-bar-wrap">
                 <div className="exp-bar-label">
-                  <span>Level</span>
-                  <span>{MOCK.expScore}%</span>
+                  <span>Level {MOCK.level}</span>
+                  <span>{MOCK.expScore}/100 XP</span>
                 </div>
                 <div className="exp-bar-bg">
                   <div className="exp-bar-fill" style={{ width: `${MOCK.expScore}%` }} />
