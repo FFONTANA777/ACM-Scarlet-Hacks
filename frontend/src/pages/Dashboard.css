@@ -128,6 +128,13 @@ button, input, select, textarea {
   margin-top: 3px;
 }
 
+.pet-model-wrap {
+  width: 100%;
+  height: 280px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
 .exp-bar-wrap { margin: 14px auto 0; max-width: 180px; }
 
 .exp-bar-label {

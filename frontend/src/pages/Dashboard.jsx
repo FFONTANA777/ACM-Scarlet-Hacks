@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import "./Dashboard.css";
+import Model from "../components/PetModel.jsx";
 
 const PET_STATES = {
   thriving: { emoji: "🐣", label: "Thriving" },
@@ -112,12 +113,8 @@ export default function Dashboard() {
 
           {/* Pet card */}
           <div className="pet-card">
-            <div className="pet-message">
-              <div className="pet-emoji">{pet.emoji}</div>
-              {/* Pet message bubble */}
-              <div className="message-bubble">
-                <div className="bubble-text">{MOCK.petMessage}</div>
-              </div>
+            <div className="pet-model-wrap">
+              <Model emotion={MOCK.petState} />
             </div>
 
             <div className="pet-info-container">
