@@ -26,6 +26,7 @@ claude = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 # --- Models ---
 class CheckInRequest(BaseModel):
     user_id: str
+    username: str
     sleep_hours: float = Field(..., ge=0, le=12)
     calories: int = Field(..., ge=0, le=10000)
     steps: int = Field(..., ge=0)
@@ -33,6 +34,7 @@ class CheckInRequest(BaseModel):
  
  
 class CheckInResponse(BaseModel):
+    username: str  
     health_score: float          # 0.0 – 1.0
     pet_state: str               # thriving | happy | neutral | tired | sad
     streak: int                  # consecutive days
@@ -257,17 +259,24 @@ def checkin(req: CheckInRequest):
  
     # 4. Persist check-in
     supabase.table("checkins").insert({
-        "user_id":       req.user_id,
-        "sleep_hours":   req.sleep_hours,
-        "calories":      req.calories,
-        "steps":         req.steps,
-        "mood":          req.mood,
-        "health_score":  health_score,
-        "pet_state":     pet_state,
-        "streak":        streak,
+        "user_id": req.user_id,
+        "username": req.username, 
+        "sleep_hours": req.sleep_hours,
+        "calories": req.calories,
+        "steps": req.steps,
+        "mood": req.mood,
+        "health_score": health_score,
+        "pet_state": pet_state,
+        "streak": streak,
     }).execute()
- 
-    # 5. Generate AI pet message
+    
+    # 5. Upsert username into profiles so GET /pet can return it
+    supabase.table("profiles").upsert({
+        "user_id":  req.user_id,
+        "username": req.username,
+    }).execute()
+
+    # 6. Generate AI pet message
     message = generate_pet_message(pet_state, streak)
  
     return CheckInResponse(
@@ -295,9 +304,20 @@ def get_pet_state(user_id: str):
         .limit(1)
         .execute()
     )
- 
+    
+    # Fetch username from profiles
+    profile = (
+        supabase.table("profiles")
+        .select("username")
+        .eq("user_id", user_id)
+        .limit(1)
+        .execute()
+    )
+    username = profile.data[0]["username"] if profile.data else "You"
+
     if not result.data:
         return {
+            "username": username,
             "health_score": 0.5,
             "pet_state": "neutral",
             "streak": 0,
@@ -309,9 +329,10 @@ def get_pet_state(user_id: str):
     checked_in_today = row["created_at"][:10] == str(date.today())
  
     return {
-        "health_score":     row["health_score"],
-        "pet_state":        row["pet_state"],
-        "streak":           row["streak"],
+        "username": username,
+        "health_score": row["health_score"],
+        "pet_state": row["pet_state"],
+        "streak": row["streak"],
         "streak_milestone": row["streak"] in STREAK_MILESTONES,
         "checked_in_today": checked_in_today,
     }
