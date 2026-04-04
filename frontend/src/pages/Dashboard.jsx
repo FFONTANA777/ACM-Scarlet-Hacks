@@ -114,10 +114,6 @@ export default function Dashboard() {
 
           {/* Pet card */}
           <div className="pet-card">
-            <div className="pet-model-wrap">
-              <Model emotion={MOCK.petState} />
-            </div>
-
             <div className="pet-info-container">
               <div className="pet-name">{MOCK.petName}</div>
               <div className="pet-state">{pet.label}</div>
@@ -131,6 +127,23 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+            <div className="pet-model-wrap">
+              <Model emotion={MOCK.petState} />
+            </div>
+
+            {/* <div className="pet-info-container">
+              <div className="pet-name">{MOCK.petName}</div>
+              <div className="pet-state">{pet.label}</div>
+              <div className="exp-bar-wrap">
+                <div className="exp-bar-label">
+                  <span>Level {MOCK.level}</span>
+                  <span>{MOCK.expScore}/100 XP</span>
+                </div>
+                <div className="exp-bar-bg">
+                  <div className="exp-bar-fill" style={{ width: `${MOCK.expScore}%` }} />
+                </div>
+              </div>
+            </div> */}
           </div>
 
           {/* Pet message bubble */}
@@ -146,7 +159,7 @@ export default function Dashboard() {
               {[
                 { key: "sleep", icon: "😴", val: MOCK.sleep, label: "Sleep" },
                 { key: "steps", icon: "👟", val: MOCK.steps, label: "Steps" },
-                { key: "calories", icon: "🍽️", val: MOCK.calories, label: "Cal" },
+                { key: "calories", icon: "🍽️", val: MOCK.calories, label: "Calories" },
               ].map(({ key, icon, val, label }) => (
                 <div
                   key={key}
@@ -156,6 +169,7 @@ export default function Dashboard() {
                   <div className="stat-icon">{icon}</div>
                   <div className="stat-val">{val}</div>
                   <div className="stat-label">{label}</div>
+                  <img src="/images/arrow-right.png" alt="arrow" className="stat-more" />
                 </div>
               ))}
             </div>

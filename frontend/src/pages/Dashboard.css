@@ -87,7 +87,6 @@ button, input, select, textarea {
 /* ── Pet card ── */
 .pet-card {
   margin: 16px 20px 0;
-  background-image: url("/images/pet-bg.jpg");
   background-size: 490px;
   background-repeat: no-repeat;
   background-position: center;
@@ -251,11 +250,15 @@ button, input, select, textarea {
   border-radius: 16px;
   border: 0.5px solid #90a896;
   padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .stat-icon { font-size: 18px; margin-bottom: 6px; }
 .stat-val { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
 .stat-label { font-size: 11px; color: var(--text); margin-top: 2px; }
+.stat-more { width: 12px; height: 12px; transform: rotate(90deg); align-self: flex-end; }
 
 /* ── Expanded stat panel ── */
 .stat-panel {
