@@ -188,16 +188,17 @@ export default function Dashboard() {
         </>
       )}
 
-      {/* ── PLAY TAB ── */}
-      {tab === "play" && (
+      {/* ── SHOP TAB ── */}
+      {tab === "shop" && (
         <>
           <div className="topbar">
-            <div className="username">Play</div>
+            <div className="username">Shop</div>
+            <div className="streak-pill">🪙 {MOCK.coins}</div>
           </div>
-          <div className="ar-placeholder">
-            <div className="ar-icon">🌍</div>
-            <div className="ar-title">AR mode coming soon</div>
-            <div className="ar-sub">Take {MOCK.petName} out into the real world — Pokémon Go style. Stay tuned.</div>
+          <div className="shop-placeholder">
+            <div className="shop-icon">🛍️</div>
+            <div className="shop-title">Shop coming soon</div>
+            <div className="shop-sub">Spend your coins on cosmetics, boosts, and accessories for {MOCK.petName}.</div>
           </div>
         </>
       )}
@@ -257,7 +258,7 @@ export default function Dashboard() {
         {[
           { id: "home",     icon: "🏠", label: "Home"     },
           { id: "scan",     icon: "📷", label: "Scan"     },
-          { id: "play",     icon: "🎮", label: "Play"     },
+          { id: "shop",     icon: "🛍️", label: "Shop"     },
           { id: "settings", icon: "⚙️", label: "Settings" },
         ].map(({ id, icon, label }) => (
           <button

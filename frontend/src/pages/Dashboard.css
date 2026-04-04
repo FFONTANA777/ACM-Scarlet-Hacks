@@ -281,8 +281,8 @@
 
 .log-btn:hover { background: var(--primary-dark); }
 
-/* ── Play / AR tab ── */
-.ar-placeholder {
+/* ── Shop tab ── */
+.shop-placeholder {
   margin: 40px 20px 0;
   text-align: center;
   padding: 48px 24px;
@@ -291,9 +291,9 @@
   border: 0.5px solid #E2DDD5;
 }
 
-.ar-icon { font-size: 56px; margin-bottom: 16px; }
-.ar-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-.ar-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.shop-icon { font-size: 56px; margin-bottom: 16px; }
+.shop-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.shop-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
 /* ── Bottom nav ── */
 .navbar {
