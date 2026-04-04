@@ -3,7 +3,7 @@
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'OCR A Std', 'Share Tech Mono', monospace;
   padding-bottom: 100px;
 }
 
@@ -59,9 +59,9 @@
   margin-top: 3px;
 }
 
-.health-bar-wrap { margin: 14px auto 0; max-width: 180px; }
+.exp-bar-wrap { margin: 14px auto 0; max-width: 180px; }
 
-.health-bar-label {
+.exp-bar-label {
   display: flex;
   justify-content: space-between;
   font-size: 11px;
@@ -69,13 +69,13 @@
   margin-bottom: 5px;
 }
 
-.health-bar-bg {
+.exp-bar-bg {
   height: 6px;
   background: var(--border);
   border-radius: 99px;
 }
 
-.health-bar-fill {
+.exp-bar-fill {
   height: 6px;
   background: var(--primary);
   border-radius: 99px;

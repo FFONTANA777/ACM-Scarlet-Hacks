@@ -14,7 +14,7 @@ const MOCK = {
   username: "Ratana",
   petName: "Eggy",
   petState: "thriving",
-  healthScore: 72,
+  expScore: 72,
   streak: 5,
   sleep: "7.5h",
   steps: "8,204",
@@ -66,13 +66,13 @@ export default function Dashboard() {
             <div className="pet-emoji">{pet.emoji}</div>
             <div className="pet-name">{MOCK.petName}</div>
             <div className="pet-state">{pet.label}</div>
-            <div className="health-bar-wrap">
-              <div className="health-bar-label">
-                <span>Health</span>
-                <span>{MOCK.healthScore}%</span>
+            <div className="exp-bar-wrap">
+              <div className="exp-bar-label">
+                <span>Level</span>
+                <span>{MOCK.expScore}%</span>
               </div>
-              <div className="health-bar-bg">
-                <div className="health-bar-fill" style={{ width: `${MOCK.healthScore}%` }} />
+              <div className="exp-bar-bg">
+                <div className="exp-bar-fill" style={{ width: `${MOCK.expScore}%` }} />
               </div>
             </div>
           </div>
