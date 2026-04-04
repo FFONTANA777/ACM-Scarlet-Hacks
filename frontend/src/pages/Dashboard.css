@@ -7,6 +7,10 @@
   padding-bottom: 100px;
 }
 
+button, input, select, textarea {
+  font-family: inherit;
+}
+
 /* ── Top bar ── */
 .topbar {
   display: flex;
@@ -26,6 +30,16 @@
   font-size: 12px;
   font-weight: 500;
   color: #A0601A;
+}
+
+.gold-pill {
+  background: #FFF4E8;
+  border: 0.5px solid #eee4229f;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ccbb21;
 }
 
 /* ── Pet card ── */
@@ -201,7 +215,6 @@
   border-radius: 8px;
   padding: 6px 12px;
   cursor: pointer;
-  font-family: inherit;
 }
 
 .chevron { font-size: 18px; color: var(--text-muted); }
@@ -250,7 +263,6 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  font-family: inherit;
   transition: background 0.15s;
 }
 
@@ -290,14 +302,13 @@
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  font-family: inherit;
   transition: background 0.15s;
 }
 
 .log-btn:hover { background: var(--primary-dark); }
 
-/* ── Play / AR tab ── */
-.ar-placeholder {
+/* ── Shop tab ── */
+.shop-featured {
   margin: 40px 20px 0;
   text-align: center;
   padding: 48px 24px;
@@ -305,10 +316,28 @@
   border-radius: 24px;
   border: 0.5px solid #E2DDD5;
 }
+.shop-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 20px;
+  font-family: 'OCR A Std', 'Share Tech Mono', monospace;
+}
+.shop-items {
+  text-align: center;
+  padding: 16px 12px;
+  background: var(--surface);
+  border-radius: 16px;
+  border: 0.5px solid #E2DDD5;
+  font-family: 'OCR A Std', 'Share Tech Mono', monospace;
+}
+.shop-title {
+  font-family: 'OCR A Std', 'Share Tech Mono', monospace;
+}
 
-.ar-icon { font-size: 56px; margin-bottom: 16px; }
-.ar-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-.ar-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.shop-icon { font-size: 56px; margin-bottom: 16px; }
+.shop-name { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.shop-sub { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
 /* ── Bottom nav ── */
 .navbar {
