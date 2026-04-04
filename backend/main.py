@@ -5,8 +5,6 @@ import anthropic
 import os
 from supabase import create_client, Client
 from datetime import date, timedelta
-from typing import Optional
-import math
 
 app = FastAPI()
 
@@ -54,6 +52,14 @@ PET_STATES = [
 SLEEP_IDEAL = 8.0       # hours
 CALORIES_IDEAL = 2000   # kcal
 STEPS_IDEAL = 8000      # steps
+
+# Score weights (must sum to 1.0)
+WEIGHTS = {
+    "sleep": 0.30,
+    "calories": 0.25,
+    "steps": 0.25,
+    "mood": 0.20,
+}
 
 STREAK_MILESTONES = {7, 14, 30, 60, 100} # Change depending on game balances
 
