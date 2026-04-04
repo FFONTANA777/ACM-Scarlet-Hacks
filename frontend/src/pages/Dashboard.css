@@ -388,6 +388,50 @@ button, input, select, textarea {
   cursor: pointer;
 }
 
+/* ── Account screen cards ── */
+.account-card {
+  margin: 0 20px;
+  background: var(--surface);
+  border-radius: 20px;
+  border: 0.5px solid #E2DDD5;
+  overflow: hidden;
+}
+
+.account-row {
+  padding: 14px 16px;
+  border-bottom: 0.5px solid #F0EDE8;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-row:last-child { border-bottom: none; }
+
+.account-row-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.account-row-input {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid #E2DDD5;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.account-row-input:focus {
+  border-bottom-color: var(--text);
+}
+
 .chevron { font-size: 18px; color: var(--text-muted); }
 
 /* ── Camera / Scan tab ── */
