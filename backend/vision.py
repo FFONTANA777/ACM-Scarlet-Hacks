@@ -1,11 +1,14 @@
-import base64
 import json
+import re
 import os
-import anthropic
+from dotenv import load_dotenv
+import google.generativeai as genai
 from pydantic import BaseModel
 
-claude = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
- 
+load_dotenv()
+
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+
 # --- Response model ---
 class FoodAnalysis(BaseModel):
     description: str
@@ -16,7 +19,7 @@ class FoodAnalysis(BaseModel):
     items: list[dict]
 
 # --- Prompt ---
- 
+
 VISION_SYSTEM = """
                 You are a nutrition estimation assistant with expert knowledge of food and calories.
                 Given a photo of food, identify each item and estimate its nutrition.
@@ -42,12 +45,29 @@ VISION_SYSTEM = """
                 - Be as accurate as possible but estimates are fine
                 - Include every distinct food item visible
                 """
+
+def extract_json(text: str) -> str:
+    """Extract the JSON object from the response, however it's wrapped."""
+    text = text.strip()
  
+    # Strip code fences if present
+    text = re.sub(r"^```(?:json)?\s*", "", text)
+    text = re.sub(r"\s*```$", "", text)
+    text = text.strip()
+ 
+    # If it still doesn't start with {, find the first { and last }
+    start = text.find("{")
+    end   = text.rfind("}")
+    if start != -1 and end != -1:
+        return text[start:end + 1]
+ 
+    return text
+
 def analyze_food_image(image_bytes: bytes, media_type: str) -> FoodAnalysis:
     """
-    Summary: 
-        Single Claude call: image -> description + nutrition estimates.
-        
+    Summary:
+        Single Gemini call: image -> description + nutrition estimates.
+
     Args:
         image_bytes (bytes)
         media_type (str)
@@ -55,44 +75,32 @@ def analyze_food_image(image_bytes: bytes, media_type: str) -> FoodAnalysis:
     Returns:
         FoodAnalysis: response model
     """
-    image_b64 = base64.standard_b64encode(image_bytes).decode("utf-8")
- 
-    response = claude.messages.create(
-        model="claude-opus-4-5",
-        max_tokens=600,
-        system=VISION_SYSTEM,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image",
-                        "source": {
-                            "type": "base64",
-                            "media_type": media_type,
-                            "data": image_b64,
-                        },
-                    },
-                    {
-                        "type": "text",
-                        "text": "Identify the food in this photo and estimate the nutrition.",
-                    },
-                ],
-            }
-        ],
+    image_part = {"mime_type": media_type, "data": image_bytes}
+
+    model = genai.GenerativeModel(
+        model_name="gemini-2.5-flash",
+        system_instruction=VISION_SYSTEM,
     )
- 
-    raw = response.content[0].text.strip()
- 
+
+    response = model.generate_content(
+        ["Identify the food in this photo and estimate the nutrition.", image_part],
+        generation_config={
+            "max_output_tokens": 2048,
+            "temperature": 0.1,
+        },
+    )
+
+    raw = extract_json(response.text)
+
     try:
         data = json.loads(raw)
     except json.JSONDecodeError:
-        raise ValueError(f"Claude returned unexpected format: {raw[:200]}")
- 
+        raise ValueError(f"Gemini returned unexpected format: {raw[:200]}")
+
     items = data.get("items", [])
     if not items:
         raise ValueError("No food items could be identified in the image.")
- 
+
     return FoodAnalysis(
         description=data.get("description", ""),
         calories=round(sum(i.get("calories", 0) for i in items)),

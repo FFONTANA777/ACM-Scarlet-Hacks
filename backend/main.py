@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-import anthropic
+import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -20,11 +20,15 @@ app.add_middleware(
 )
 
 # --- Clients ---
-supabase: Client = create_client(
-    os.environ["SUPABASE_URL"],
-    os.environ["SUPABASE_SECRET_KEY"],
-)
-claude = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+MOCK = True
+if not MOCK:
+    from supabase import create_client, Client
+    supabase: Client = create_client(
+        os.environ["SUPABASE_URL"],
+        os.environ["SUPABASE_SERVICE_KEY"],
+    )
+
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
  
  
 # --- Models ---
@@ -235,13 +239,15 @@ def generate_pet_message(pet_state: str, streak: int) -> str:
  
     prompt = f"{STATE_PROMPTS[pet_state]}{streak_note} Write a first-person message from the pet."
  
-    response = claude.messages.create(
-        model="claude-opus-4-5",
-        max_tokens=100,
-        system=PET_PERSONALITY,
-        messages=[{"role": "user", "content": prompt}],
+    model = genai.GenerativeModel(
+        model_name="gemini-2.5-flash",
+        system_instruction=PET_PERSONALITY,
     )
-    return response.content[0].text.strip()
+    response = model.generate_content(
+        prompt,
+        generation_config={"max_output_tokens": 100},
+    )
+    return response.text.strip()
 
 # --- Routes ---
  
