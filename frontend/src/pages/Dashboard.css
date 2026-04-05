@@ -607,10 +607,19 @@ button, input, select, textarea {
 .camera-label { font-size: 14px; font-weight: 500; color: var(--text); }
 .camera-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
+.desc-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 16px 16px 0;
+}
+
 .desc-box {
   background-color: #C8DFC9;
-  padding-bottom: 20px;
-  margin: 30px 12px 0;
+  padding: 12px;
+  margin: 10px 16px 0;
 
   box-shadow:
     0 0 0 4px #2D5C3A,
@@ -620,8 +629,8 @@ button, input, select, textarea {
 }
 
 .desc-input {
-  width: 330px;
-  margin: auto -1px;
+  width: 100%;
+  box-sizing: border-box;
   padding: 12px 14px;
   background: var(--bg);
   border: 0.5px solid #E2DDD5;
@@ -631,6 +640,7 @@ button, input, select, textarea {
   outline: none;
   transition: border-color 0.15s, background 0.15s;
   font-family: inherit;
+  resize: vertical;
 }
 
 .analyze-btn {
