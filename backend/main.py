@@ -97,13 +97,10 @@ ALLOWED_MEDIA_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp", "im
 
 @app.post("/register", response_model=ProfileResponse)
 def register(body: UserRegister):
-    # Bypass Password Reqs for Demo
-    password = body.password.ljust(6, "0")  # pads to 6 chars with zeros if too short
-
     # 1. Create Supabase auth user
     auth_response = supabase.auth.sign_up({
         "email": body.email,
-        "password": password
+        "password": body.password
     })
 
     if not auth_response.user:
@@ -141,7 +138,7 @@ def register(body: UserRegister):
 @app.post("/login", response_model=LoginResponse)
 def login(body: UserLogin):
     # 1. Sign in with Supabase auth
-    auth_response = supabase_auth.auth.sign_in_with_password({
+    auth_response = supabase .auth.sign_in_with_password({
         "email": body.email,
         "password": body.password
     })
@@ -158,11 +155,13 @@ def login(body: UserLogin):
     if not profile.data:
         raise HTTPException(status_code=404, detail="Profile not found")
 
+    data = dict(profile.data)
+
     return {
         "access_token": access_token,
         "user_id": user_id,
-        "username": profile.data["username"],
-        "pet_name": profile.data["pet_name"]
+        "username": data["username"],
+        "pet_name": data["pet_name"]
     }
 
 # genai.configure(api_key=os.environ["GEMINI_API_KEY"])
