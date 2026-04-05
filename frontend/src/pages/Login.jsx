@@ -11,9 +11,32 @@ export default function Login() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = () => {
-    // TODO: wire up Supabase auth here
-    console.log("submit", tab, form);
+  const handleSubmit = async () => {
+    if (tab === "login") {
+      const res = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+      if (!res.ok) { alert("Login failed"); return; }
+      const data = await res.json();
+      localStorage.setItem("user_id", data.user_id);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("pet_name", data.pet_name);
+      navigate("/dashboard");
+    } else {
+      const res = await fetch("http://localhost:8000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: form.username, email: form.email, password: form.password }),
+      });
+      if (!res.ok) { alert("Registration failed"); return; }
+      const data = await res.json();
+      localStorage.setItem("user_id", data.id);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("pet_name", data.pet_name);
+      navigate("/dashboard");
+    }
   };
 
   return (
@@ -44,12 +67,12 @@ export default function Login() {
         {tab === "login" && (
           <>
             <div className="field">
-              <label>Username</label>
+              <label>Email</label>
               <input
-                name="username"
-                type="text"
-                placeholder="your username"
-                value={form.username}
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                value={form.email}
                 onChange={handleChange}
               />
             </div>
