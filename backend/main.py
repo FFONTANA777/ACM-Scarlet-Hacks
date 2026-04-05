@@ -20,10 +20,10 @@ load_dotenv()
 
 app = FastAPI()
 
-_allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+_allowed_origins = ["https://frontend-production-ca2b.up.railway.app"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in _allowed_origins],
+    allow_origins=_allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
