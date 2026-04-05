@@ -91,15 +91,13 @@ def register(body: UserRegister):
         "password": password
     })
 
-    print("AUTH RESPONSE:", auth_response)
-    print("USER:", auth_response.user)
-
     if not auth_response.user:
         raise HTTPException(status_code=400, detail="Registration failed — check if email confirmation is disabled in Supabase")
     user_id = auth_response.user.id
 
     # 2. Create profile (trigger handles this but we can upsert to add username/pet_name)
     supabase.table("profiles").upsert({
+        "id": user_id,
         "username": body.username,
         "pet_name": body.pet_name
     }).execute()
