@@ -2,13 +2,22 @@
   max-width: 390px;
   margin: 0 auto;
   min-height: 100vh;
+  position: relative;
+  isolation: isolate;
   background: var(--bg);
   background-image: url("./images/bg-image.png");
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
+  background-position: center;
   background-attachment: fixed;
   font-family: 'OCR A Std', 'Share Tech Mono', monospace;
   padding-bottom: 100px;
+}
+
+@media (max-width: 700px) {
+  .dash-screen {
+    background-size: cover;
+  }
 }
 
 button, input, select, textarea {
@@ -466,9 +475,17 @@ button, input, select, textarea {
 .settings-card {
   margin: 0 20px;
   background: #f5f0e8;
-  border-radius: 20px;
   border: 0.5px solid #90a896;
   overflow: hidden;
+  background-color: #f5f0e8;
+  margin: 30px 12px 0;
+
+  box-shadow:
+    0 0 0 4px #000000,
+    inset 2px 2px 0 0 #9b9b9b,
+    inset -2px -2px 0 0 #000000,
+    4px 4px 0 0 #000000;
+  
 }
 
 .settings-row {
@@ -516,11 +533,17 @@ button, input, select, textarea {
 
 /* ── Account screen cards ── */
 .account-card {
-  margin: 0 20px;
-  background: var(--surface);
-  border-radius: 20px;
-  border: 0.5px solid #E2DDD5;
+  background: #f5f0e8;
+  border: 0.5px solid #90a896;
   overflow: hidden;
+  background-color: #f5f0e8;
+  margin: 30px 12px 0;
+
+  box-shadow:
+    0 0 0 4px #000000,
+    inset 2px 2px 0 0 #9b9b9b,
+    inset -2px -2px 0 0 #000000,
+    4px 4px 0 0 #000000;
 }
 
 .account-row {
@@ -895,9 +918,15 @@ button, input, select, textarea {
   margin: 0 20px;
   text-align: center;
   padding: 48px 24px;
-  background: var(--surface);
-  border-radius: 24px;
-  border: 0.5px solid #E2DDD5;
+  background-color: #f5f0e8;
+  padding: 25px;
+  width: auto;
+
+  box-shadow:
+    0 0 0 4px #2D5C3A,
+    inset 2px 2px 0 0 #b8d4b8,
+    inset -2px -2px 0 0 #1a3d22,
+    4px 4px 0 0 #1a3d22;
 }
 .shop-grid {
   display: grid;
@@ -906,14 +935,22 @@ button, input, select, textarea {
   padding: 0 20px;
 }
 .shop-items {
-  text-align: center;
   padding: 10px 8px;
-  background: var(--surface);
-  border-radius: 16px;
-  border: 0.5px solid #E2DDD5;
+  text-align: center;
+  margin: 3px 5px;
+  text-align: center;
+  background-color: #f5f0e8;
+  padding: 25px;
+  width: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  box-shadow:
+    0 0 0 4px #2D5C3A,
+    inset 2px 2px 0 0 #b8d4b8,
+    inset -2px -2px 0 0 #1a3d22,
+    4px 4px 0 0 #1a3d22;
 }
 
 .buy-btn {
@@ -1041,4 +1078,83 @@ button, input, select, textarea {
 @keyframes rise {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ── Demo dial ── */
+.demo-dial {
+  margin: 0 16px 16px;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 12px 16px 20px;
+  border: 0.5px solid #E2DDD5;
+}
+
+.demo-dial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.demo-dial-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  color: var(--text);
+}
+
+.demo-dial-time {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.demo-dial-track {
+  position: relative;
+  padding-bottom: 24px;
+}
+
+.demo-slider {
+  width: 100%;
+  accent-color: var(--text);
+  cursor: pointer;
+}
+
+.demo-dial-ticks {
+  position: relative;
+  height: 20px;
+  margin-top: 4px;
+}
+
+.demo-tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text);
+  opacity: 0.4;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.demo-tick--active {
+  opacity: 1;
+}
+
+/* ── Sky overlay ── */
+.sky-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.18;
+  max-width: 390px;
+  margin: 0 auto;
 }
