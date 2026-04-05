@@ -8,6 +8,11 @@ from supabase import create_client, Client
 from datetime import date, timedelta
 from typing import Optional
 from vision import analyze_food_image, FoodAnalysis
+from pet import (
+    compute_health_score, score_to_pet_state,
+    compute_streak, already_checked_in_today,
+    generate_pet_message, STREAK_MILESTONES,
+)
 
 load_dotenv()
 
@@ -25,64 +30,7 @@ supabase: Client = create_client(
     os.environ["SUPABASE_KEY"]
 )
 
-# ============================
-# Response Models + DB Objects
-# ============================
-class User(BaseModel):
-    email: str
-    password: str
-    username: str
-    pet_name: str
-
-class Profile(BaseModel):
-    uuid: str
-    username: str
-    pet_name: str
-    created_date: str
-
-class CheckPointStats(BaseModel):
-    uuid: str
-    user_id: str
-    checkpoint: str
-    day_type: str
-    mean: float
-    variance: float
-    standard_dev: float
-    n: int
-    needy_at: float
-    updated_at: str
-
-class CheckIn(BaseModel):
-    uuid: str
-    user_id: str
-    checkpoint: str
-    checked_in_at: str
-    hour_float: float
-    day_of_week: int
-    is_weekend: bool
-    created_at: str
-
-class UserRegister(BaseModel):
-    email: str
-    password: str
-    username: str
-    pet_name: str = "Buddy"
-
-class ProfileResponse(BaseModel):
-    id: str
-    username: str
-    pet_name: str
-    created_at: str
-
-class UserLogin(BaseModel):
-    email: str
-    password: str
-
-class LoginResponse(BaseModel):
-    access_token: str
-    user_id: str
-    username: str
-    pet_name: str
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
 # =========
 # Constants
@@ -163,29 +111,6 @@ def login(body: UserLogin):
         "username": data["username"], # type: ignore
         "pet_name": data["pet_name"]  # type: ignore
     }
-
-# genai.configure(api_key=os.environ["GEMINI_API_KEY"])
- 
- 
-# # --- Models ---
-# class CheckInRequest(BaseModel):
-#     user_id: str
-#     username: str
-#     sleep_hours: float = Field(..., ge=0, le=12)
-#     calories: int = Field(..., ge=0, le=10000)
-#     steps: int = Field(..., ge=0)
-#     mood: int = Field(..., ge=1, le=5)
- 
- 
-# class CheckInResponse(BaseModel):
-#     username: str  
-#     health_score: float          # 0.0 – 1.0
-#     pet_state: str               # thriving | happy | neutral | tired | sad
-#     streak: int                  # consecutive days
-#     streak_milestone: bool       # true if streak hit 7 / 14 / 30 / etc.
-#     message: str                 # first-person pet message from Claude
-
-# # --- Routes ---
  
 # @app.post("/checkin", response_model=CheckInResponse)
 # def checkin(req: CheckInRequest):
@@ -310,15 +235,15 @@ async def analyze_food(file: UploadFile = File(...)):
             detail=f"Unsupported file type '{file.content_type}'. Send JPEG, PNG, WebP, or GIF.",
         )
  
-#     image_bytes = await file.read()
+    image_bytes = await file.read()
  
-#     if len(image_bytes) > 10 * 1024 * 1024:
-#         raise HTTPException(status_code=413, detail="Image too large. Max 10 MB.")
+    if len(image_bytes) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Image too large. Max 10 MB.")
  
-#     try:
-#         return analyze_food_image(image_bytes, file.content_type)
-#     except Exception as e:
-#         raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}")
+    try:
+        return analyze_food_image(image_bytes, file.content_type)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}")
  
 # @app.get("/health")
 # def health_check():
