@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import "./Dashboard.css";
 import Model from "../components/PetModel.jsx";
+import { useNavigate } from "react-router-dom";
 
 const PET_STATES = {
   normal: { label: "Neutral" },
@@ -180,6 +181,64 @@ function AccountScreen({ onBack }) {
   );
 }
 
+function NotificationScreen({ onBack }) {
+  const [enabled, setEnabled] = useState(true);
+
+  return (
+    <div style={{ paddingBottom: 120 }}>
+      <div className="topbar" style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            onClick={onBack}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: 20,
+              color: "var(--text)",
+              padding: 0
+            }}
+          >
+            ‹
+          </button>
+          <div className="username">Notifications</div>
+        </div>
+      </div>
+
+      <div className="settings-card">
+        <div className="settings-row">
+          <div className="settings-left">
+            <div className="settings-icon-wrap">🔔</div>
+            <div>
+              <div className="settings-row-label">Notifications</div>
+              <div className="settings-row-sub">
+                Enable or disable notifications
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setEnabled(!enabled)}
+            style={{
+              padding: "6px 12px",
+              borderRadius: 8,
+              border: "none",
+              cursor: "pointer",
+              background: enabled ? "var(--text)" : "#ccc",
+              color: enabled ? "#fff" : "#000",
+              fontWeight: 600,
+              width: 60,
+              textAlign: "center"
+            }}
+          >
+            {enabled ? "ON" : "OFF"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   if (!isOpen) return null;
 
@@ -212,6 +271,7 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
 
 export default function Dashboard() {
   const [tab, setTab] = useState("home");
+  const navigate = useNavigate();
   const [subScreen, setSubScreen] = useState(null);
   const [activeStatTab, setActiveStatTab] = useState(null);
   const [photo, setPhoto] = useState(null);
@@ -599,6 +659,8 @@ export default function Dashboard() {
         <>
           {subScreen === "account" ? (
             <AccountScreen onBack={() => setSubScreen(null)} />
+          ) : subScreen === "notifications" ? (
+            <NotificationScreen onBack={() => setSubScreen(null)} />
           ) : (
             <>
               <div className="topbar">
@@ -623,7 +685,11 @@ export default function Dashboard() {
                   </div>
                   <span className="chevron">›</span>
                 </div>
-                <div className="settings-row" style={{ cursor: "pointer" }}>
+                <div
+                  className="settings-row"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setSubScreen("notifications")}
+                >
                   <div className="settings-left">
                     <div className="settings-icon-wrap">🔔</div>
                     <div>
@@ -632,7 +698,11 @@ export default function Dashboard() {
                   </div>
                   <span className="chevron">›</span>
                 </div>
-                <div className="settings-row" style={{ cursor: "pointer" }}>
+                <div
+                  className="settings-row"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate("/")} // send back to Login.jsx
+                >
                   <div className="settings-left">
                     <div className="settings-icon-wrap">🚪</div>
                     <div>
