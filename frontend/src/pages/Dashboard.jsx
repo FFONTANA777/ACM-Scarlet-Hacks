@@ -24,7 +24,7 @@ const MOCK = {
   streak: 5,
   coins: 120,
   sleep: "7.5h",
-  steps: "8,204",
+  steps: "6,830",
   calories: "1,840",
   petMessage: "You slept great! Let's get some steps in today 🌿",
 
@@ -48,7 +48,7 @@ const ACTIVITY_LEVELS = [
 const ACCOUNT_INITIAL = {
   nickname: "Ratana", gender: "Male", email: "hack@example.com",
   birthYear: "2001", height: "175", weight: "70",
-  goal: "Maintain", activity: "moderate", calorieGoal: "2200", stepsGoal: "8000", sleepGoal: "8"
+  goal: "Maintain", activity: "moderate", calorieGoal: "2,200", stepsGoal: "8,000", sleepGoal: "8"
 };
 
 function AccountScreen({ onBack }) {
