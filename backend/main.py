@@ -13,17 +13,17 @@ from model import *
 from pet import (
     compute_health_score, score_to_pet_state,
     compute_streak, already_checked_in_today,
-    generate_pet_message, generate_stat_message, STREAK_MILESTONES,
+    generate_pet_message, generate_stat_message, STREAK_MILESTONES
 )
 
 load_dotenv()
 
 app = FastAPI()
 
-_allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+_allowed_origins = ["https://frontend-production-ca2b.up.railway.app"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in _allowed_origins],
+    allow_origins=_allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )

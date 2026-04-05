@@ -47,7 +47,7 @@ export default function Login() {
 
         <div className="pet-wrap">
           <div className="pet-bubble">🐣</div>
-          <div className="app-name">Tamagotchi Health</div>
+          <div className="app-name">VitaPet</div>
           <div className="app-tagline">Your morning check-in companion</div>
         </div>
 
