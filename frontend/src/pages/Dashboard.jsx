@@ -272,6 +272,30 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   );
 };
 
+// hour → sky gradient color stops [top, bottom] as RGB arrays
+const SKY = [
+  { h: 0,  top: [10, 10, 35],    bot: [20, 20, 55]    }, // midnight
+  { h: 5,  top: [30, 20, 80],    bot: [80, 40, 100]   }, // pre-dawn
+  { h: 7,  top: [255, 130, 60],  bot: [255, 190, 110] }, // sunrise
+  { h: 9,  top: [255, 210, 140], bot: [250, 235, 215] }, // morning
+  { h: 12, top: [100, 180, 230], bot: [220, 240, 255] }, // noon
+  { h: 17, top: [255, 160, 80],  bot: [255, 210, 140] }, // afternoon
+  { h: 19, top: [220, 80, 60],   bot: [140, 60, 120]  }, // sunset
+  { h: 21, top: [40, 20, 90],    bot: [20, 10, 60]    }, // dusk
+  { h: 24, top: [10, 10, 35],    bot: [20, 20, 55]    }, // midnight
+];
+
+function skyGradient(hour) {
+  let i = 0;
+  while (i < SKY.length - 2 && SKY[i + 1].h <= hour) i++;
+  const a = SKY[i], b = SKY[i + 1];
+  const t = (hour - a.h) / (b.h - a.h);
+  const mix = (ca, cb) => ca.map((v, j) => Math.round(v + (cb[j] - v) * t));
+  const top = mix(a.top, b.top);
+  const bot = mix(a.bot, b.bot);
+  return `linear-gradient(180deg, rgba(${top},0.95) 0%, rgba(${bot},0.95) 100%)`;
+}
+
 export default function Dashboard() {
   const [tab, setTab] = useState("home");
   const navigate = useNavigate();
@@ -386,6 +410,7 @@ export default function Dashboard() {
 
   return (
     <div className={`dash-screen ${tab === "shop" ? "shop-open" : ""}`}>
+      <div className="sky-overlay" style={{ background: skyGradient(sliderVal) }} />
 
       {/* ── HOME TAB ── */}
       {tab === "home" && (
