@@ -285,27 +285,40 @@ export default function Dashboard() {
 
   const pet = PET_STATES[MOCK.petState];
 
+  const [photoFile, setPhotoFile] = useState(null); 
+
   const handlePhoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setPhoto(URL.createObjectURL(file));
+
+    setPhoto(URL.createObjectURL(file)); // preview
+    setPhotoFile(file);                  
     setCalorieResult(null);
   };
 
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
   const handleAnalyze = async () => {
-    if (!photo) return;
+    if (!photoFile) return;
+
     setAnalyzing(true);
-    // TODO: POST photo to /analyze-meal on FastAPI
-    await new Promise((r) => setTimeout(r, 1500)); // mock delay
-    setCalorieResult({
-      meal: "Grilled chicken & rice", calories: 540, protein: "38g", carbs: "40g", fats: "7g",
-      items: [
-        { name: "Grilled chicken breast", calories: 310, protein: "35g", carbs: "0g", fats: "7g", serving: "1 medium breast" },
-        { name: "Steamed white rice", calories: 230, protein: "3g", carbs: "40g", fats: "0g", serving: "1 cup" },
-      ],
-    });
+
+    const formData = new FormData();
+    formData.append("file", photoFile); // must match FastAPI param name
+
+    try {
+      const res = await fetch("http://localhost:8000/analyze-food", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      setCalorieResult(data); // use backend response
+    } catch (err) {
+      console.error(err);
+    }
+
     setAnalyzing(false);
   };
 
