@@ -4,6 +4,9 @@
   min-height: 100vh;
   background: var(--bg);
   background-image: url("./images/bg-image.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   font-family: 'OCR A Std', 'Share Tech Mono', monospace;
   padding-bottom: 100px;
 }
