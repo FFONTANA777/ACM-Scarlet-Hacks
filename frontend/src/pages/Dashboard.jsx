@@ -232,12 +232,20 @@ export default function Dashboard() {
     setCalorieResult(null);
   };
 
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
+
   const handleAnalyze = async () => {
     if (!photo) return;
     setAnalyzing(true);
     // TODO: POST photo to /analyze-meal on FastAPI
     await new Promise((r) => setTimeout(r, 1500)); // mock delay
-    setCalorieResult({ meal: "Grilled chicken & rice", calories: 540, protein: "38g", carbs: "210g", fats: "52g" });
+    setCalorieResult({
+      meal: "Grilled chicken & rice", calories: 540, protein: "38g", carbs: "40g", fats: "7g", 
+      items: [
+        { name: "Grilled chicken breast", calories: 310, protein: "35g", carbs: "0g", fats: "7g" },
+        { name: "Steamed white rice", calories: 230, protein: "3g", carbs: "40g", fats: "0g" },
+      ],
+    });
     setAnalyzing(false);
   };
 
@@ -477,6 +485,37 @@ export default function Dashboard() {
                   <div className="macro-label">Fats</div>
                 </div>
               </div>
+              {calorieResult.items?.length > 0 && (
+                <>
+                  <button
+                    className="breakdown-toggle"
+                    onClick={() => setBreakdownOpen(prev => !prev)}
+                  >
+                    <div className="breakdown-line" />
+                    <span className="breakdown-label">
+                      {breakdownOpen ? "Hide breakdown ▲" : "View item breakdown ▼"}
+                    </span>
+                    <div className="breakdown-line" />
+                  </button>
+ 
+                  {breakdownOpen && (
+                    <div className="breakdown-list">
+                      {calorieResult.items.map((item, i) => (
+                        <div key={i} className="breakdown-item">
+                          <div className="breakdown-item-name">{item.name}</div>
+                          <div className="breakdown-item-macros">
+                            <span>{item.calories} kcal</span>
+                            <span>P {item.protein}</span>
+                            <span>C {item.carbs}</span>
+                            <span>F {item.fats}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+              <div className="meal-items"></div>
               <button className="log-btn">Log this meal</button>
             </div>
           )}
