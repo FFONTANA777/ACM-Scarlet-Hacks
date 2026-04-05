@@ -3,11 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import google.generativeai as genai
 import os
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from datetime import date, timedelta
 from typing import Optional
 from vision import analyze_food_image, FoodAnalysis
+from model import *
 from pet import (
     compute_health_score, score_to_pet_state,
     compute_streak, already_checked_in_today,
@@ -110,6 +112,63 @@ def login(body: UserLogin):
         "user_id": user_id,
         "username": data["username"], # type: ignore
         "pet_name": data["pet_name"]  # type: ignore
+    }
+
+@app.post("/checkin")
+def checkin(body: CheckInRequest):
+    now = datetime.now(timezone.utc)
+    hour_float = now.hour + now.minute / 60
+    day_of_week = now.weekday()  # 0=Mon, 6=Sun
+    is_weekend = day_of_week >= 5
+    day_type = "weekend" if is_weekend else "weekday"
+
+    # 1. Insert raw checkin
+    supabase.table("checkins").insert({
+        "user_id": body.user_id,
+        "checkpoint": body.checkpoint,
+        "checked_in_at": now.isoformat(),
+        "hour_float": hour_float,
+        "day_of_week": day_of_week,
+        "is_weekend": is_weekend
+    }).execute()
+
+    # 2. Fetch current stats for this checkpoint + day type
+    stats_res = supabase.table("user_checkpoint_stats")\
+        .select("*")\
+        .eq("user_id", body.user_id)\
+        .eq("checkpoint", body.checkpoint)\
+        .eq("day_type", day_type)\
+        .single()\
+        .execute()
+
+    stats = dict(stats_res.data)                    # type: ignore
+    n = stats["n"] + 1                              # type: ignore
+    mean = stats["mean"] or 0.0                     # type: ignore
+
+    # 3. Welford's online algorithm
+    new_mean = mean + (hour_float - mean) / n       # type: ignore
+    new_variance = stats["variance"] + (hour_float - mean) * (hour_float - new_mean)    # type: ignore
+    new_std = (new_variance / n) ** 0.5 if n > 1 else None
+    new_needy_at = new_mean - (0.5 * new_std) if new_std else new_mean - 0.5
+
+    # 4. Update stats row
+    supabase.table("user_checkpoint_stats").update({
+        "n": n,
+        "mean": new_mean,
+        "variance": new_variance,
+        "std": new_std,
+        "needy_at": new_needy_at,
+        "updated_at": now.isoformat()
+    }).eq("user_id", body.user_id)\
+      .eq("checkpoint", body.checkpoint)\
+      .eq("day_type", day_type)\
+      .execute()
+
+    return {
+        "checkpoint": body.checkpoint,
+        "logged_at": hour_float,
+        "new_mean": new_mean,
+        "n": n
     }
  
 # @app.post("/checkin", response_model=CheckInResponse)

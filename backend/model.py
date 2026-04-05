@@ -62,11 +62,7 @@ class CheckIn(BaseModel):
 
 class CheckInRequest(BaseModel):
     user_id: str
-    username: str
-    sleep_hours: float = Field(..., ge=0, le=12)
-    calories: int = Field(..., ge=0, le=10000)
-    steps: int = Field(..., ge=0)
-    mood: int = Field(..., ge=1, le=5)
+    checkpoint: str  # wake | gym | breakfast | lunch | dinner | sleep
  
  
 class CheckInResponse(BaseModel):
