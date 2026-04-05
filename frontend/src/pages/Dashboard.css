@@ -609,7 +609,7 @@ button, input, select, textarea {
 
 .desc-box {
   background-color: #C8DFC9;
-  padding-bottom: 20px;
+  padding: 20px 16px;
   margin: 30px 12px 0;
 
   box-shadow:
@@ -619,18 +619,52 @@ button, input, select, textarea {
     4px 4px 0 0 #1a3d22;
 }
 
-.desc-input {
-  width: 330px;
-  margin: auto -1px;
-  padding: 12px 14px;
-  background: var(--bg);
+.scan-controls {
+  display: flex;
+  gap: 10px;
+  margin: 16px 20px 0;
+}
+
+.scan-mode-btn {
+  flex: 1;
+  padding: 10px 12px;
+  background: var(--surface);
+  color: var(--text);
   border: 0.5px solid #E2DDD5;
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+}
+
+.scan-mode-btn--camera {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.scan-mode-btn--upload:hover,
+.scan-mode-btn--camera:hover {
+  transform: translateY(-1px);
+}
+
+.desc-input {
+  width: 100%;
+  margin: 0;
+  padding: 14px 12px;
+  background: #f5f0e8;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
   color: var(--text);
+  font-weight: 500;
   outline: none;
   transition: border-color 0.15s, background 0.15s;
   font-family: inherit;
+  min-height: 100px;
+  box-sizing: border-box;
+  resize: vertical;
 }
 
 .analyze-btn {

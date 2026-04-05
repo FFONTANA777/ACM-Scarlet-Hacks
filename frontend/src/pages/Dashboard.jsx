@@ -280,6 +280,7 @@ export default function Dashboard() {
   const [mealDescription, setMealDescription] = useState("");
   const [calorieResult, setCalorieResult] = useState(null);
   const fileRef = useRef();
+  const cameraRef = useRef();
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -507,7 +508,7 @@ export default function Dashboard() {
           <div className="camera-card">
             <div
               className="camera-preview"
-              onClick={() => fileRef.current.click()}
+              onClick={() => cameraRef.current.click()}
               style={photo ? { backgroundImage: `url(${photo})`, backgroundSize: "cover", backgroundPosition: "center" } : {}}
             >
               {!photo && (
@@ -517,11 +518,26 @@ export default function Dashboard() {
                 </>
               )}
             </div>
+            <div className="scan-controls">
+              <button className="scan-mode-btn scan-mode-btn--camera" onClick={() => cameraRef.current.click()}>
+                Take photo
+              </button>
+              <button className="scan-mode-btn scan-mode-btn--upload" onClick={() => fileRef.current.click()}>
+                Choose file
+              </button>
+            </div>
+            <input
+              ref={cameraRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              style={{ display: "none" }}
+              onChange={handlePhoto}
+            />
             <input
               ref={fileRef}
               type="file"
               accept="image/*"
-              capture="environment"
               style={{ display: "none" }}
               onChange={handlePhoto}
             />
