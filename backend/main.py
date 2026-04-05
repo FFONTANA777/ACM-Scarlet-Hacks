@@ -97,15 +97,13 @@ def register(body: UserRegister):
         "password": password
     })
 
-    print("AUTH RESPONSE:", auth_response)
-    print("USER:", auth_response.user)
-
     if not auth_response.user:
         raise HTTPException(status_code=400, detail="Registration failed — check if email confirmation is disabled in Supabase")
     user_id = auth_response.user.id
 
     # 2. Create profile (trigger handles this but we can upsert to add username/pet_name)
     supabase.table("profiles").upsert({
+        "id": user_id,
         "username": body.username,
         "pet_name": body.pet_name
     }).execute()
@@ -277,15 +275,15 @@ async def analyze_food(file: UploadFile = File(...)):
             detail=f"Unsupported file type '{file.content_type}'. Send JPEG, PNG, WebP, or GIF.",
         )
  
-    image_bytes = await file.read()
+#     image_bytes = await file.read()
  
-    if len(image_bytes) > 10 * 1024 * 1024:
-        raise HTTPException(status_code=413, detail="Image too large. Max 10 MB.")
+#     if len(image_bytes) > 10 * 1024 * 1024:
+#         raise HTTPException(status_code=413, detail="Image too large. Max 10 MB.")
  
-    try:
-        return analyze_food_image(image_bytes, file.content_type)
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}")
+#     try:
+#         return analyze_food_image(image_bytes, file.content_type)
+#     except Exception as e:
+#         raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}")
  
 # @app.get("/health")
 # def health_check():
