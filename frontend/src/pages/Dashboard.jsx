@@ -542,16 +542,12 @@ export default function Dashboard() {
               onChange={handlePhoto}
             />
             <div className="desc-title">Meal description</div>
-            <div className="desc-box">
-              <div>
                 <textarea
-                  className="desc-input"
+                  className="desc-box"
                   placeholder="Describe your meal..."
                   value={mealDescription}
                   onChange={(e) => setMealDescription(e.target.value)}
                 />
-              </div>
-            </div>
             <div className="camera-footer">
               <div>
                 <div className="camera-label">Food scanner</div>
