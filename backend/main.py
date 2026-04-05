@@ -84,10 +84,16 @@ class LoginResponse(BaseModel):
     username: str
     pet_name: str
 
+# =========
+# Constants
+# =========
+CHECKPOINTS = ["wake", "gym", "breakfast", "lunch", "dinner", "sleep"]
+BASELINE = {"wake": 7.0, "gym": 8.0, "breakfast": 8.5, "lunch": 12.5, "dinner": 18.5, "sleep": 23.0}
+ALLOWED_MEDIA_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"}
+
 # =================
 # All API Endpoints
 # =================
-
 
 @app.post("/register", response_model=ProfileResponse)
 def register(body: UserRegister):
