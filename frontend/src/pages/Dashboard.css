@@ -6,15 +6,25 @@
   position: relative;
   isolation: isolate;
   background: var(--bg);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
   font-family: 'OCR A Std', 'Share Tech Mono', monospace;
   padding-bottom: 100px;
 }
-
-button, input, select, textarea {
-  font-family: inherit;
+ 
+.bg-layer {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 390px;
+  height: 100vh;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
 }
 
 /*  ── Confirm window ── */
@@ -89,16 +99,38 @@ button, input, select, textarea {
   color: #ccbb21;
 }
 
-/* ── Time slider ── */
 .time-slider {
-  background-color: #1522d4;
-  margin: -20px 20px;
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
+  margin: 30px 40px 10px;
+  background: #f5f0e8;
+  border-radius: 0;
+  padding: 5px 14px 0;
+  box-shadow:
+    0 0 0 4px #2D5C3A,
+    inset 2px 2px 0 0 #b8d4b8,
+    inset -2px -2px 0 0 #1a3d22,
+    4px 4px 0 0 #1a3d22;
 }
-.time-slider input[type="range"] {
+
+.time-slider-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #2D5C3A;
+  margin-bottom: 4px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.time-slider-track {
+  position: relative;
+  padding-bottom: 5px;
+  
+}
+
+.time-slider-input {
   -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   height: 6px;
   background: #3a2a1a;
@@ -106,25 +138,73 @@ button, input, select, textarea {
   outline: none;
   padding: 0;
   margin: 0;
+  cursor: pointer;
+  accent-color: #07800d;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 1px 1px 0 #5a4a32;
 }
-.time-slider input[type="range"]::-webkit-slider-thumb {
+
+.time-slider-input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
-  background: #07800d;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
   border-radius: 50%;
   cursor: pointer;
-  transition: background 0.15s ease-out;
+  box-shadow: 0 0 0 2px #2D5C3A;
+  transition: transform 0.15s ease-out;
+}
+
+.time-slider-input::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+}
+
+.time-slider-ticks {
+  position: relative;
+  height: 20px;
+  margin-top: 4px;
+}
+
+.time-tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0.35;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+/* position ticks evenly: 0%, 50%, 100% */
+.time-tick:nth-child(1) { left: 0%;   transform: none; }
+.time-tick:nth-child(2) { left: 50%;  transform: translateX(-50%); }
+.time-tick:nth-child(3) { left: 100%; transform: translateX(-100%); }
+
+.time-tick--active {
+  opacity: 1;
+  color: #2D5C3A;
 }
 /* ── Pet card ── */
 .pet-card {
-  margin: 16px 20px 0;
-  background-size: 490px;
+  margin: 10px 40px;
+  margin-bottom: 70px;
   border-radius: 24px;
-  /* border: 1px solid #2D5C3A; */
-  padding: 28px 20px 24px;
   text-align: center;
+  background: rgba(245, 240, 232, 0.18);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow:
+    0 0 0 4px #2D5C3A,
+    inset 2px 2px 0 0 rgba(184,212,184,0.5),
+    inset -2px -2px 0 0 rgba(26,61,34,0.5),
+    4px 4px 0 0 #1a3d22;
 }
 
 .pet-info-container {
@@ -167,9 +247,60 @@ button, input, select, textarea {
 
 .pet-model-wrap {
   width: 100%;
-  height: 280px;
+  height: 200px;
   border-radius: 16px;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: petFloat 3.5s ease-in-out infinite;
+}
+.pet-model-wrap::before {
+  content: "";
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(7,128,13,0.28) 0%, rgba(7,128,13,0.08) 55%, transparent 75%);
+  filter: blur(10px);
+  animation: glowPulse 3.5s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.pet-model-wrap::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(10, 60, 15, 0.32);
+  filter: blur(6px);
+  animation: shadowBreath 3.5s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes petFloat {
+  0%, 100% { transform: translateY(0px);   }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1);    }
+  50%       { opacity: 1;   transform: translateX(-50%) scale(1.12); }
+}
+
+@keyframes shadowBreath {
+  0%, 100% { opacity: 0.5;  transform: translateX(-50%) scaleX(1);    }
+  50%       { opacity: 0.25; transform: translateX(-50%) scaleX(0.82); }
 }
 
 
@@ -502,10 +633,10 @@ button, input, select, textarea {
   margin: 30px 12px 0;
 
   box-shadow:
-    0 0 0 4px #000000,
-    inset 2px 2px 0 0 #9b9b9b,
-    inset -2px -2px 0 0 #000000,
-    4px 4px 0 0 #000000;
+    0 0 0 4px #2D5C3A,
+    inset 2px 2px 0 0 #b8d4b8,
+    inset -2px -2px 0 0 #1a3d22,
+    4px 4px 0 0 #1a3d22;
   
 }
 
@@ -561,10 +692,10 @@ button, input, select, textarea {
   margin: 30px 12px 0;
 
   box-shadow:
-    0 0 0 4px #000000,
-    inset 2px 2px 0 0 #9b9b9b,
-    inset -2px -2px 0 0 #000000,
-    4px 4px 0 0 #000000;
+    0 0 0 4px #2D5C3A,
+    inset 2px 2px 0 0 #b8d4b8,
+    inset -2px -2px 0 0 #1a3d22,
+    4px 4px 0 0 #1a3d22;
 }
 
 .account-row {
@@ -1102,7 +1233,7 @@ button, input, select, textarea {
 }
 
 
-/* ── Demo dial ── */
+/* ── Demo dial ── 
 .demo-dial {
   margin: 0 16px 16px;
   background: var(--surface);
@@ -1169,7 +1300,7 @@ button, input, select, textarea {
   opacity: 1;
 }
 
-/* ── Sky overlay ── */
+/* ── Sky overlay ── *
 .sky-overlay {
   position: fixed;
   inset: 0;
@@ -1178,4 +1309,4 @@ button, input, select, textarea {
   opacity: 0.18;
   max-width: 390px;
   margin: 0 auto;
-}
+} */

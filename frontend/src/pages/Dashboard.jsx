@@ -32,9 +32,9 @@ const MOCK = {
 
   // Add your owned items right here:
   inventory: [
-    { id: 'Ice', icon: '🧊', amount: 6, price: 50 },
-    { id: 'Boost', icon: '⚡', amount: 7, price: 100 },
-  ]
+    { id: "Ice", icon: "🧊", amount: 6, price: 50 },
+    { id: "Boost", icon: "⚡", amount: 7, price: 100 },
+  ],
 };
 
 // Raw numeric values for the stat buttons (used when sending to backend)
@@ -55,21 +55,46 @@ const ACTIVITY_LEVELS = [
 ];
 
 const ACCOUNT_INITIAL = {
-  nickname: "Ratana", gender: "Male", email: "hack@example.com",
-  birthYear: "2001", height: "175", weight: "70",
-  goal: "Maintain", activity: "moderate", calorieGoal: "2,200", stepsGoal: "8,000", sleepGoal: "8"
+  nickname: "Ratana",
+  gender: "Male",
+  email: "hack@example.com",
+  birthYear: "2001",
+  height: "175",
+  weight: "70",
+  goal: "Maintain",
+  activity: "moderate",
+  calorieGoal: "2,200",
+  stepsGoal: "8,000",
+  sleepGoal: "8",
 };
 
 function AccountScreen({ onBack }) {
   const [form, setForm] = useState(ACCOUNT_INITIAL);
-  function set(key, val) { setForm(prev => ({ ...prev, [key]: val })); }
-  function handleSave() { console.log("Save:", form); onBack(); }
+  function set(key, val) {
+    setForm((prev) => ({ ...prev, [key]: val }));
+  }
+  function handleSave() {
+    console.log("Save:", form);
+    onBack();
+  }
 
   return (
     <div style={{ paddingBottom: 120 }}>
       <div className="topbar" style={{ marginBottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: "var(--text)", padding: 0 }}>‹</button>
+          <button
+            onClick={onBack}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: 20,
+              color: "var(--text)",
+              padding: 0,
+            }}
+          >
+            ‹
+          </button>
           <div className="username">Account</div>
         </div>
       </div>
@@ -78,32 +103,53 @@ function AccountScreen({ onBack }) {
       <div className="account-card">
         <div className="account-row">
           <div className="account-row-label">Nickname</div>
-          <input className="account-row-input" value={form.nickname}
-            onChange={e => set("nickname", e.target.value)} placeholder="Your name" />
+          <input
+            className="account-row-input"
+            value={form.nickname}
+            onChange={(e) => set("nickname", e.target.value)}
+            placeholder="Your name"
+          />
         </div>
         <div className="account-row">
           <div className="account-row-label">Email</div>
-          <input className="account-row-input" value={form.email} type="email"
-            onChange={e => set("email", e.target.value)} placeholder="email@example.com" />
+          <input
+            className="account-row-input"
+            value={form.email}
+            type="email"
+            onChange={(e) => set("email", e.target.value)}
+            placeholder="email@example.com"
+          />
         </div>
         <div className="account-row">
           <div className="account-row-label">Gender</div>
           <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
-            {GENDERS.map(g => (
-              <button key={g} onClick={() => set("gender", g)} style={{
-                flex: 1,
-                padding: "10px 8px",
-                borderRadius: 10,
-                border: form.gender === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
-                background: form.gender === g ? "var(--text)" : "var(--surface)",
-                color: form.gender === g ? "#fff" : "var(--text)",
-                cursor: "pointer",
-                fontSize: 12,
-                fontWeight: 600,
-                textAlign: "center",
-              }}>
+            {GENDERS.map((g) => (
+              <button
+                key={g}
+                onClick={() => set("gender", g)}
+                style={{
+                  flex: 1,
+                  padding: "10px 8px",
+                  borderRadius: 10,
+                  border:
+                    form.gender === g
+                      ? "1.5px solid var(--text)"
+                      : "0.5px solid #E2DDD5",
+                  background:
+                    form.gender === g ? "var(--text)" : "var(--surface)",
+                  color: form.gender === g ? "#fff" : "var(--text)",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  textAlign: "center",
+                }}
+              >
                 {g}
-                {form.gender === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
+                {form.gender === g && (
+                  <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>
+                    ✓
+                  </div>
+                )}
               </button>
             ))}
           </div>
@@ -113,15 +159,29 @@ function AccountScreen({ onBack }) {
       <div className="section-title">Body</div>
       <div className="settings-card">
         <div className="account-row">
-          <div className="account-row-label">Height <span style={{ textTransform: "none" }}>(cm)</span></div>
-          <input className="account-row-input" value={form.height} type="number"
-            onChange={e => set("height", e.target.value)} placeholder="e.g. 175" />
+          <div className="account-row-label">
+            Height <span style={{ textTransform: "none" }}>(cm)</span>
+          </div>
+          <input
+            className="account-row-input"
+            value={form.height}
+            type="number"
+            onChange={(e) => set("height", e.target.value)}
+            placeholder="e.g. 175"
+          />
         </div>
 
         <div className="account-row">
-          <div className="account-row-label">Weight <span style={{ textTransform: "none" }}>(kg)</span></div>
-          <input className="account-row-input" value={form.weight} type="number"
-            onChange={e => set("weight", e.target.value)} placeholder="e.g. 70" />
+          <div className="account-row-label">
+            Weight <span style={{ textTransform: "none" }}>(kg)</span>
+          </div>
+          <input
+            className="account-row-input"
+            value={form.weight}
+            type="number"
+            onChange={(e) => set("weight", e.target.value)}
+            placeholder="e.g. 70"
+          />
         </div>
       </div>
 
@@ -130,64 +190,124 @@ function AccountScreen({ onBack }) {
         <div className="account-row">
           <div className="account-row-label">Goal</div>
           <div style={{ display: "flex", gap: 8, paddingTop: 4 }}>
-            {GOALS.map(g => (
-              <button key={g} onClick={() => set("goal", g)} style={{
-                flex: 1,
-                padding: "10px 8px",
-                borderRadius: 10,
-                border: form.goal === g ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
-                background: form.goal === g ? "var(--text)" : "var(--surface)",
-                color: form.goal === g ? "#fff" : "var(--text)",
-                cursor: "pointer",
-                fontSize: 12,
-                fontWeight: 600,
-                textAlign: "center",
-              }}>
+            {GOALS.map((g) => (
+              <button
+                key={g}
+                onClick={() => set("goal", g)}
+                style={{
+                  flex: 1,
+                  padding: "10px 8px",
+                  borderRadius: 10,
+                  border:
+                    form.goal === g
+                      ? "1.5px solid var(--text)"
+                      : "0.5px solid #E2DDD5",
+                  background:
+                    form.goal === g ? "var(--text)" : "var(--surface)",
+                  color: form.goal === g ? "#fff" : "var(--text)",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  textAlign: "center",
+                }}
+              >
                 {g}
-                {form.goal === g && <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>✓</div>}
+                {form.goal === g && (
+                  <div style={{ fontSize: 10, opacity: 0.8, marginTop: 2 }}>
+                    ✓
+                  </div>
+                )}
               </button>
             ))}
           </div>
         </div>
-        <div className="settings-row" style={{ flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
+        <div
+          className="settings-row"
+          style={{ flexDirection: "column", alignItems: "flex-start", gap: 8 }}
+        >
           <div className="settings-row-label">Activity level</div>
-          {ACTIVITY_LEVELS.map(a => (
-            <button key={a.id} onClick={() => set("activity", a.id)} style={{
-              width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
-              padding: "10px 12px", borderRadius: 10, marginBottom: 6, cursor: "pointer", textAlign: "left",
-              border: form.activity === a.id ? "1.5px solid var(--text)" : "0.5px solid #E2DDD5",
-              background: form.activity === a.id ? "var(--text)" : "var(--surface)",
-              color: form.activity === a.id ? "#fff" : "var(--text)",
-            }}>
+          {ACTIVITY_LEVELS.map((a) => (
+            <button
+              key={a.id}
+              onClick={() => set("activity", a.id)}
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "10px 12px",
+                borderRadius: 10,
+                marginBottom: 6,
+                cursor: "pointer",
+                textAlign: "left",
+                border:
+                  form.activity === a.id
+                    ? "1.5px solid var(--text)"
+                    : "0.5px solid #E2DDD5",
+                background:
+                  form.activity === a.id ? "var(--text)" : "var(--surface)",
+                color: form.activity === a.id ? "#fff" : "var(--text)",
+              }}
+            >
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600 }}>{a.label}</div>
-                <div style={{ fontSize: 11, opacity: 0.65, marginTop: 1 }}>{a.sub}</div>
+                <div style={{ fontSize: 11, opacity: 0.65, marginTop: 1 }}>
+                  {a.sub}
+                </div>
               </div>
               {form.activity === a.id && <span>✓</span>}
             </button>
           ))}
         </div>
         <div className="account-row">
-          <div className="account-row-label">Calorie goal <span style={{ textTransform: "none", fontSize: 10, color: "var(--text-muted)" }}>(override)</span></div>
-          <input className="account-row-input" value={form.calorieGoal} type="number"
-            onChange={e => set("calorieGoal", e.target.value)} placeholder="e.g. 2000" />
+          <div className="account-row-label">
+            Calorie goal{" "}
+            <span
+              style={{
+                textTransform: "none",
+                fontSize: 10,
+                color: "var(--text-muted)",
+              }}
+            >
+              (override)
+            </span>
+          </div>
+          <input
+            className="account-row-input"
+            value={form.calorieGoal}
+            type="number"
+            onChange={(e) => set("calorieGoal", e.target.value)}
+            placeholder="e.g. 2000"
+          />
         </div>
 
         <div className="account-row">
           <div className="account-row-label">Daily steps goal</div>
-          <input className="account-row-input" value={form.stepsGoal} type="number"
-            onChange={e => set("stepsGoal", e.target.value)} placeholder="e.g. 10000" />
+          <input
+            className="account-row-input"
+            value={form.stepsGoal}
+            type="number"
+            onChange={(e) => set("stepsGoal", e.target.value)}
+            placeholder="e.g. 10000"
+          />
         </div>
 
         <div className="account-row">
           <div className="account-row-label">Daily sleep goal</div>
-          <input className="account-row-input" value={form.sleepGoal} type="number"
-            onChange={e => set("sleepGoal", e.target.value)} placeholder="e.g. 8" />
+          <input
+            className="account-row-input"
+            value={form.sleepGoal}
+            type="number"
+            onChange={(e) => set("sleepGoal", e.target.value)}
+            placeholder="e.g. 8"
+          />
         </div>
       </div>
 
       <div style={{ padding: "20px 20px 0" }}>
-        <button className="log-btn" onClick={handleSave}>Save changes</button>
+        <button className="log-btn" onClick={handleSave}>
+          Save changes
+        </button>
       </div>
     </div>
   );
@@ -208,7 +328,7 @@ function NotificationScreen({ onBack }) {
               cursor: "pointer",
               fontSize: 20,
               color: "var(--text)",
-              padding: 0
+              padding: 0,
             }}
           >
             ‹
@@ -240,7 +360,7 @@ function NotificationScreen({ onBack }) {
               color: enabled ? "#fff" : "#000",
               fontWeight: 600,
               width: 60,
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
             {enabled ? "ON" : "OFF"}
@@ -259,7 +379,9 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <div style={{ fontSize: '40px', marginBottom: '10px' }}>{item?.icon}</div>
+        <div style={{ fontSize: "40px", marginBottom: "10px" }}>
+          {item?.icon}
+        </div>
         <h3>{isBuy ? `Buy ${item?.id}?` : `Use ${item?.id}?`}</h3>
         <p>
           {isBuy
@@ -267,13 +389,18 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
             : `Are you sure you want to use 1 ${item?.id}?`}
         </p>
         <div className="modal-actions">
-          <button className="btn-cancel" onClick={onCancel}>Cancel</button>
+          <button className="btn-cancel" onClick={onCancel}>
+            Cancel
+          </button>
           <button
             className="btn-confirm"
-            style={{ background: isBuy ? '#FFD700' : '#000', color: isBuy ? '#000' : '#fff' }}
+            style={{
+              background: isBuy ? "#FFD700" : "#000",
+              color: isBuy ? "#000" : "#fff",
+            }}
             onClick={onConfirm}
           >
-            {isBuy ? 'Purchase' : 'Confirm'}
+            {isBuy ? "Purchase" : "Confirm"}
           </button>
         </div>
       </div>
@@ -281,7 +408,9 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   );
 };
 
-// hour → sky gradient color stops [top, bottom] as RGB arrays
+{
+  /*
+  // hour → sky gradient color stops [top, bottom] as RGB arrays
 const SKY = [
   { h: 0,  top: [10, 10, 35],    bot: [20, 20, 55]    }, // midnight
   { h: 5,  top: [30, 20, 80],    bot: [80, 40, 100]   }, // pre-dawn
@@ -303,6 +432,7 @@ function skyGradient(hour) {
   const top = mix(a.top, b.top);
   const bot = mix(a.bot, b.bot);
   return `linear-gradient(180deg, rgba(${top},0.95) 0%, rgba(${bot},0.95) 100%)`;
+} */
 }
 
 export default function Dashboard() {
@@ -314,7 +444,7 @@ export default function Dashboard() {
   const [analyzing, setAnalyzing] = useState(false);
   const [mealDescription, setMealDescription] = useState("");
   const [calorieResult, setCalorieResult] = useState(null);
-  const [time, setTime] = useState(8); // default morning
+  const [bgIndex, setBgIndex] = useState(0); // 0=morning, 1=noon, 2=night
   const fileRef = useRef();
   const cameraRef = useRef();
 
@@ -341,16 +471,16 @@ export default function Dashboard() {
   const userId = localStorage.getItem("user_id");
 
   const DEMO_SNAPS = [
-    { hour: 8,  label: "Morning" },
-    { hour: 12, label: "Lunch"   },
-    { hour: 22, label: "Night"   },
+    { hour: 8, label: "Morning" },
+    { hour: 12, label: "Lunch" },
+    { hour: 22, label: "Night" },
   ];
   const [sliderVal, setSliderVal] = useState(8);
   const [demoHour, setDemoHour] = useState(8);
 
   const snapToNearest = (val) =>
     DEMO_SNAPS.reduce((a, b) =>
-      Math.abs(b.hour - val) < Math.abs(a.hour - val) ? b : a
+      Math.abs(b.hour - val) < Math.abs(a.hour - val) ? b : a,
     ).hour;
 
   const handleSliderRelease = (e) => {
@@ -363,8 +493,8 @@ export default function Dashboard() {
     if (!userId) return;
     const url = `${API_URL}/pet/state?user_id=${userId}&demo_hour=${demoHour}`;
     fetch(url)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const state = PET_STATES[data.pet_state] ?? PET_STATES.normal;
         setMood(state.mood);
         setPet(state);
@@ -399,7 +529,7 @@ export default function Dashboard() {
         protein: raw.protein_g + "g",
         carbs: raw.carbs_g + "g",
         fats: raw.fat_g + "g",
-        items: (raw.items ?? []).map(item => ({
+        items: (raw.items ?? []).map((item) => ({
           name: item.name,
           calories: item.calories,
           protein: item.protein_g + "g",
@@ -428,7 +558,15 @@ export default function Dashboard() {
           user_id: "4630c2cd-8bff-4df0-b22c-da920991cceb",
           stat_type: key,
           value: STAT_RAW[key],
-          goal_value: parseFloat(ACCOUNT_INITIAL[{ sleep: "sleepGoal", steps: "stepsGoal", calories: "calorieGoal" }[key]]),
+          goal_value: parseFloat(
+            ACCOUNT_INITIAL[
+              {
+                sleep: "sleepGoal",
+                steps: "stepsGoal",
+                calories: "calorieGoal",
+              }[key]
+            ],
+          ),
           fitness_goal: ACCOUNT_INITIAL.goal,
         }),
       });
@@ -451,19 +589,26 @@ export default function Dashboard() {
     setIsConfirmOpen(false);
   };
 
-  const getBackground = () => {
-    if (time < 12) return "/images/morning.png";
-    if (time < 18) return "/images/noon.png";
-    return "/images/night.png";
-  };
+  const BG_SNAPS = [
+    { label: "Morning", src: "/images/morning.png" },
+    { label: "Noon", src: "/images/noon.png" },
+    { label: "Night", src: "/images/night.png" },
+  ];
+
+  const getBackground = () => BG_SNAPS[bgIndex].src;
 
   return (
-    <div
-      className={`dash-screen ${tab === "shop" ? "shop-open" : ""}`}
-      style={{
-        backgroundImage: `url(${getBackground()})`
-      }}
-    >
+    <div className={`dash-screen ${tab === "shop" ? "shop-open" : ""}`}>
+      {BG_SNAPS.map((snap, i) => (
+        <div
+          key={snap.src}
+          className="bg-layer"
+          style={{
+            backgroundImage: `url(${snap.src})`,
+            opacity: bgIndex === i ? 1 : 0,
+          }}
+        />
+      ))}
 
       {/* ── HOME TAB ── */}
       {tab === "home" && (
@@ -477,15 +622,33 @@ export default function Dashboard() {
             <div className="coins-pill">👛 {MOCK.coins}</div>
           </div>
 
-          {/* Time slider */}
+          {/* Background time-of-day slider */}
           <div className="time-slider">
-            <input
-              type="range"
-              min="0"
-              max="24"
-              value={time}
-              onChange={(e) => setTime(Number(e.target.value))}
-            />
+            <div className="time-slider-label">
+              {BG_SNAPS[bgIndex].icon} {BG_SNAPS[bgIndex].label}
+            </div>
+            <div className="time-slider-track">
+              <input
+                type="range"
+                min="0"
+                max="2"
+                step="1"
+                value={bgIndex}
+                onChange={(e) => setBgIndex(Number(e.target.value))}
+                className="time-slider-input"
+              />
+              <div className="time-slider-ticks">
+                {BG_SNAPS.map((s, i) => (
+                  <button
+                    key={s.label}
+                    className={`time-tick ${bgIndex === i ? "time-tick--active" : ""}`}
+                    onClick={() => setBgIndex(i)}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Pet card */}
@@ -499,7 +662,10 @@ export default function Dashboard() {
                   <span>{MOCK.expScore}/100 XP</span>
                 </div>
                 <div className="exp-bar-bg">
-                  <div className="exp-bar-fill" style={{ width: `${MOCK.expScore}%` }} />
+                  <div
+                    className="exp-bar-fill"
+                    style={{ width: `${MOCK.expScore}%` }}
+                  />
                 </div>
               </div>
             </div>
@@ -518,7 +684,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Demo time dial */}
+          {/* Demo time dial *
           <div className="demo-dial">
             <div className="demo-dial-header">
               <span className="demo-dial-title">Demo</span>
@@ -549,7 +715,7 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Today's stats */}
           <div className="stats-container">
@@ -558,7 +724,12 @@ export default function Dashboard() {
               {[
                 { key: "sleep", icon: "😴", val: MOCK.sleep, label: "Sleep" },
                 { key: "steps", icon: "👟", val: MOCK.steps, label: "Steps" },
-                { key: "calories", icon: "🍽️", val: MOCK.calories, label: "Calories" },
+                {
+                  key: "calories",
+                  icon: "🍽️",
+                  val: MOCK.calories,
+                  label: "Calories",
+                },
               ].map(({ key, icon, val, label }) => (
                 <div
                   key={key}
@@ -568,7 +739,11 @@ export default function Dashboard() {
                   <div className="stat-icon">{icon}</div>
                   <div className="stat-val">{val}</div>
                   <div className="stat-label">{label}</div>
-                  <img src="/images/arrow-right.png" alt="arrow" className="stat-more" />
+                  <img
+                    src="/images/arrow-right.png"
+                    alt="arrow"
+                    className="stat-more"
+                  />
                 </div>
               ))}
             </div>
@@ -576,26 +751,68 @@ export default function Dashboard() {
             {activeStatTab === "sleep" && (
               <div className="stat-panel">
                 <div className="stat-panel-title">Sleep breakdown</div>
-                <div className="stat-panel-row"><span>Bedtime</span><span>11:14 PM</span></div>
-                <div className="stat-panel-row"><span>Wake time</span><span>6:26 AM</span></div>
-                <div className="stat-panel-row"><span>Deep sleep</span><span>1h 48m</span></div>
-                <div className="stat-panel-row"><span>REM</span><span>2h 12m</span></div>
+                <div className="stat-panel-row">
+                  <span>Bedtime</span>
+                  <span>11:14 PM</span>
+                </div>
+                <div className="stat-panel-row">
+                  <span>Wake time</span>
+                  <span>6:26 AM</span>
+                </div>
+                <div className="stat-panel-row">
+                  <span>Deep sleep</span>
+                  <span>1h 48m</span>
+                </div>
+                <div className="stat-panel-row">
+                  <span>REM</span>
+                  <span>2h 12m</span>
+                </div>
                 <div className="stat-panel-bar">
-                  <div className="stat-panel-bar-label"><span>Goal: 8h</span><span>{MOCK.sleep} / 8h</span></div>
-                  <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "90%" }} /></div>
+                  <div className="stat-panel-bar-label">
+                    <span>Goal: 8h</span>
+                    <span>{MOCK.sleep} / 8h</span>
+                  </div>
+                  <div className="stat-panel-bar-bg">
+                    <div
+                      className="stat-panel-bar-fill"
+                      style={{ width: "90%" }}
+                    />
+                  </div>
                 </div>
               </div>
             )}
             {activeStatTab === "steps" && (
               <div className="stat-panel">
                 <div className="stat-panel-title">Steps breakdown</div>
-                <div className="stat-panel-row"><span>Distance</span><span>3.8 mi</span></div>
-                <div className="stat-panel-row"><span>Active minutes</span><span>42 min</span></div>
-                <div className="stat-panel-row"><span>Floors climbed</span><span>9</span></div>
-                <div className="stat-panel-row"><span>Calories burned</span><span>312 kcal</span></div>
+                <div className="stat-panel-row">
+                  <span>Distance</span>
+                  <span>3.8 mi</span>
+                </div>
+                <div className="stat-panel-row">
+                  <span>Active minutes</span>
+                  <span>42 min</span>
+                </div>
+                <div className="stat-panel-row">
+                  <span>Floors climbed</span>
+                  <span>9</span>
+                </div>
+                <div className="stat-panel-row">
+                  <span>Calories burned</span>
+                  <span>312 kcal</span>
+                </div>
                 <div className="stat-panel-bar">
-                  <div className="stat-panel-bar-label"><span>Goal: {ACCOUNT_INITIAL.stepsGoal}</span><span>{MOCK.steps} / {ACCOUNT_INITIAL.stepsGoal}</span></div>
-                  <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "82%" }} /></div>
+                  <div className="stat-panel-bar-label">
+                    <span>Goal: {ACCOUNT_INITIAL.stepsGoal}</span>
+                    <span>
+                      {MOCK.steps} / {ACCOUNT_INITIAL.stepsGoal}
+                    </span>
+                  </div>
+                  <div className="stat-panel-bar-bg">
+                    <div
+                      className="stat-panel-bar-fill"
+                      style={{ width: "82%" }}
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -616,13 +833,35 @@ export default function Dashboard() {
                     <div className="macro-label">Fats</div>
                   </div>
                 </div>
-                <div className="stat-panel-row"><span>Breakfast</span><span>480 kcal</span></div>
-                <div className="stat-panel-row"><span>Lunch</span><span>720 kcal</span></div>
-                <div className="stat-panel-row"><span>Dinner</span><span>510 kcal</span></div>
-                <div className="stat-panel-row"><span>Snacks</span><span>130 kcal</span></div>
+                <div className="stat-panel-row">
+                  <span>Breakfast</span>
+                  <span>480 kcal</span>
+                </div>
+                <div className="stat-panel-row">
+                  <span>Lunch</span>
+                  <span>720 kcal</span>
+                </div>
+                <div className="stat-panel-row">
+                  <span>Dinner</span>
+                  <span>510 kcal</span>
+                </div>
+                <div className="stat-panel-row">
+                  <span>Snacks</span>
+                  <span>130 kcal</span>
+                </div>
                 <div className="stat-panel-bar">
-                  <div className="stat-panel-bar-label"><span>Goal: {ACCOUNT_INITIAL.calorieGoal}</span><span>{MOCK.calories} / {ACCOUNT_INITIAL.calorieGoal}</span></div>
-                  <div className="stat-panel-bar-bg"><div className="stat-panel-bar-fill" style={{ width: "92%" }} /></div>
+                  <div className="stat-panel-bar-label">
+                    <span>Goal: {ACCOUNT_INITIAL.calorieGoal}</span>
+                    <span>
+                      {MOCK.calories} / {ACCOUNT_INITIAL.calorieGoal}
+                    </span>
+                  </div>
+                  <div className="stat-panel-bar-bg">
+                    <div
+                      className="stat-panel-bar-fill"
+                      style={{ width: "92%" }}
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -646,13 +885,20 @@ export default function Dashboard() {
                   <div className="settings-icon-wrap">😴</div>
                   <div>
                     <div className="settings-row-label">Sleep tracker</div>
-                    <div className="settings-row-sub">Sleep duration & quality</div>
+                    <div className="settings-row-sub">
+                      Sleep duration & quality
+                    </div>
                   </div>
                 </div>
                 <button className="connect-btn">Connect</button>
               </div>
             </div>
-            {showAR && <ARCamera emotion={MOCK.petState} onClose={() => setShowAR(false)} />}
+            {showAR && (
+              <ARCamera
+                emotion={MOCK.petState}
+                onClose={() => setShowAR(false)}
+              />
+            )}
           </div>
         </>
       )}
@@ -668,7 +914,15 @@ export default function Dashboard() {
             <div
               className="camera-preview"
               onClick={() => cameraRef.current.click()}
-              style={photo ? { backgroundImage: `url(${photo})`, backgroundSize: "cover", backgroundPosition: "center" } : {}}
+              style={
+                photo
+                  ? {
+                      backgroundImage: `url(${photo})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }
+                  : {}
+              }
             >
               {!photo && (
                 <>
@@ -678,10 +932,16 @@ export default function Dashboard() {
               )}
             </div>
             <div className="scan-controls">
-              <button className="scan-mode-btn scan-mode-btn--camera" onClick={() => cameraRef.current.click()}>
+              <button
+                className="scan-mode-btn scan-mode-btn--camera"
+                onClick={() => cameraRef.current.click()}
+              >
                 Take photo
               </button>
-              <button className="scan-mode-btn scan-mode-btn--upload" onClick={() => fileRef.current.click()}>
+              <button
+                className="scan-mode-btn scan-mode-btn--upload"
+                onClick={() => fileRef.current.click()}
+              >
                 Choose file
               </button>
             </div>
@@ -712,7 +972,11 @@ export default function Dashboard() {
                 <div className="camera-label">Food scanner</div>
                 <div className="camera-sub">AI estimates from your photo</div>
               </div>
-              <button className="analyze-btn" onClick={handleAnalyze} disabled={!photo || analyzing}>
+              <button
+                className="analyze-btn"
+                onClick={handleAnalyze}
+                disabled={!photo || analyzing}
+              >
                 {analyzing ? "Analyzing..." : "Analyze"}
               </button>
             </div>
@@ -753,11 +1017,13 @@ export default function Dashboard() {
                 <>
                   <button
                     className="breakdown-toggle"
-                    onClick={() => setBreakdownOpen(prev => !prev)}
+                    onClick={() => setBreakdownOpen((prev) => !prev)}
                   >
                     <div className="breakdown-line" />
                     <span className="breakdown-label">
-                      {breakdownOpen ? "Hide breakdown ▲" : "View item breakdown ▼"}
+                      {breakdownOpen
+                        ? "Hide breakdown ▲"
+                        : "View item breakdown ▼"}
                     </span>
                     <div className="breakdown-line" />
                   </button>
@@ -767,7 +1033,9 @@ export default function Dashboard() {
                       <div className="breakdown-list">
                         {calorieResult.items.map((item, i) => (
                           <div key={i} className="breakdown-item">
-                            <div className="breakdown-item-name">{item.name}</div>
+                            <div className="breakdown-item-name">
+                              {item.name}
+                            </div>
                             <div className="breakdown-item-macros">
                               <span>{item.calories} kcal</span>
                               <span>P {item.protein}</span>
@@ -778,9 +1046,24 @@ export default function Dashboard() {
                         ))}
                       </div>
                       <div className="breakdown-footer">
-                        <button className="add-item-btn"><svg width="12px" height="12px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 8V16M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>Add Item</button>
+                        <button className="add-item-btn">
+                          <svg
+                            width="12px"
+                            height="12px"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M12 8V16M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
+                          Add Item
+                        </button>
                       </div>
                     </>
                   )}
@@ -803,7 +1086,10 @@ export default function Dashboard() {
           <div className="shop-featured">
             <div className="shop-icon">🛍️</div>
             <div className="shop-name">Shop coming soon</div>
-            <div className="shop-sub">Spend your coins on cosmetics, boosts, and accessories for {MOCK.petName}.</div>
+            <div className="shop-sub">
+              Spend your coins on cosmetics, boosts, and accessories for{" "}
+              {MOCK.petName}.
+            </div>
           </div>
 
           <div className="shop-title">Items</div>
@@ -811,9 +1097,13 @@ export default function Dashboard() {
             {MOCK.inventory.map((item) => (
               <div key={item.id} className="shop-items">
                 <div className="shop-icon">{item.icon}</div>
-                <div className="shop-name">{item.id.charAt(0).toUpperCase() + item.id.slice(1)}</div>
+                <div className="shop-name">
+                  {item.id.charAt(0).toUpperCase() + item.id.slice(1)}
+                </div>
                 <div className="shop-sub">
-                  {item.id === 'Ice' ? "Freeze Eggy to skip a day." : "Double XP for 24 hours."}
+                  {item.id === "Ice"
+                    ? "Freeze Eggy to skip a day."
+                    : "Double XP for 24 hours."}
                 </div>
 
                 {/* The Purchase Button */}
@@ -831,13 +1121,12 @@ export default function Dashboard() {
             ))}
           </div>
 
-
           {/* Inventory bar */}
           <div className="inventory-bar">
             {MOCK.inventory && MOCK.inventory.length > 0 ? (
               MOCK.inventory.map((item) => (
                 <button
-                  className={`inventory-slot ${item.amount === 0 ? 'empty' : ''}`}
+                  className={`inventory-slot ${item.amount === 0 ? "empty" : ""}`}
                   onClick={() => {
                     setSelectedItem(item);
                     setConfirmMode("use"); // Set mode to use
@@ -845,14 +1134,15 @@ export default function Dashboard() {
                   }}
                 >
                   <span>{item.icon}</span>
-                  {item.amount > 0 && <div className="inventory-badge">{item.amount}</div>}
+                  {item.amount > 0 && (
+                    <div className="inventory-badge">{item.amount}</div>
+                  )}
                 </button>
               ))
             ) : (
               /* Fallback if inventory is missing or empty */
-              <p style={{ fontSize: '10px', color: '#999' }}>No items found</p>
+              <p style={{ fontSize: "10px", color: "#999" }}>No items found</p>
             )}
-
           </div>
         </>
       )}
@@ -870,7 +1160,11 @@ export default function Dashboard() {
                 <div className="username">Settings</div>
               </div>
               <div className="settings-card">
-                <div className="settings-row" onClick={() => setSubScreen("account")} style={{ cursor: "pointer" }}>
+                <div
+                  className="settings-row"
+                  onClick={() => setSubScreen("account")}
+                  style={{ cursor: "pointer" }}
+                >
                   <div className="settings-left">
                     <div className="settings-icon-wrap">👤</div>
                     <div>
