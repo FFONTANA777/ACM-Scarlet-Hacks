@@ -278,8 +278,10 @@ export default function Dashboard() {
   const [activeStatTab, setActiveStatTab] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [mealDescription, setMealDescription] = useState("");
   const [calorieResult, setCalorieResult] = useState(null);
   const fileRef = useRef();
+  const cameraRef = useRef();
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -315,25 +317,40 @@ export default function Dashboard() {
 
   const handleAnalyze = async () => {
     if (!photoFile) return;
-
+ 
     setAnalyzing(true);
-
+    setBreakdownOpen(false);
+ 
     const formData = new FormData();
-    formData.append("file", photoFile); // must match FastAPI param name
-
+    formData.append("file", photoFile);
+ 
     try {
       const res = await fetch("http://localhost:8000/analyze-food", {
         method: "POST",
         body: formData,
       });
-
-      const data = await res.json();
-
-      setCalorieResult(data); // use backend response
+ 
+      const raw = await res.json();
+ 
+      // Remap backend field names → UI field names
+      setCalorieResult({
+        meal:    raw.description,
+        calories: raw.calories,
+        protein: raw.protein_g + "g",
+        carbs:   raw.carbs_g + "g",
+        fats:    raw.fat_g + "g",
+        items: (raw.items ?? []).map(item => ({
+          name:     item.name,
+          calories: item.calories,
+          protein:  item.protein_g + "g",
+          carbs:    item.carbs_g + "g",
+          fats:     item.fat_g + "g",
+        })),
+      });
     } catch (err) {
-      console.error(err);
+      console.error("Analyze failed:", err);
     }
-
+ 
     setAnalyzing(false);
   };
 
@@ -503,7 +520,7 @@ export default function Dashboard() {
           <div className="camera-card">
             <div
               className="camera-preview"
-              onClick={() => fileRef.current.click()}
+              onClick={() => cameraRef.current.click()}
               style={photo ? { backgroundImage: `url(${photo})`, backgroundSize: "cover", backgroundPosition: "center" } : {}}
             >
               {!photo && (
@@ -513,14 +530,36 @@ export default function Dashboard() {
                 </>
               )}
             </div>
+            <div className="scan-controls">
+              <button className="scan-mode-btn scan-mode-btn--camera" onClick={() => cameraRef.current.click()}>
+                Take photo
+              </button>
+              <button className="scan-mode-btn scan-mode-btn--upload" onClick={() => fileRef.current.click()}>
+                Choose file
+              </button>
+            </div>
             <input
-              ref={fileRef}
+              ref={cameraRef}
               type="file"
               accept="image/*"
               capture="environment"
               style={{ display: "none" }}
               onChange={handlePhoto}
             />
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handlePhoto}
+            />
+            <div className="desc-title">Meal description</div>
+                <textarea
+                  className="desc-box"
+                  placeholder="Describe your meal..."
+                  value={mealDescription}
+                  onChange={(e) => setMealDescription(e.target.value)}
+                />
             <div className="camera-footer">
               <div>
                 <div className="camera-label">Food scanner</div>
@@ -587,7 +626,6 @@ export default function Dashboard() {
                               <span>P {item.protein}</span>
                               <span>C {item.carbs}</span>
                               <span>F {item.fats}</span>
-                              <span>{item.serving}</span>
                             </div>
                           </div>
                         ))}

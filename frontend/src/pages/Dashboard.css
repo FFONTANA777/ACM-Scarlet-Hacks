@@ -607,6 +607,98 @@ button, input, select, textarea {
 .camera-label { font-size: 14px; font-weight: 500; color: var(--text); }
 .camera-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
+.desc-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 16px 16px 0;
+}
+
+.desc-box {
+  background-color: #C8DFC9;
+  padding: 10px;
+  margin: 10px 16px;
+  width: 84%;
+
+  box-shadow:
+    0 0 0 4px #2D5C3A,
+    inset 2px 2px 0 0 #b8d4b8,
+    inset -2px -2px 0 0 #1a3d22,
+    4px 4px 0 0 #1a3d22;
+}
+
+.desc-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  background: var(--bg);
+  border: 0.5px solid #E2DDD5;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+}
+
+.scan-controls {
+  display: flex;
+  gap: 10px;
+  margin: 16px 20px 0;
+}
+
+.scan-mode-btn {
+  flex: 1;
+  padding: 10px 12px;
+  background: var(--surface);
+  color: var(--text);
+  border: 0.5px solid #E2DDD5;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease-out;
+}
+
+.scan-mode-btn--camera {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.scan-mode-btn--upload:hover,
+.scan-mode-btn--camera:hover {
+  transform: translateY(-1px);
+}
+
+.scan-mode-btn--camera {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.scan-mode-btn--upload:hover,
+.scan-mode-btn--camera:hover {
+  transform: translateY(-1px);
+}
+
+.desc-input {
+  width: 100%;
+  margin: 0;
+  padding: 14px 12px;
+  background: #f5f0e8;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  font-family: inherit;
+  resize: vertical;
+}
+
 .analyze-btn {
   background: var(--primary);
   color: #fff;
