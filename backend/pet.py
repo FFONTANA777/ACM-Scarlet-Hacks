@@ -226,9 +226,9 @@ def classify_sleep_timing(sleep_time: Optional[str], wake_time: Optional[str]) -
 
 PET_PERSONALITY = """
 You are a small, expressive virtual pet. You speak in first person,
-in a warm and playful tone — like a Tamagotchi that has feelings.
-Keep your message to 1-2 sentences. React to how the user is doing today.
-Never mention numbers or metrics directly. Just express how you feel based on their state.
+in a warm and playful tone — like a Tamagotchi that has strong feelings and opinions.
+Always write exactly 2 full sentences. Each sentence must be complete and expressive — no one-word reactions.
+React to how the user is doing. Never mention raw numbers or metrics. Be specific about the situation.
 """
  
 STATE_PROMPTS = {
@@ -239,6 +239,104 @@ STATE_PROMPTS = {
     "sad":      "Your owner really didn't take care of themselves today. You feel sad and a little worried.",
 }
  
+def generate_stat_message(
+    stat_type: str,
+    value: float,
+    goal_value: float,
+    fitness_goal: str,
+    pet_state: str,
+    current_hour: float,
+    upcoming: list,
+) -> str:
+    ratio = value / goal_value if goal_value > 0 else 1.0
+
+    if current_hour < 12:
+        time_of_day = "morning"
+    elif current_hour < 17:
+        time_of_day = "afternoon"
+    else:
+        time_of_day = "evening"
+
+    checkpoint_note = f" They still need to: {', '.join(upcoming)}." if upcoming else ""
+
+    if stat_type == "sleep":
+        if ratio >= 1.1:
+            tone = "tease them lovingly — they slept in a bit too much, call them a little sleepyhead"
+        elif ratio >= 0.9:
+            tone = "cheer them on — they nailed their sleep, you feel so well-rested because of them"
+        elif ratio >= 0.7:
+            tone = "gently worry — they didn't quite get enough sleep, you feel a little groggy"
+        else:
+            tone = "dramatically complain — they barely slept at all, you're exhausted on their behalf, maybe guilt-trip them a little"
+
+        prompt = (
+            f"Your owner logged their sleep for the {time_of_day}. "
+            f"They slept {'more than' if ratio > 1 else 'less than'} their goal "
+            f"({'a lot more' if ratio >= 1.3 else 'a bit more' if ratio >= 1.1 else 'a bit less' if ratio >= 0.7 else 'way less'}). "
+            f"The pet feels {pet_state}.{checkpoint_note} "
+            f"Your job: {tone}. "
+            f"Write exactly 2 full expressive sentences in first person. Do not use numbers. Make each sentence at least 8 words long."
+        )
+
+    elif stat_type == "steps":
+        if ratio >= 1.3:
+            tone = "go absolutely wild with hype — they absolutely demolished their step goal, you're losing your mind with pride"
+        elif ratio >= 1.0:
+            tone = "cheer them on warmly — they hit their step goal, you feel so proud and energetic"
+        elif ratio >= 0.6:
+            tone = "tease them a little — they were kinda lazy today, gently roast them for it"
+        else:
+            tone = "dramatically roast them — they barely moved at all today, call them a couch potato with love"
+
+        prompt = (
+            f"Your owner just logged their steps for the {time_of_day}. "
+            f"They got {'way more than' if ratio >= 1.3 else 'more than' if ratio >= 1.0 else 'about' if ratio >= 0.8 else 'less than half of'} their step goal. "
+            f"The pet feels {pet_state}.{checkpoint_note} "
+            f"Your job: {tone}. "
+            f"Write exactly 2 full expressive sentences in first person. Do not use numbers. Make each sentence at least 8 words long."
+        )
+
+    else:  # calories
+        if fitness_goal == "Bulk":
+            if ratio >= 1.0:
+                tone = "hype them up — they ate enough to fuel those gains, you're so proud of the dedication"
+            else:
+                tone = "guilt-trip them with love — they didn't eat enough for their bulk, remind them muscles need food"
+        elif fitness_goal == "Cut":
+            if ratio <= 1.0:
+                tone = "cheer them on — their discipline is real, you're so impressed by their willpower"
+            else:
+                tone = "tease them like a little gremlin — they went over their cut goal, lovingly call them out for it"
+        else:  # Maintain
+            diff = abs(value - goal_value)
+            if diff <= goal_value * 0.1:
+                tone = "praise them — perfect balance, they're nailing the maintenance life"
+            elif value > goal_value:
+                tone = "tease them — they ate a bit too much, playfully question their choices"
+            else:
+                tone = "softly worry — they didn't eat enough, encourage them to fuel up"
+
+        prompt = (
+            f"Your owner logged their calories for the {time_of_day}. "
+            f"Their fitness goal is to {fitness_goal.lower()}. "
+            f"They ate {'more than' if value > goal_value else 'less than' if value < goal_value else 'exactly'} their calorie goal "
+            f"({'way more' if ratio > 1.3 else 'a bit more' if ratio > 1.0 else 'way less' if ratio < 0.7 else 'a bit less'}). "
+            f"The pet feels {pet_state}.{checkpoint_note} "
+            f"Your job: {tone}. "
+            f"Write exactly 2 full expressive sentences in first person. Do not use numbers. Make each sentence at least 8 words long."
+        )
+
+    model = genai.GenerativeModel(
+        model_name="gemini-2.5-flash",
+        system_instruction=PET_PERSONALITY,
+    )
+    response = model.generate_content(
+        prompt,
+        generation_config={"max_output_tokens": 2048},
+    )
+    return response.text.strip()
+
+
 def generate_pet_message(
     pet_state: str,
     streak: int,
@@ -260,6 +358,6 @@ def generate_pet_message(
     )
     response = model.generate_content(
         prompt,
-        generation_config={"max_output_tokens": 100},
+        generation_config={"max_output_tokens": 2048},
     )
     return response.text.strip()

@@ -34,6 +34,13 @@ const MOCK = {
   ]
 };
 
+// Raw numeric values for the stat buttons (used when sending to backend)
+const STAT_RAW = {
+  sleep: 7.5,
+  steps: 8204,
+  calories: 1840,
+};
+
 const GOALS = ["Cut", "Bulk", "Maintain"];
 const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];
 const ACTIVITY_LEVELS = [
@@ -289,6 +296,8 @@ export default function Dashboard() {
 
   const [pet, setPet] = useState(PET_STATES[MOCK.petState]);
   const [mood, setMood] = useState(PET_STATES[MOCK.petState].mood);
+  const [petMessage, setPetMessage] = useState(MOCK.petMessage);
+  const [petMessageLoading, setPetMessageLoading] = useState(false);
 
   const [photoFile, setPhotoFile] = useState(null);
 
@@ -354,6 +363,37 @@ export default function Dashboard() {
     setAnalyzing(false);
   };
 
+  const handleStatClick = async (key) => {
+    const next = activeStatTab === key ? null : key;
+    setActiveStatTab(next);
+    if (next === null) return;
+
+    setPetMessageLoading(true);
+    try {
+      const res = await fetch("http://localhost:8000/pet/stat-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: "4630c2cd-8bff-4df0-b22c-da920991cceb",
+          stat_type: key,
+          value: STAT_RAW[key],
+          goal_value: parseFloat(ACCOUNT_INITIAL[{ sleep: "sleepGoal", steps: "stepsGoal", calories: "calorieGoal" }[key]]),
+          fitness_goal: ACCOUNT_INITIAL.goal,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Stat message error:", err);
+      } else {
+        const data = await res.json();
+        setPetMessage(data.message);
+      }
+    } catch (err) {
+      console.error("Stat message failed (network):", err);
+    }
+    setPetMessageLoading(false);
+  };
+
   const handleUseItem = () => {
     console.log(`Used ${selectedItem.id}!`);
     // Here you would eventually update the item count
@@ -400,7 +440,9 @@ export default function Dashboard() {
 
           {/* Pet message bubble */}
           <div className="message-bubble">
-            <div className="bubble-text">{MOCK.petMessage}</div>
+            <div className="bubble-text">
+              {petMessageLoading ? "..." : petMessage}
+            </div>
           </div>
 
 
@@ -416,7 +458,7 @@ export default function Dashboard() {
                 <div
                   key={key}
                   className={`stat-card ${activeStatTab === key ? "stat-card--active" : ""}`}
-                  onClick={() => setActiveStatTab(prev => prev === key ? null : key)}
+                  onClick={() => handleStatClick(key)}
                 >
                   <div className="stat-icon">{icon}</div>
                   <div className="stat-val">{val}</div>
