@@ -10,8 +10,6 @@ from typing import Optional
 from vision import analyze_food_image, FoodAnalysis
 
 load_dotenv()
-secret = os.environ.get("SUPABASE_SECRET")
-print("SECRET:", repr(secret))  # repr shows hidden characters like \n or spaces
 
 app = FastAPI()
 
