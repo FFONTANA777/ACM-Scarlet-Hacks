@@ -35,6 +35,13 @@ const MOCK = {
   ]
 };
 
+// Raw numeric values for the stat buttons (used when sending to backend)
+const STAT_RAW = {
+  sleep: 7.5,
+  steps: 8204,
+  calories: 1840,
+};
+
 const GOALS = ["Cut", "Bulk", "Maintain"];
 const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];
 const ACTIVITY_LEVELS = [
@@ -272,6 +279,30 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   );
 };
 
+// hour → sky gradient color stops [top, bottom] as RGB arrays
+const SKY = [
+  { h: 0,  top: [10, 10, 35],    bot: [20, 20, 55]    }, // midnight
+  { h: 5,  top: [30, 20, 80],    bot: [80, 40, 100]   }, // pre-dawn
+  { h: 7,  top: [255, 130, 60],  bot: [255, 190, 110] }, // sunrise
+  { h: 9,  top: [255, 210, 140], bot: [250, 235, 215] }, // morning
+  { h: 12, top: [100, 180, 230], bot: [220, 240, 255] }, // noon
+  { h: 17, top: [255, 160, 80],  bot: [255, 210, 140] }, // afternoon
+  { h: 19, top: [220, 80, 60],   bot: [140, 60, 120]  }, // sunset
+  { h: 21, top: [40, 20, 90],    bot: [20, 10, 60]    }, // dusk
+  { h: 24, top: [10, 10, 35],    bot: [20, 20, 55]    }, // midnight
+];
+
+function skyGradient(hour) {
+  let i = 0;
+  while (i < SKY.length - 2 && SKY[i + 1].h <= hour) i++;
+  const a = SKY[i], b = SKY[i + 1];
+  const t = (hour - a.h) / (b.h - a.h);
+  const mix = (ca, cb) => ca.map((v, j) => Math.round(v + (cb[j] - v) * t));
+  const top = mix(a.top, b.top);
+  const bot = mix(a.bot, b.bot);
+  return `linear-gradient(180deg, rgba(${top},0.95) 0%, rgba(${bot},0.95) 100%)`;
+}
+
 export default function Dashboard() {
   const [tab, setTab] = useState("home");
   const navigate = useNavigate();
@@ -291,6 +322,8 @@ export default function Dashboard() {
 
   const [pet, setPet] = useState(PET_STATES[MOCK.petState]);
   const [mood, setMood] = useState(PET_STATES[MOCK.petState].mood);
+  const [petMessage, setPetMessage] = useState(MOCK.petMessage);
+  const [petMessageLoading, setPetMessageLoading] = useState(false);
 
   const [photoFile, setPhotoFile] = useState(null);
 
@@ -305,16 +338,36 @@ export default function Dashboard() {
 
   const userId = localStorage.getItem("user_id");
 
+  const DEMO_SNAPS = [
+    { hour: 8,  label: "Morning" },
+    { hour: 12, label: "Lunch"   },
+    { hour: 22, label: "Night"   },
+  ];
+  const [sliderVal, setSliderVal] = useState(8);
+  const [demoHour, setDemoHour] = useState(8);
+
+  const snapToNearest = (val) =>
+    DEMO_SNAPS.reduce((a, b) =>
+      Math.abs(b.hour - val) < Math.abs(a.hour - val) ? b : a
+    ).hour;
+
+  const handleSliderRelease = (e) => {
+    const snapped = snapToNearest(parseFloat(e.target.value));
+    setSliderVal(snapped);
+    setDemoHour(snapped);
+  };
+
   useEffect(() => {
     if (!userId) return;
-    fetch(`http://localhost:8000/pet/state?user_id=${userId}`)
+    const url = `http://localhost:8000/pet/state?user_id=${userId}&demo_hour=${demoHour}`;
+    fetch(url)
       .then(res => res.json())
       .then(data => {
         const state = PET_STATES[data.pet_state] ?? PET_STATES.normal;
         setMood(state.mood);
         setPet(state);
       });
-  }, [userId]);
+  }, [userId, demoHour]);
 
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
@@ -357,6 +410,37 @@ export default function Dashboard() {
     }
 
     setAnalyzing(false);
+  };
+
+  const handleStatClick = async (key) => {
+    const next = activeStatTab === key ? null : key;
+    setActiveStatTab(next);
+    if (next === null) return;
+
+    setPetMessageLoading(true);
+    try {
+      const res = await fetch("http://localhost:8000/pet/stat-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: "4630c2cd-8bff-4df0-b22c-da920991cceb",
+          stat_type: key,
+          value: STAT_RAW[key],
+          goal_value: parseFloat(ACCOUNT_INITIAL[{ sleep: "sleepGoal", steps: "stepsGoal", calories: "calorieGoal" }[key]]),
+          fitness_goal: ACCOUNT_INITIAL.goal,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Stat message error:", err);
+      } else {
+        const data = await res.json();
+        setPetMessage(data.message);
+      }
+    } catch (err) {
+      console.error("Stat message failed (network):", err);
+    }
+    setPetMessageLoading(false);
   };
 
   const handleUseItem = () => {
@@ -427,9 +511,43 @@ export default function Dashboard() {
 
           {/* Pet message bubble */}
           <div className="message-bubble">
-            <div className="bubble-text">{MOCK.petMessage}</div>
+            <div className="bubble-text">
+              {petMessageLoading ? "..." : petMessage}
+            </div>
           </div>
 
+          {/* Demo time dial */}
+          <div className="demo-dial">
+            <div className="demo-dial-header">
+              <span className="demo-dial-title">Demo</span>
+              <span className="demo-dial-time">
+                {DEMO_SNAPS.find(s => s.hour === demoHour)?.label ?? `${demoHour}:00`}
+              </span>
+            </div>
+            <div className="demo-dial-track">
+              <input
+                type="range"
+                min={0} max={24} step={0.5}
+                value={sliderVal}
+                onChange={e => setSliderVal(parseFloat(e.target.value))}
+                onMouseUp={handleSliderRelease}
+                onTouchEnd={handleSliderRelease}
+                className="demo-slider"
+              />
+              <div className="demo-dial-ticks">
+                {DEMO_SNAPS.map(s => (
+                  <button
+                    key={s.hour}
+                    className={`demo-tick ${demoHour === s.hour ? "demo-tick--active" : ""}`}
+                    style={{ left: `${(s.hour / 24) * 100}%` }}
+                    onClick={() => { setSliderVal(s.hour); setDemoHour(s.hour); }}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* Today's stats */}
           <div className="stats-container">
@@ -443,7 +561,7 @@ export default function Dashboard() {
                 <div
                   key={key}
                   className={`stat-card ${activeStatTab === key ? "stat-card--active" : ""}`}
-                  onClick={() => setActiveStatTab(prev => prev === key ? null : key)}
+                  onClick={() => handleStatClick(key)}
                 >
                   <div className="stat-icon">{icon}</div>
                   <div className="stat-val">{val}</div>

@@ -13,7 +13,7 @@ from model import *
 from pet import (
     compute_health_score, score_to_pet_state,
     compute_streak, already_checked_in_today,
-    generate_pet_message, STREAK_MILESTONES,
+    generate_pet_message, generate_stat_message, STREAK_MILESTONES,
 )
 
 load_dotenv()
@@ -174,9 +174,9 @@ def checkin(body: CheckInRequest):
     }
 
 @app.get("/pet/state")
-def pet_state(user_id: str):
+def pet_state(user_id: str, demo_hour: Optional[float] = None):
     now = datetime.now(timezone.utc)
-    hour_float = now.hour + now.minute / 60
+    hour_float = demo_hour if demo_hour is not None else now.hour + now.minute / 60
     day_of_week = now.weekday()
     is_weekend = day_of_week >= 5
     day_type = "weekend" if is_weekend else "weekday"
@@ -231,6 +231,57 @@ def pet_state(user_id: str):
         "done_today": list(done_today),
         "hour": hour_float
     }
+
+@app.post("/pet/stat-message")
+def pet_stat_message(body: StatMessageRequest):
+    now = datetime.now(timezone.utc)
+    hour_float = now.hour + now.minute / 60
+
+    # Try to get pet state + upcoming checkpoints from Supabase; fall back to defaults
+    pet_state = "neutral"
+    upcoming = []
+    try:
+        day_type = "weekend" if now.weekday() >= 5 else "weekday"
+        stats_res = supabase.table("user_checkpoint_stats")\
+            .select("*").eq("user_id", body.user_id).eq("day_type", day_type).execute()
+        today_start = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+        checkins_res = supabase.table("checkins")\
+            .select("checkpoint").eq("user_id", body.user_id)\
+            .gte("checked_in_at", today_start).execute()
+        done_today = {row["checkpoint"] for row in checkins_res.data}
+        overdue = []
+        for stat in stats_res.data:
+            cp = stat["checkpoint"]
+            needy_at = stat["needy_at"] or BASELINE[cp] - 0.5
+            if cp in done_today:
+                continue
+            if hour_float >= needy_at:
+                overdue.append(cp)
+            elif hour_float >= needy_at - 1:
+                upcoming.append(cp)
+        if len(overdue) == 0:
+            pet_state = "happy"
+        elif len(overdue) == 1:
+            pet_state = "neutral"
+        elif len(overdue) == 2:
+            pet_state = "tired"
+        else:
+            pet_state = "sad"
+    except Exception:
+        pass  # use defaults if Supabase is unavailable
+
+    message = generate_stat_message(
+        stat_type=body.stat_type,
+        value=body.value,
+        goal_value=body.goal_value,
+        fitness_goal=body.fitness_goal,
+        pet_state=pet_state,
+        current_hour=hour_float,
+        upcoming=upcoming,
+    )
+
+    return {"message": message}
+
 
 @app.post("/analyze-food", response_model=FoodAnalysis)
 async def analyze_food(file: UploadFile = File(...)):

@@ -67,8 +67,15 @@ class CheckInRequest(BaseModel):
  
 class CheckInResponse(BaseModel):
     username: str
-    health_score: float     
+    health_score: float
     pet_state: str
-    streak: int      
-    streak_milestone: bool 
-    message: str   
+    streak: int
+    streak_milestone: bool
+    message: str
+
+class StatMessageRequest(BaseModel):
+    user_id: str
+    stat_type: str       # "sleep" | "steps" | "calories"
+    value: float         # hours for sleep, count for steps, kcal for calories
+    goal_value: float    # user's personal goal for this stat
+    fitness_goal: str    # "Cut" | "Bulk" | "Maintain"
