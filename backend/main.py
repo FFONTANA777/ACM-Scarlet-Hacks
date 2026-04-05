@@ -170,7 +170,67 @@ def checkin(body: CheckInRequest):
         "new_mean": new_mean,
         "n": n
     }
- 
+
+@app.get("/pet/state")
+def pet_state(user_id: str):
+    now = datetime.now(timezone.utc)
+    # hour_float = now.hour + now.minute / 60
+    hour_float = 14.0
+    day_of_week = now.weekday()
+    is_weekend = day_of_week >= 5
+    day_type = "weekend" if is_weekend else "weekday"
+
+    # 1. Fetch all stats for this user + day type
+    stats_res = supabase.table("user_checkpoint_stats")\
+        .select("*")\
+        .eq("user_id", user_id)\
+        .eq("day_type", day_type)\
+        .execute()
+
+    # 2. Fetch today's checkins
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    checkins_res = supabase.table("checkins")\
+        .select("checkpoint")\
+        .eq("user_id", user_id)\
+        .gte("checked_in_at", today_start)\
+        .execute()
+
+    done_today = {row["checkpoint"] for row in checkins_res.data}       # type: ignore
+
+    # 3. Check which checkpoints are overdue
+    overdue = []
+    upcoming = []
+
+    for stat in stats_res.data:
+        cp = stat["checkpoint"]                                         # type: ignore
+        needy_at = stat["needy_at"] or BASELINE[cp] - 0.5               # type: ignore
+
+        if cp in done_today:
+            continue  # already logged, skip
+
+        if hour_float >= needy_at:                                      # type: ignore
+            overdue.append(cp)
+        elif hour_float >= needy_at - 1:                                # type: ignore
+            upcoming.append(cp)  # within 1hr of being due
+
+    # 4. Derive pet state from overdue count
+    if len(overdue) == 0:
+        pet_state = "happy"
+    elif len(overdue) == 1:
+        pet_state = "neutral"
+    elif len(overdue) == 2:
+        pet_state = "tired"
+    else:
+        pet_state = "sad"
+
+    return {
+        "pet_state": pet_state,
+        "overdue": overdue,
+        "upcoming": upcoming,
+        "done_today": list(done_today),
+        "hour": hour_float
+    }
+
 @app.post("/analyze-food", response_model=FoodAnalysis)
 async def analyze_food(file: UploadFile = File(...)):
     """Upload a food photo -> Gemini Vision estimates calories + macros."""

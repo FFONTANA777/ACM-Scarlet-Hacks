@@ -1,22 +1,23 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./Dashboard.css";
 import ARCamera from "../components/ARCamera.jsx";
 import Model from "../components/PetModel.jsx";
 import { useNavigate } from "react-router-dom";
 
 const PET_STATES = {
-  normal: { label: "Neutral" },
-  sad: { label: "Sad" },
-  tired: { label: "Tired" },
-  sleep: { label: "Sleep" },
-  sick: { label: "Neutral" },
+  normal: { mood: "normal", label: "Neutral" },
+  happy: { mood: "happy", label: "Happy" },
+  sad: { mood: "sad", label: "Sad" },
+  tired: { mood: "tired", label: "Tired" },
+  sleep: { mood: "sleep", label: "Sleep" },
+  sick: { mood: "sick", label: "Neutral" },
 };
 
 // Placeholder data — replace with real API calls
 const MOCK = {
   username: "Ratana",
   petName: "Eggy",
-  petState: "sleep",
+  petState: "normal",
   level: 1,
   expScore: 72,
   streak: 5,
@@ -284,7 +285,8 @@ export default function Dashboard() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [confirmMode, setConfirmMode] = useState("use");
 
-  const pet = PET_STATES[MOCK.petState];
+  const [pet, setPet] = useState(PET_STATES[MOCK.petState]);
+  const [mood, setMood] = useState(PET_STATES[MOCK.petState].mood);
 
   const [photoFile, setPhotoFile] = useState(null);
 
@@ -296,6 +298,16 @@ export default function Dashboard() {
     setPhotoFile(file);
     setCalorieResult(null);
   };
+
+  // TEMPORARY HARD CODE DELETE
+  useEffect(() => {
+    fetch(`http://localhost:8000/pet/state?user_id=4630c2cd-8bff-4df0-b22c-da920991cceb`)
+      .then(res => res.json())
+      .then(data => {
+        setMood(PET_STATES[data.pet_state].mood)
+        setPet(PET_STATES[data.pet_state])
+      });
+  }, []);
 
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
@@ -365,7 +377,7 @@ export default function Dashboard() {
             📷 View in AR
           </button>
             <div className="pet-model-wrap">
-              <Model emotion={MOCK.petState} />
+              <Model emotion={mood} />
             </div>
           </div>
 
