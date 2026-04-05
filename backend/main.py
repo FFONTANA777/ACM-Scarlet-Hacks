@@ -74,6 +74,16 @@ class ProfileResponse(BaseModel):
     pet_name: str
     created_at: str
 
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class LoginResponse(BaseModel):
+    access_token: str
+    user_id: str
+    username: str
+    pet_name: str
+
 # =================
 # All API Endpoints
 # =================
@@ -122,6 +132,33 @@ def register(body: UserRegister):
     # 4. Return profile
     profile = supabase.table("profiles").select("*").eq("id", user_id).single().execute()
     return profile.data
+
+@app.post("/login", response_model=LoginResponse)
+def login(body: UserLogin):
+    # 1. Sign in with Supabase auth
+    auth_response = supabase_auth.auth.sign_in_with_password({
+        "email": body.email,
+        "password": body.password
+    })
+
+    if not auth_response.user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    user_id = auth_response.user.id
+    access_token = auth_response.session.access_token
+
+    # 2. Fetch profile
+    profile = supabase.table("profiles").select("*").eq("id", user_id).single().execute()
+
+    if not profile.data:
+        raise HTTPException(status_code=404, detail="Profile not found")
+
+    return {
+        "access_token": access_token,
+        "user_id": user_id,
+        "username": profile.data["username"],
+        "pet_name": profile.data["pet_name"]
+    }
 
 # genai.configure(api_key=os.environ["GEMINI_API_KEY"])
  
