@@ -13,7 +13,7 @@ from model import *
 from pet import (
     compute_health_score, score_to_pet_state,
     compute_streak, already_checked_in_today,
-    generate_pet_message, generate_stat_message, STREAK_MILESTONES,
+    generate_pet_message, generate_stat_message, STREAK_MILESTONES
 )
 
 load_dotenv()
