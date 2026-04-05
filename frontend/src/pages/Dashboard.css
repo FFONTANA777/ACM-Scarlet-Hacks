@@ -88,8 +88,6 @@ button, input, select, textarea {
 .pet-card {
   margin: 16px 20px 0;
   background-size: 490px;
-  background-repeat: no-repeat;
-  background-position: center;
   border-radius: 24px;
   /* border: 1px solid #2D5C3A; */
   padding: 28px 20px 24px;
