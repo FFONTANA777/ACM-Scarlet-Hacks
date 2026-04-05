@@ -278,23 +278,7 @@ def generate_stat_message(
             f"Write exactly 2 full expressive sentences in first person. Do not use numbers. Make each sentence at least 8 words long."
         )
 
-    elif stat_type == "steps":
-        if ratio >= 1.3:
-            tone = "go absolutely wild with hype — they absolutely demolished their step goal, you're losing your mind with pride"
-        elif ratio >= 1.0:
-            tone = "cheer them on warmly — they hit their step goal, you feel so proud and energetic"
-        elif ratio >= 0.6:
-            tone = "tease them a little — they were kinda lazy today, gently roast them for it"
-        else:
-            tone = "dramatically roast them — they barely moved at all today, call them a couch potato with love"
-
-        prompt = (
-            f"Your owner just logged their steps for the {time_of_day}. "
-            f"They got {'way more than' if ratio >= 1.3 else 'more than' if ratio >= 1.0 else 'about' if ratio >= 0.8 else 'less than half of'} their step goal. "
-            f"The pet feels {pet_state}.{checkpoint_note} "
-            f"Your job: {tone}. "
-            f"Write exactly 2 full expressive sentences in first person. Do not use numbers. Make each sentence at least 8 words long."
-        )
+    
 
     else:  # calories
         if fitness_goal == "Bulk":

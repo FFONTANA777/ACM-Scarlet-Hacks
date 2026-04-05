@@ -2,6 +2,8 @@ import { useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom"
 
+const API_URL = import.meta.env.VITE_API_URL || "${API_URL}";
+
 export default function Login() {
   const navigate = useNavigate();
 
@@ -13,7 +15,7 @@ export default function Login() {
 
   const handleSubmit = async () => {
     if (tab === "login") {
-      const res = await fetch("http://localhost:8000/login", {
+      const res = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: form.email, password: form.password }),
@@ -25,7 +27,7 @@ export default function Login() {
       localStorage.setItem("pet_name", data.pet_name);
       navigate("/dashboard");
     } else {
-      const res = await fetch("http://localhost:8000/register", {
+      const res = await fetch(`${API_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: form.username, email: form.email, password: form.password }),

@@ -4,6 +4,8 @@ import ARCamera from "../components/ARCamera.jsx";
 import Model from "../components/PetModel.jsx";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 const PET_STATES = {
   normal:  { mood: "normal", label: "Neutral" },
   neutral: { mood: "normal", label: "Neutral" },
@@ -358,7 +360,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!userId) return;
-    const url = `http://localhost:8000/pet/state?user_id=${userId}&demo_hour=${demoHour}`;
+    const url = `${API_URL}/pet/state?user_id=${userId}&demo_hour=${demoHour}`;
     fetch(url)
       .then(res => res.json())
       .then(data => {
@@ -382,7 +384,7 @@ export default function Dashboard() {
     formData.append("file", photoFile);
  
     try {
-      const res = await fetch("http://localhost:8000/analyze-food", {
+      const res = await fetch(`${API_URL}/analyze-food`, {
         method: "POST",
         body: formData,
       });
@@ -418,7 +420,7 @@ export default function Dashboard() {
 
     setPetMessageLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/pet/stat-message", {
+      const res = await fetch(`${API_URL}/pet/stat-message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
