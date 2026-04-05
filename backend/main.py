@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from supabase import create_client, Client
 from datetime import date, timedelta
 from typing import Optional
-# from vision import analyze_food_image, FoodAnalysis
+from vision import analyze_food_image, FoodAnalysis
 
 load_dotenv()
 

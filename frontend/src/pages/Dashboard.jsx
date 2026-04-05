@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import "./Dashboard.css";
+import ARCamera from "../components/ARCamera.jsx";
 import Model from "../components/PetModel.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -285,18 +286,20 @@ export default function Dashboard() {
 
   const pet = PET_STATES[MOCK.petState];
 
-  const [photoFile, setPhotoFile] = useState(null); 
+  const [photoFile, setPhotoFile] = useState(null);
 
   const handlePhoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setPhoto(URL.createObjectURL(file)); // preview
-    setPhotoFile(file);                  
+    setPhotoFile(file);
     setCalorieResult(null);
   };
 
   const [breakdownOpen, setBreakdownOpen] = useState(false);
+
+  const [showAR, setShowAR] = useState(false);
 
   const handleAnalyze = async () => {
     if (!photoFile) return;
@@ -358,23 +361,12 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+            <button className="ar-btn" onClick={() => setShowAR(true)}>
+            📷 View in AR
+          </button>
             <div className="pet-model-wrap">
               <Model emotion={MOCK.petState} />
             </div>
-
-            {/* <div className="pet-info-container">
-              <div className="pet-name">{MOCK.petName}</div>
-              <div className="pet-state">{pet.label}</div>
-              <div className="exp-bar-wrap">
-                <div className="exp-bar-label">
-                  <span>Level {MOCK.level}</span>
-                  <span>{MOCK.expScore}/100 XP</span>
-                </div>
-                <div className="exp-bar-bg">
-                  <div className="exp-bar-fill" style={{ width: `${MOCK.expScore}%` }} />
-                </div>
-              </div>
-            </div> */}
           </div>
 
           {/* Pet message bubble */}
@@ -484,6 +476,7 @@ export default function Dashboard() {
                 <button className="connect-btn">Connect</button>
               </div>
             </div>
+            {showAR && <ARCamera emotion={MOCK.petState} onClose={() => setShowAR(false)} />}
           </div>
         </>
       )}
@@ -518,7 +511,7 @@ export default function Dashboard() {
             />
             <div className="camera-footer">
               <div>
-                <div className="camera-label">Calorie scan</div>
+                <div className="camera-label">Food scanner</div>
                 <div className="camera-sub">AI estimates from your photo</div>
               </div>
               <button className="analyze-btn" onClick={handleAnalyze} disabled={!photo || analyzing}>
