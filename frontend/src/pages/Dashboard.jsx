@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const PET_STATES = {
-  normal:  { mood: "normal", label: "Neutral" },
+  normal: { mood: "normal", label: "Neutral" },
   neutral: { mood: "normal", label: "Neutral" },
-  happy:   { mood: "happy",  label: "Happy" },
-  sad:     { mood: "sad",    label: "Sad" },
-  tired:   { mood: "tired",  label: "Tired" },
-  sleep:   { mood: "sleep",  label: "Sleep" },
-  sick:    { mood: "sick",   label: "Sick" },
+  happy: { mood: "happy", label: "Happy" },
+  sad: { mood: "sad", label: "Sad" },
+  tired: { mood: "tired", label: "Tired" },
+  sleep: { mood: "sleep", label: "Sleep" },
+  sick: { mood: "sick", label: "Sick" },
 };
 
 // Placeholder data — replace with real API calls
@@ -314,6 +314,7 @@ export default function Dashboard() {
   const [analyzing, setAnalyzing] = useState(false);
   const [mealDescription, setMealDescription] = useState("");
   const [calorieResult, setCalorieResult] = useState(null);
+  const [time, setTime] = useState(8); // default morning
   const fileRef = useRef();
   const cameraRef = useRef();
 
@@ -376,40 +377,40 @@ export default function Dashboard() {
 
   const handleAnalyze = async () => {
     if (!photoFile) return;
- 
+
     setAnalyzing(true);
     setBreakdownOpen(false);
- 
+
     const formData = new FormData();
     formData.append("file", photoFile);
- 
+
     try {
       const res = await fetch(`${API_URL}/analyze-food`, {
         method: "POST",
         body: formData,
       });
- 
+
       const raw = await res.json();
- 
+
       // Remap backend field names → UI field names
       setCalorieResult({
-        meal:    raw.description,
+        meal: raw.description,
         calories: raw.calories,
         protein: raw.protein_g + "g",
-        carbs:   raw.carbs_g + "g",
-        fats:    raw.fat_g + "g",
+        carbs: raw.carbs_g + "g",
+        fats: raw.fat_g + "g",
         items: (raw.items ?? []).map(item => ({
-          name:     item.name,
+          name: item.name,
           calories: item.calories,
-          protein:  item.protein_g + "g",
-          carbs:    item.carbs_g + "g",
-          fats:     item.fat_g + "g",
+          protein: item.protein_g + "g",
+          carbs: item.carbs_g + "g",
+          fats: item.fat_g + "g",
         })),
       });
     } catch (err) {
       console.error("Analyze failed:", err);
     }
- 
+
     setAnalyzing(false);
   };
 
@@ -450,9 +451,19 @@ export default function Dashboard() {
     setIsConfirmOpen(false);
   };
 
+  const getBackground = () => {
+    if (time < 12) return "/images/morning.png";
+    if (time < 18) return "/images/noon.png";
+    return "/images/night.png";
+  };
+
   return (
-    <div className={`dash-screen ${tab === "shop" ? "shop-open" : ""}`}>
-      <div className="sky-overlay" style={{ background: skyGradient(sliderVal) }} />
+    <div
+      className={`dash-screen ${tab === "shop" ? "shop-open" : ""}`}
+      style={{
+        backgroundImage: `url(${getBackground()})`
+      }}
+    >
 
       {/* ── HOME TAB ── */}
       {tab === "home" && (
@@ -464,6 +475,17 @@ export default function Dashboard() {
             </div>
             <div className="streak-pill">🔥 {MOCK.streak} day streak</div>
             <div className="coins-pill">👛 {MOCK.coins}</div>
+          </div>
+
+          {/* Time slider */}
+          <div className="time-slider">
+            <input
+              type="range"
+              min="0"
+              max="24"
+              value={time}
+              onChange={(e) => setTime(Number(e.target.value))}
+            />
           </div>
 
           {/* Pet card */}
@@ -482,8 +504,8 @@ export default function Dashboard() {
               </div>
             </div>
             <button className="ar-btn" onClick={() => setShowAR(true)}>
-            📷 View in AR
-          </button>
+              📷 View in AR
+            </button>
             <div className="pet-model-wrap">
               <Model emotion={mood} />
             </div>
@@ -679,12 +701,12 @@ export default function Dashboard() {
               onChange={handlePhoto}
             />
             <div className="desc-title">Meal description</div>
-                <textarea
-                  className="desc-box"
-                  placeholder="Describe your meal..."
-                  value={mealDescription}
-                  onChange={(e) => setMealDescription(e.target.value)}
-                />
+            <textarea
+              className="desc-box"
+              placeholder="Describe your meal..."
+              value={mealDescription}
+              onChange={(e) => setMealDescription(e.target.value)}
+            />
             <div className="camera-footer">
               <div>
                 <div className="camera-label">Food scanner</div>
