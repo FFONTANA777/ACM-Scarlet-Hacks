@@ -240,10 +240,10 @@ export default function Dashboard() {
     // TODO: POST photo to /analyze-meal on FastAPI
     await new Promise((r) => setTimeout(r, 1500)); // mock delay
     setCalorieResult({
-      meal: "Grilled chicken & rice", calories: 540, protein: "38g", carbs: "40g", fats: "7g", 
+      meal: "Grilled chicken & rice", calories: 540, protein: "38g", carbs: "40g", fats: "7g",
       items: [
-        { name: "Grilled chicken breast", calories: 310, protein: "35g", carbs: "0g", fats: "7g" },
-        { name: "Steamed white rice", calories: 230, protein: "3g", carbs: "40g", fats: "0g" },
+        { name: "Grilled chicken breast", calories: 310, protein: "35g", carbs: "0g", fats: "7g", serving: "1 medium breast" },
+        { name: "Steamed white rice", calories: 230, protein: "3g", carbs: "40g", fats: "0g", serving: "1 cup" },
       ],
     });
     setAnalyzing(false);
@@ -497,25 +497,32 @@ export default function Dashboard() {
                     </span>
                     <div className="breakdown-line" />
                   </button>
- 
+
                   {breakdownOpen && (
-                    <div className="breakdown-list">
-                      {calorieResult.items.map((item, i) => (
-                        <div key={i} className="breakdown-item">
-                          <div className="breakdown-item-name">{item.name}</div>
-                          <div className="breakdown-item-macros">
-                            <span>{item.calories} kcal</span>
-                            <span>P {item.protein}</span>
-                            <span>C {item.carbs}</span>
-                            <span>F {item.fats}</span>
+                    <>
+                      <div className="breakdown-list">
+                        {calorieResult.items.map((item, i) => (
+                          <div key={i} className="breakdown-item">
+                            <div className="breakdown-item-name">{item.name}</div>
+                            <div className="breakdown-item-macros">
+                              <span>{item.calories} kcal</span>
+                              <span>P {item.protein}</span>
+                              <span>C {item.carbs}</span>
+                              <span>F {item.fats}</span>
+                              <span>{item.serving}</span>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                      <div className="breakdown-footer">
+                        <button className="add-item-btn"><svg width="12px" height="12px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 8V16M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>Add Item</button>
+                      </div>
+                    </>
                   )}
                 </>
               )}
-              <div className="meal-items"></div>
               <button className="log-btn">Log this meal</button>
             </div>
           )}

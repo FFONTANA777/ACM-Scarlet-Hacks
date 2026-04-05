@@ -385,7 +385,7 @@ button, input, select, textarea {
   margin: 0 20px;
   background: #f5f0e8;
   border-radius: 20px;
-  border: 0.5px solid #E2DDD5;
+  border: 0.5px solid #90a896;
   overflow: hidden;
 }
 
@@ -394,7 +394,7 @@ button, input, select, textarea {
   align-items: center;
   justify-content: space-between;
   padding: 15px 16px;
-  border-bottom: 0.5px solid #cec9c2;
+  border-bottom: 0.5px solid #90a896;
 }
 
 .settings-row:last-child { border-bottom: none; }
@@ -406,6 +406,7 @@ button, input, select, textarea {
   height: 34px;
   border-radius: 10px;
   background: var(--pet-bg);
+  border: 0.5px solid #90a896;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -420,10 +421,15 @@ button, input, select, textarea {
   font-weight: 500;
   color: var(--primary);
   background: var(--pet-bg);
-  border: none;
+  border: 0.5px solid var(--primary);
   border-radius: 8px;
   padding: 6px 12px;
   cursor: pointer;
+  transition: all 0.15s ease-out, background 0.15s;
+}
+.connect-btn:hover {
+  background: var(--primary);
+  color: #fff;
 }
 
 /* ── Account screen cards ── */
@@ -631,6 +637,12 @@ button, input, select, textarea {
   margin-bottom: 4px;
   /* animation: rise 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; */
 }
+
+.breakdown-footer {
+  display: inline-block;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
  
 .breakdown-item {
   background: #C8DFC9;
@@ -658,6 +670,30 @@ button, input, select, textarea {
   border-radius: 6px;
   padding: 2px 7px;
   font-weight: 500;
+}
+
+.add-item-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--primary);
+  background: var(--pet-bg);
+  border: 0.5px solid var(--primary);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease-out, background 0.15s;
+}
+.add-item-btn svg {
+  display: block;
+}
+.add-item-btn:hover {
+  background: var(--primary);
+  color: #fff;
 }
 
 .log-btn {
