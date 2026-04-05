@@ -607,10 +607,19 @@ button, input, select, textarea {
 .camera-label { font-size: 14px; font-weight: 500; color: var(--text); }
 .camera-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
+.desc-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 16px 16px 0;
+}
+
 .desc-box {
   background-color: #C8DFC9;
-  padding: 20px 16px;
-  margin: 30px 12px 0;
+  padding: 12px;
+  margin: 10px 16px 0;
 
   box-shadow:
     0 0 0 4px #2D5C3A,
@@ -619,17 +628,11 @@ button, input, select, textarea {
     4px 4px 0 0 #1a3d22;
 }
 
-.scan-controls {
-  display: flex;
-  gap: 10px;
-  margin: 16px 20px 0;
-}
-
-.scan-mode-btn {
-  flex: 1;
-  padding: 10px 12px;
-  background: var(--surface);
-  color: var(--text);
+.desc-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  background: var(--bg);
   border: 0.5px solid #E2DDD5;
   border-radius: 12px;
   font-size: 12px;
@@ -662,8 +665,6 @@ button, input, select, textarea {
   outline: none;
   transition: border-color 0.15s, background 0.15s;
   font-family: inherit;
-  min-height: 100px;
-  box-sizing: border-box;
   resize: vertical;
 }
 
