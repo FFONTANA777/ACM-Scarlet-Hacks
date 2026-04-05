@@ -3,11 +3,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import google.generativeai as genai
 import os
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from datetime import date, timedelta
 from typing import Optional
 from vision import analyze_food_image, FoodAnalysis
+from model import *
+from pet import (
+    compute_health_score, score_to_pet_state,
+    compute_streak, already_checked_in_today,
+    generate_pet_message, STREAK_MILESTONES,
+)
 
 load_dotenv()
 
@@ -25,70 +32,25 @@ supabase: Client = create_client(
     os.environ["SUPABASE_KEY"]
 )
 
-# ============================
-# Response Models + DB Objects
-# ============================
-class User(BaseModel):
-    email: str
-    password: str
-    username: str
-    pet_name: str
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
-class Profile(BaseModel):
-    uuid: str
-    username: str
-    pet_name: str
-    created_date: str
-
-class CheckPointStats(BaseModel):
-    uuid: str
-    user_id: str
-    checkpoint: str
-    day_type: str
-    mean: float
-    variance: float
-    standard_dev: float
-    n: int
-    needy_at: float
-    updated_at: str
-
-class CheckIn(BaseModel):
-    uuid: str
-    user_id: str
-    checkpoint: str
-    checked_in_at: str
-    hour_float: float
-    day_of_week: int
-    is_weekend: bool
-    created_at: str
-
-class UserRegister(BaseModel):
-    email: str
-    password: str
-    username: str
-    pet_name: str = "Buddy"
-
-class ProfileResponse(BaseModel):
-    id: str
-    username: str
-    pet_name: str
-    created_at: str
+# =========
+# Constants
+# =========
+CHECKPOINTS = ["wake", "gym", "breakfast", "lunch", "dinner", "sleep"]
+BASELINE = {"wake": 7.0, "gym": 8.0, "breakfast": 8.5, "lunch": 12.5, "dinner": 18.5, "sleep": 23.0}
+ALLOWED_MEDIA_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"}
 
 # =================
 # All API Endpoints
 # =================
-CHECKPOINTS = ["wake", "gym", "breakfast", "lunch", "dinner", "sleep"]
-BASELINE = {"wake": 7.0, "gym": 8.0, "breakfast": 8.5, "lunch": 12.5, "dinner": 18.5, "sleep": 23.0}
 
 @app.post("/register", response_model=ProfileResponse)
 def register(body: UserRegister):
-    # Bypass Password Reqs for Demo
-    password = body.password.ljust(6, "0")  # pads to 6 chars with zeros if too short
-
     # 1. Create Supabase auth user
     auth_response = supabase.auth.sign_up({
         "email": body.email,
-        "password": password
+        "password": body.password
     })
 
     if not auth_response.user:
@@ -546,30 +508,28 @@ def register(body: UserRegister):
  
 # ALLOWED_MEDIA_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"}
  
-@app.post("/analyze-food", response_model=FoodAnalysis)
-
-async def analyze_food(file: UploadFile = File(...)):
-    """Upload a food photo -> Gemini Vision estimates calories + macros."""
-    if file.content_type not in ALLOWED_MEDIA_TYPES:
-        raise HTTPException(
-            status_code=415,
-            detail=f"Unsupported file type '{file.content_type}'. Send JPEG, PNG, WebP, or GIF.",
-        )
+# @app.post("/analyze-food", response_model=FoodAnalysis)
+# async def analyze_food(file: UploadFile = File(...)):
+#     """Upload a food photo -> Gemini Vision estimates calories + macros."""
+#     if file.content_type not in ALLOWED_MEDIA_TYPES:
+#         raise HTTPException(
+#             status_code=415,
+#             detail=f"Unsupported file type '{file.content_type}'. Send JPEG, PNG, WebP, or GIF.",
+#         )
  
     image_bytes = await file.read()
  
     if len(image_bytes) > 10 * 1024 * 1024:
         raise HTTPException(status_code=413, detail="Image too large. Max 10 MB.")
  
-    try:
-        return analyze_food_image(image_bytes, file.content_type)
-    except Exception as e:
-        import traceback
-        raise HTTPException(status_code=500, detail=traceback.format_exc())
+#     try:
+#         return analyze_food_image(image_bytes, file.content_type)
+#     except Exception as e:
+#         raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}")
  
-@app.get("/health")
-def health_check():
-    return {"status": "ok", "mock": MOCK}
+# @app.get("/health")
+# def health_check():
+#     return {"status": "ok", "mock": MOCK}
 
 @app.get("/")
 def root():
