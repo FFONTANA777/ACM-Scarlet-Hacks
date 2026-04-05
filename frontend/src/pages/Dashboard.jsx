@@ -304,16 +304,36 @@ export default function Dashboard() {
 
   const userId = localStorage.getItem("user_id");
 
+  const DEMO_SNAPS = [
+    { hour: 8,  label: "Morning" },
+    { hour: 12, label: "Lunch"   },
+    { hour: 22, label: "Night"   },
+  ];
+  const [sliderVal, setSliderVal] = useState(8);
+  const [demoHour, setDemoHour] = useState(8);
+
+  const snapToNearest = (val) =>
+    DEMO_SNAPS.reduce((a, b) =>
+      Math.abs(b.hour - val) < Math.abs(a.hour - val) ? b : a
+    ).hour;
+
+  const handleSliderRelease = (e) => {
+    const snapped = snapToNearest(parseFloat(e.target.value));
+    setSliderVal(snapped);
+    setDemoHour(snapped);
+  };
+
   useEffect(() => {
     if (!userId) return;
-    fetch(`http://localhost:8000/pet/state?user_id=${userId}`)
+    const url = `http://localhost:8000/pet/state?user_id=${userId}&demo_hour=${demoHour}`;
+    fetch(url)
       .then(res => res.json())
       .then(data => {
         const state = PET_STATES[data.pet_state] ?? PET_STATES.normal;
         setMood(state.mood);
         setPet(state);
       });
-  }, [userId]);
+  }, [userId, demoHour]);
 
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
@@ -407,6 +427,38 @@ export default function Dashboard() {
             <div className="bubble-text">{MOCK.petMessage}</div>
           </div>
 
+          {/* Demo time dial */}
+          <div className="demo-dial">
+            <div className="demo-dial-header">
+              <span className="demo-dial-title">Demo</span>
+              <span className="demo-dial-time">
+                {DEMO_SNAPS.find(s => s.hour === demoHour)?.label ?? `${demoHour}:00`}
+              </span>
+            </div>
+            <div className="demo-dial-track">
+              <input
+                type="range"
+                min={0} max={24} step={0.5}
+                value={sliderVal}
+                onChange={e => setSliderVal(parseFloat(e.target.value))}
+                onMouseUp={handleSliderRelease}
+                onTouchEnd={handleSliderRelease}
+                className="demo-slider"
+              />
+              <div className="demo-dial-ticks">
+                {DEMO_SNAPS.map(s => (
+                  <button
+                    key={s.hour}
+                    className={`demo-tick ${demoHour === s.hour ? "demo-tick--active" : ""}`}
+                    style={{ left: `${(s.hour / 24) * 100}%` }}
+                    onClick={() => { setSliderVal(s.hour); setDemoHour(s.hour); }}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* Today's stats */}
           <div className="stats-container">

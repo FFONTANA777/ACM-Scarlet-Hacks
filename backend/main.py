@@ -174,9 +174,9 @@ def checkin(body: CheckInRequest):
     }
 
 @app.get("/pet/state")
-def pet_state(user_id: str):
+def pet_state(user_id: str, demo_hour: Optional[float] = None):
     now = datetime.now(timezone.utc)
-    hour_float = now.hour + now.minute / 60
+    hour_float = demo_hour if demo_hour is not None else now.hour + now.minute / 60
     day_of_week = now.weekday()
     is_weekend = day_of_week >= 5
     day_type = "weekend" if is_weekend else "weekday"
