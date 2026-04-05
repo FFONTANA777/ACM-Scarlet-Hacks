@@ -7,9 +7,11 @@ from dotenv import load_dotenv
 from supabase import create_client, Client
 from datetime import date, timedelta
 from typing import Optional
-# from vision import analyze_food_image, FoodAnalysis
+from vision import analyze_food_image, FoodAnalysis
 
 load_dotenv()
+secret = os.environ.get("SUPABASE_SECRET")
+print("SECRET:", repr(secret))  # repr shows hidden characters like \n or spaces
 
 app = FastAPI()
 
@@ -22,7 +24,7 @@ app.add_middleware(
 
 supabase: Client = create_client(
     os.environ["SUPABASE_URL"],
-    os.environ["SUPABASE_KEY"]
+    os.environ["SUPABASE_SECRET"]
 )
 
 # ============================
@@ -548,24 +550,24 @@ def register(body: UserRegister):
  
 # ALLOWED_MEDIA_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"}
  
-@app.post("/analyze-food", response_model=FoodAnalysis)
-async def analyze_food(file: UploadFile = File(...)):
-    """Upload a food photo -> Gemini Vision estimates calories + macros."""
-    if file.content_type not in ALLOWED_MEDIA_TYPES:
-        raise HTTPException(
-            status_code=415,
-            detail=f"Unsupported file type '{file.content_type}'. Send JPEG, PNG, WebP, or GIF.",
-        )
+# @app.post("/analyze-food", response_model=FoodAnalysis)
+# async def analyze_food(file: UploadFile = File(...)):
+#     """Upload a food photo -> Gemini Vision estimates calories + macros."""
+#     if file.content_type not in ALLOWED_MEDIA_TYPES:
+#         raise HTTPException(
+#             status_code=415,
+#             detail=f"Unsupported file type '{file.content_type}'. Send JPEG, PNG, WebP, or GIF.",
+#         )
  
-    image_bytes = await file.read()
+#     image_bytes = await file.read()
  
-    if len(image_bytes) > 10 * 1024 * 1024:
-        raise HTTPException(status_code=413, detail="Image too large. Max 10 MB.")
+#     if len(image_bytes) > 10 * 1024 * 1024:
+#         raise HTTPException(status_code=413, detail="Image too large. Max 10 MB.")
  
-    try:
-        return analyze_food_image(image_bytes, file.content_type)
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}")
+#     try:
+#         return analyze_food_image(image_bytes, file.content_type)
+#     except Exception as e:
+#         raise HTTPException(status_code=502, detail=f"Food analysis failed: {str(e)}")
  
 # @app.get("/health")
 # def health_check():
