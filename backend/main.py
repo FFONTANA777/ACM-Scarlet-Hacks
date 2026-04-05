@@ -22,7 +22,7 @@ app.add_middleware(
 
 supabase: Client = create_client(
     os.environ["SUPABASE_URL"],
-    os.environ["SUPABASE_SECRET"]
+    os.environ["SUPABASE_KEY"]
 )
 
 # ============================
