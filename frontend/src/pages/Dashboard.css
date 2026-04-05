@@ -88,8 +88,6 @@ button, input, select, textarea {
 .pet-card {
   margin: 16px 20px 0;
   background-size: 490px;
-  background-repeat: no-repeat;
-  background-position: center;
   border-radius: 24px;
   /* border: 1px solid #2D5C3A; */
   padding: 28px 20px 24px;
@@ -385,7 +383,7 @@ button, input, select, textarea {
   margin: 0 20px;
   background: #f5f0e8;
   border-radius: 20px;
-  border: 0.5px solid #E2DDD5;
+  border: 0.5px solid #90a896;
   overflow: hidden;
 }
 
@@ -394,7 +392,7 @@ button, input, select, textarea {
   align-items: center;
   justify-content: space-between;
   padding: 15px 16px;
-  border-bottom: 0.5px solid #cec9c2;
+  border-bottom: 0.5px solid #90a896;
 }
 
 .settings-row:last-child { border-bottom: none; }
@@ -406,6 +404,7 @@ button, input, select, textarea {
   height: 34px;
   border-radius: 10px;
   background: var(--pet-bg);
+  border: 0.5px solid #90a896;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -420,10 +419,15 @@ button, input, select, textarea {
   font-weight: 500;
   color: var(--primary);
   background: var(--pet-bg);
-  border: none;
+  border: 0.5px solid var(--primary);
   border-radius: 8px;
   padding: 6px 12px;
   cursor: pointer;
+  transition: all 0.15s ease-out, background 0.15s;
+}
+.connect-btn:hover {
+  background: var(--primary);
+  color: #fff;
 }
 
 /* ── Account screen cards ── */
@@ -528,7 +532,11 @@ button, input, select, textarea {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.15s ease-out, background 0.15s;
+}
+.analyze-btn:hover {
+  cursor: pointer;
+  transform: scale(1.02);
 }
 
 .analyze-btn:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
@@ -591,6 +599,101 @@ button, input, select, textarea {
 .result-label { font-size: 13px; color: var(--text-muted); }
 .result-val { font-size: 13px; font-weight: 500; color: var(--text); }
 
+/* ── Item breakdown toggle ── */
+.breakdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 12px 0 4px;
+  cursor: pointer;
+}
+ 
+.breakdown-line {
+  flex: 1;
+  height: 0.5px;
+  background: #90a896;
+}
+ 
+.breakdown-label {
+  font-size: 10px;
+  font-weight: 600;
+  margin: -5px 0 4px;
+  color: #2D5C3A;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+}
+ 
+/* ── Breakdown item list ── */
+.breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+  /* animation: rise 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; */
+}
+
+.breakdown-footer {
+  display: inline-block;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+ 
+.breakdown-item {
+  background: #C8DFC9;
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 0.5px solid #90a896;
+}
+ 
+.breakdown-item-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+ 
+.breakdown-item-macros {
+  display: flex;
+  gap: 8px;
+}
+ 
+.breakdown-item-macros span {
+  font-size: 11px;
+  color: #f5f0e8;
+  background: #b87510;
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-weight: 500;
+}
+
+.add-item-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--primary);
+  background: var(--pet-bg);
+  border: 0.5px solid var(--primary);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease-out, background 0.15s;
+}
+.add-item-btn svg {
+  display: block;
+}
+.add-item-btn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
 .log-btn {
   width: 100%;
   margin-top: 14px;
@@ -602,7 +705,11 @@ button, input, select, textarea {
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.15s ease-out, background 0.15s;
+}
+.log-btn:hover {
+  cursor: pointer;
+  transform: scale(1.02);
 }
 
 .log-btn:hover { background: var(--primary-dark); }

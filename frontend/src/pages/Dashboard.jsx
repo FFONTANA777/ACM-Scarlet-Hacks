@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import "./Dashboard.css";
 import Model from "../components/PetModel.jsx";
+import { useNavigate } from "react-router-dom";
 
 const PET_STATES = {
   normal: { label: "Neutral" },
@@ -180,6 +181,64 @@ function AccountScreen({ onBack }) {
   );
 }
 
+function NotificationScreen({ onBack }) {
+  const [enabled, setEnabled] = useState(true);
+
+  return (
+    <div style={{ paddingBottom: 120 }}>
+      <div className="topbar" style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            onClick={onBack}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: 20,
+              color: "var(--text)",
+              padding: 0
+            }}
+          >
+            ‹
+          </button>
+          <div className="username">Notifications</div>
+        </div>
+      </div>
+
+      <div className="settings-card">
+        <div className="settings-row">
+          <div className="settings-left">
+            <div className="settings-icon-wrap">🔔</div>
+            <div>
+              <div className="settings-row-label">Notifications</div>
+              <div className="settings-row-sub">
+                Enable or disable notifications
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setEnabled(!enabled)}
+            style={{
+              padding: "6px 12px",
+              borderRadius: 8,
+              border: "none",
+              cursor: "pointer",
+              background: enabled ? "var(--text)" : "#ccc",
+              color: enabled ? "#fff" : "#000",
+              fontWeight: 600,
+              width: 60,
+              textAlign: "center"
+            }}
+          >
+            {enabled ? "ON" : "OFF"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
   if (!isOpen) return null;
 
@@ -212,6 +271,7 @@ const Confirm = ({ isOpen, item, mode, onCancel, onConfirm }) => {
 
 export default function Dashboard() {
   const [tab, setTab] = useState("home");
+  const navigate = useNavigate();
   const [subScreen, setSubScreen] = useState(null);
   const [activeStatTab, setActiveStatTab] = useState(null);
   const [photo, setPhoto] = useState(null);
@@ -225,19 +285,40 @@ export default function Dashboard() {
 
   const pet = PET_STATES[MOCK.petState];
 
+  const [photoFile, setPhotoFile] = useState(null); 
+
   const handlePhoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setPhoto(URL.createObjectURL(file));
+
+    setPhoto(URL.createObjectURL(file)); // preview
+    setPhotoFile(file);                  
     setCalorieResult(null);
   };
 
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
+
   const handleAnalyze = async () => {
-    if (!photo) return;
+    if (!photoFile) return;
+
     setAnalyzing(true);
-    // TODO: POST photo to /analyze-meal on FastAPI
-    await new Promise((r) => setTimeout(r, 1500)); // mock delay
-    setCalorieResult({ meal: "Grilled chicken & rice", calories: 540, protein: "38g", carbs: "210g", fats: "52g" });
+
+    const formData = new FormData();
+    formData.append("file", photoFile); // must match FastAPI param name
+
+    try {
+      const res = await fetch("http://localhost:8000/analyze-food", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      setCalorieResult(data); // use backend response
+    } catch (err) {
+      console.error(err);
+    }
+
     setAnalyzing(false);
   };
 
@@ -477,6 +558,44 @@ export default function Dashboard() {
                   <div className="macro-label">Fats</div>
                 </div>
               </div>
+              {calorieResult.items?.length > 0 && (
+                <>
+                  <button
+                    className="breakdown-toggle"
+                    onClick={() => setBreakdownOpen(prev => !prev)}
+                  >
+                    <div className="breakdown-line" />
+                    <span className="breakdown-label">
+                      {breakdownOpen ? "Hide breakdown ▲" : "View item breakdown ▼"}
+                    </span>
+                    <div className="breakdown-line" />
+                  </button>
+
+                  {breakdownOpen && (
+                    <>
+                      <div className="breakdown-list">
+                        {calorieResult.items.map((item, i) => (
+                          <div key={i} className="breakdown-item">
+                            <div className="breakdown-item-name">{item.name}</div>
+                            <div className="breakdown-item-macros">
+                              <span>{item.calories} kcal</span>
+                              <span>P {item.protein}</span>
+                              <span>C {item.carbs}</span>
+                              <span>F {item.fats}</span>
+                              <span>{item.serving}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="breakdown-footer">
+                        <button className="add-item-btn"><svg width="12px" height="12px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 8V16M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>Add Item</button>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
               <button className="log-btn">Log this meal</button>
             </div>
           )}
@@ -553,6 +672,8 @@ export default function Dashboard() {
         <>
           {subScreen === "account" ? (
             <AccountScreen onBack={() => setSubScreen(null)} />
+          ) : subScreen === "notifications" ? (
+            <NotificationScreen onBack={() => setSubScreen(null)} />
           ) : (
             <>
               <div className="topbar">
@@ -577,7 +698,11 @@ export default function Dashboard() {
                   </div>
                   <span className="chevron">›</span>
                 </div>
-                <div className="settings-row" style={{ cursor: "pointer" }}>
+                <div
+                  className="settings-row"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setSubScreen("notifications")}
+                >
                   <div className="settings-left">
                     <div className="settings-icon-wrap">🔔</div>
                     <div>
@@ -586,7 +711,11 @@ export default function Dashboard() {
                   </div>
                   <span className="chevron">›</span>
                 </div>
-                <div className="settings-row" style={{ cursor: "pointer" }}>
+                <div
+                  className="settings-row"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate("/")} // send back to Login.jsx
+                >
                   <div className="settings-left">
                     <div className="settings-icon-wrap">🚪</div>
                     <div>
