@@ -25,10 +25,105 @@ supabase: Client = create_client(
     os.environ["SUPABASE_KEY"]
 )
 
-@app.get("/test")
-def test():
-    result = supabase.table("profiles").select("*").execute()
-    return result.data
+# ============================
+# Response Models + DB Objects
+# ============================
+class User(BaseModel):
+    email: str
+    password: str
+    username: str
+    pet_name: str
+
+class Profile(BaseModel):
+    uuid: str
+    username: str
+    pet_name: str
+    created_date: str
+
+class CheckPointStats(BaseModel):
+    uuid: str
+    user_id: str
+    checkpoint: str
+    day_type: str
+    mean: float
+    variance: float
+    standard_dev: float
+    n: int
+    needy_at: float
+    updated_at: str
+
+class CheckIn(BaseModel):
+    uuid: str
+    user_id: str
+    checkpoint: str
+    checked_in_at: str
+    hour_float: float
+    day_of_week: int
+    is_weekend: bool
+    created_at: str
+
+class UserRegister(BaseModel):
+    email: str
+    password: str
+    username: str
+    pet_name: str = "Buddy"
+
+class ProfileResponse(BaseModel):
+    id: str
+    username: str
+    pet_name: str
+    created_at: str
+
+# =================
+# All API Endpoints
+# =================
+CHECKPOINTS = ["wake", "gym", "breakfast", "lunch", "dinner", "sleep"]
+BASELINE = {"wake": 7.0, "gym": 8.0, "breakfast": 8.5, "lunch": 12.5, "dinner": 18.5, "sleep": 23.0}
+
+@app.post("/register", response_model=ProfileResponse)
+def register(body: UserRegister):
+    # Bypass Password Reqs for Demo
+    password = body.password.ljust(6, "0")  # pads to 6 chars with zeros if too short
+
+    # 1. Create Supabase auth user
+    auth_response = supabase.auth.sign_up({
+        "email": body.email,
+        "password": password
+    })
+
+    print("AUTH RESPONSE:", auth_response)
+    print("USER:", auth_response.user)
+
+    if not auth_response.user:
+        raise HTTPException(status_code=400, detail="Registration failed — check if email confirmation is disabled in Supabase")
+    user_id = auth_response.user.id
+
+    # 2. Create profile (trigger handles this but we can upsert to add username/pet_name)
+    supabase.table("profiles").upsert({
+        "username": body.username,
+        "pet_name": body.pet_name
+    }).execute()
+
+    # 3. Seed 12 checkpoint stats rows with baselines
+    stats_rows = [
+        {
+            "user_id": user_id,
+            "checkpoint": cp,
+            "day_type": day_type,
+            "mean": BASELINE[cp],
+            "variance": 0,
+            "std": None,
+            "n": 0,
+            "needy_at": BASELINE[cp] - 0.5
+        }
+        for cp in CHECKPOINTS
+        for day_type in ["weekday", "weekend"]
+    ]
+    supabase.table("user_checkpoint_stats").insert(stats_rows).execute()
+
+    # 4. Return profile
+    profile = supabase.table("profiles").select("*").eq("id", user_id).single().execute()
+    return profile.data
 
 # genai.configure(api_key=os.environ["GEMINI_API_KEY"])
  
