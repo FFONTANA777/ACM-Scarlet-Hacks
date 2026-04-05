@@ -5,18 +5,19 @@ import Model from "../components/PetModel.jsx";
 import { useNavigate } from "react-router-dom";
 
 const PET_STATES = {
-  normal: { mood: "normal", label: "Neutral" },
-  happy: { mood: "happy", label: "Happy" },
-  sad: { mood: "sad", label: "Sad" },
-  tired: { mood: "tired", label: "Tired" },
-  sleep: { mood: "sleep", label: "Sleep" },
-  sick: { mood: "sick", label: "Neutral" },
+  normal:  { mood: "normal", label: "Neutral" },
+  neutral: { mood: "normal", label: "Neutral" },
+  happy:   { mood: "happy",  label: "Happy" },
+  sad:     { mood: "sad",    label: "Sad" },
+  tired:   { mood: "tired",  label: "Tired" },
+  sleep:   { mood: "sleep",  label: "Sleep" },
+  sick:    { mood: "sick",   label: "Sick" },
 };
 
 // Placeholder data — replace with real API calls
 const MOCK = {
-  username: "Ratana",
-  petName: "Eggy",
+  username: localStorage.getItem("username") ?? "Trainer",
+  petName: localStorage.getItem("pet_name") ?? "Eggy",
   petState: "normal",
   level: 1,
   expScore: 72,
@@ -301,15 +302,18 @@ export default function Dashboard() {
     setCalorieResult(null);
   };
 
-  // TEMPORARY HARD CODE DELETE
+  const userId = localStorage.getItem("user_id");
+
   useEffect(() => {
-    fetch(`http://localhost:8000/pet/state?user_id=4630c2cd-8bff-4df0-b22c-da920991cceb`)
+    if (!userId) return;
+    fetch(`http://localhost:8000/pet/state?user_id=${userId}`)
       .then(res => res.json())
       .then(data => {
-        setMood(PET_STATES[data.pet_state].mood)
-        setPet(PET_STATES[data.pet_state])
+        const state = PET_STATES[data.pet_state] ?? PET_STATES.normal;
+        setMood(state.mood);
+        setPet(state);
       });
-  }, []);
+  }, [userId]);
 
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
