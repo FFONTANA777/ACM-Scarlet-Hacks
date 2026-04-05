@@ -147,7 +147,7 @@ def login(body: UserLogin):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     user_id = auth_response.user.id
-    access_token = auth_response.session.access_token
+    access_token = auth_response.session.access_token # type: ignore
 
     # 2. Fetch profile
     profile = supabase.table("profiles").select("*").eq("id", user_id).single().execute()
@@ -155,13 +155,13 @@ def login(body: UserLogin):
     if not profile.data:
         raise HTTPException(status_code=404, detail="Profile not found")
 
-    data = dict(profile.data)
+    data = dict(profile.data) # type: ignore
 
     return {
         "access_token": access_token,
         "user_id": user_id,
-        "username": data["username"],
-        "pet_name": data["pet_name"]
+        "username": data["username"], # type: ignore
+        "pet_name": data["pet_name"]  # type: ignore
     }
 
 # genai.configure(api_key=os.environ["GEMINI_API_KEY"])
